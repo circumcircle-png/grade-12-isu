@@ -1,1 +1,23 @@
 # Pac-Man
+
+## maze.txt specification
+- First two numbers are rows and columns
+- . represents coin on floor
+- \* represents big coin on floor
+- a represents accessible but blank area (not coin)
+- B represents inaccessible area but not wall
+- 1 represents single-line wall
+- 2 represents double-line wall
+- 3 represents special wall
+- 4 represents sharp corner (used around ghost spawning area)
+
+Rules:
+- All dimensions of blocks of 1's must be at least 2
+- The border of the maze will not be displayed
+- Special wall (3's) must be surrounded by a 3 2 1 as shown below, up to rotation and reflection:
+
+| 2 | **3** | 3 |
+| --- | --- | --- |
+| - | 1 | - |
+
+- Sharp corners (4's) must be surrounded by double-line walls (2's) on two sides (not in a straight line)
