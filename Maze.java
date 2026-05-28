@@ -11,6 +11,9 @@ public class Maze {
     private char[][] maze;
     private int numRows, numColumns;
 
+    // turning on DEBUG adds gridlines of 8x8 pixels
+    private final boolean DEBUG = true;
+
     public Maze(String fileName) throws IOException {
         // read tileset
         tileset = ImageIO.read(new File("images/maze-tiles.png"));
@@ -170,7 +173,7 @@ public class Maze {
         return "UNKNOWN";
     }
 
-    public void drawToScreen(Graphics g) {
+    public void drawToScreen(Graphics2D g) {
         for (int r = 1; r < numRows-1; r++) {
             for (int c = 1; c < numColumns-1; c++) {
                 String nameToDraw = getTileType(r, c);
@@ -182,6 +185,16 @@ public class Maze {
                 if (maze[r][c] == '2')
                     nameToDraw += "2";
                 g.drawImage(tilesetComponents.get(nameToDraw), 8*c, 8*r, null);
+            }
+        }
+
+        if (DEBUG) {
+            for (int i = 0; i < 50; i++) {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
+                g.setColor(Color.RED);
+                g.drawLine(8*i, 0, 8*i, 400);
+                g.drawLine(0, 8*i, 400, 8*i);
+                g.setComposite(AlphaComposite.SrcOver);
             }
         }
     }
