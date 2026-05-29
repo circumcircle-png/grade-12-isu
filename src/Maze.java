@@ -1,12 +1,10 @@
+package src;
+
 import java.util.*;
 import java.io.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
-enum Direction {
-    UP, DOWN, LEFT, RIGHT, STILL
-}
 
 public class Maze {
     private final Direction[] DIRECTIONS = {

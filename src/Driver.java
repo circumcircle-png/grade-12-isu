@@ -1,7 +1,11 @@
+package src;
+
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+
+import src.ghost.Ghost;
 
 @SuppressWarnings("serial")
 public class Driver extends JPanel implements Runnable {

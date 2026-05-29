@@ -1,6 +1,11 @@
+package src.ghost;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.ImageObserver;
+
+import src.Maze;
+import src.Direction;
 
 public class Ghost {
     private final Image image;
@@ -49,3 +54,5 @@ public class Ghost {
         }
     }
 }
+
+record GhostSprites(Image up, Image down, Image left, Image right) {}
