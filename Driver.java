@@ -1,14 +1,50 @@
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
-public class Driver extends JPanel {
-    private Maze maze;
+@SuppressWarnings("serial")
+public class Driver extends JPanel implements Runnable {
+    final int FPS = 60;
+    Thread thread;
 
-    public Driver() throws IOException {
-        maze = new Maze("maze.txt");
-        maze.createTileSetComponent();
+    private Maze maze;
+    private ArrayList<Ghost> ghosts = new ArrayList<>();
+
+    public Driver() {
+
         setPreferredSize(new Dimension(600, 600));
+        setVisible(true);
+
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    public void run() {
+        initialize();
+        while (true) {
+            update();
+            this.repaint();
+            try {
+                Thread.sleep(1000/FPS);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void initialize() {
+        try {
+            maze = new Maze("maze.txt");
+            ghosts.add(new Ghost());
+            maze.createTileSetComponent();
+            maze.generateShortestPathMatrix();
+        } catch (Exception e) {};
+    }
+
+    public void update() {
+        ghosts.get(0).updatePosition(maze);
     }
 
     public void paintComponent(Graphics g) {
@@ -20,13 +56,21 @@ public class Driver extends JPanel {
         double scale = 2;
         g2.scale(scale, scale);
 
-        maze.drawToScreen(g2);
+        maze.draw(g2);
+
+        // draw ghosts
+        ghosts.get(0).draw(g2, this);
     }
 
     public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame("Pac-Man");
-        frame.add(new Driver());
-        frame.pack();
+        JPanel panel = new Driver();
+        frame.add(panel);
+        // frame.addKeyListener(panel);
+        // frame.addMouseListener(panel);
         frame.setVisible(true);
+        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
     }
 }

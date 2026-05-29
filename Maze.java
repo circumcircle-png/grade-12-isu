@@ -4,11 +4,22 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+enum Direction {
+    UP, DOWN, LEFT, RIGHT, STILL
+}
+
 public class Maze {
-    private BufferedImage tileset;
+    private final Direction[] DIRECTIONS = {
+        Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT, Direction.STILL
+    };
+    private final int[] DELTA_R = {-1, 1, 0, 0};
+    private final int[] DELTA_C = {0, 0, -1, 1};
+
+    private final BufferedImage tileset;
     private Map<String, BufferedImage> tilesetComponents = new HashMap<>();
 
-    private char[][] maze;
+    public char[][] maze;
+    public Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
     private int numRows, numColumns;
 
     // turning on DEBUG adds gridlines of 8x8 pixels
@@ -29,6 +40,49 @@ public class Maze {
                 maze[i][j] = row.charAt(j);
         }
         toFile.close();
+    }
+
+    public void generateShortestPathMatrix() {
+        shortestPath = new Direction[numRows][numColumns][numRows][numColumns];
+
+        // loop through every starting point
+        for (int startR = 0; startR < numRows; startR++) {
+            for (int startC = 0; startC < numColumns; startC++) {
+                if (!isAccessible(startR, startC))
+                    continue;
+
+                Queue<int[]> queue = new LinkedList<>();
+
+                shortestPath[startR][startC][startR][startC] = Direction.STILL;
+
+                // add all 4 directions
+                for (int i = 0; i < 4; i++)
+                    queue.add(new int[] {startR + DELTA_R[i], startC + DELTA_C[i], i}); // third element represents first direction needed
+
+                // run BFS
+                while (!queue.isEmpty()) {
+                    int[] current = queue.remove();
+                    int r = current[0];
+                    int c = current[1];
+
+                    // check if it is accessible
+                    if (!(0 <= r && r < numRows && 0 <= c && c < numColumns))
+                        continue;
+
+                    if (!isAccessible(r, c))
+                        continue;
+
+                    // check if it has been visited previously
+                    if (shortestPath[startR][startC][r][c] != null)
+                        continue;
+
+                    shortestPath[startR][startC][r][c] = DIRECTIONS[current[2]];
+
+                    for (int i = 0; i < 4; i++)
+                        queue.add(new int[] {r + DELTA_R[i], c + DELTA_C[i], current[2]});
+                }
+            }
+        }
     }
 
     private void createTile(String name, int x, int y) {
@@ -173,7 +227,7 @@ public class Maze {
         return "UNKNOWN";
     }
 
-    public void drawToScreen(Graphics2D g) {
+    public void draw(Graphics2D g) {
         for (int r = 1; r < numRows-1; r++) {
             for (int c = 1; c < numColumns-1; c++) {
                 String nameToDraw = getTileType(r, c);
