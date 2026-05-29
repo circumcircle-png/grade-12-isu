@@ -7,22 +7,22 @@ import java.awt.image.ImageObserver;
 import src.Maze;
 import src.Direction;
 
-public class Ghost {
-    private final Image image;
-    private int x, y; // these represent center coordinates of ghost
-    private int targetX, targetY; // these represent the coordinates of the adjacent cell it is going towards
+public abstract class Ghost {
+    protected int x, y; // these represent center coordinates of ghost
+    protected int targetX, targetY; // these represent the coordinates of the adjacent cell it is going towards
 
-    public Ghost() {
-        image = new ImageIcon("teleport gifs/teleport down.gif").getImage();
-        x = 8*22+4;
-        y = 8*24+4;
-        targetX = x;
-        targetY = y;
+    private final Image upImage, downImage, leftImage, rightImage;
+
+    public Ghost(String name) {
+        this.upImage = new ImageIcon("images/ghost/" + name + "/" + name + " up.gif").getImage();
+        this.downImage = new ImageIcon("images/ghost/" + name + "/" + name + " down.gif").getImage();
+        this.leftImage = new ImageIcon("images/ghost/" + name + "/" + name + " left.gif").getImage();
+        this.rightImage = new ImageIcon("images/ghost/" + name + "/" + name + " right.gif").getImage();
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
         // ImageObserver is somehow needed to not have the gif frozen at one frame
-        g.drawImage(image, x-8, y-8, observer);
+        g.drawImage(downImage, x-8, y-8, observer);
     }
 
     public void updatePosition(Maze maze) {
@@ -41,7 +41,7 @@ public class Ghost {
             int r = (y+3)/8;
             int c = (x+3)/8;
 
-            // TODO: currently only targets square and row 24 and column 2
+            // TODO: currently only targets square at row 24 and column 2
             Direction direction = maze.shortestPath[r][c][24][2];
             if (direction == Direction.UP)
                 targetY -= 8;
@@ -54,5 +54,3 @@ public class Ghost {
         }
     }
 }
-
-record GhostSprites(Image up, Image down, Image left, Image right) {}

@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
-import src.ghost.Ghost;
+import src.ghost.*;
 
 @SuppressWarnings("serial")
 public class Driver extends JPanel implements Runnable {
@@ -41,7 +41,7 @@ public class Driver extends JPanel implements Runnable {
     public void initialize() {
         try {
             maze = new Maze("maze.txt");
-            ghosts.add(new Ghost());
+            ghosts.add(new TeleportGhost());
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
         } catch (Exception e) {};
