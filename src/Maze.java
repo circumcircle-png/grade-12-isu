@@ -7,12 +7,6 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 public class Maze {
-    private final Direction[] DIRECTIONS = {
-        Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT, Direction.STILL
-    };
-    private final int[] DELTA_R = {-1, 1, 0, 0};
-    private final int[] DELTA_C = {0, 0, -1, 1};
-
     private final BufferedImage tileset;
     private Map<String, BufferedImage> tilesetComponents = new HashMap<>();
 
@@ -55,7 +49,7 @@ public class Maze {
 
                 // add all 4 directions
                 for (int i = 0; i < 4; i++)
-                    queue.add(new int[] {startR + DELTA_R[i], startC + DELTA_C[i], i}); // third element represents first direction needed
+                    queue.add(new int[] {startR + Constants.DELTA_R[i], startC + Constants.DELTA_C[i], i}); // third element represents first direction needed
 
                 // run BFS
                 while (!queue.isEmpty()) {
@@ -74,10 +68,10 @@ public class Maze {
                     if (shortestPath[startR][startC][r][c] != null)
                         continue;
 
-                    shortestPath[startR][startC][r][c] = DIRECTIONS[current[2]];
+                    shortestPath[startR][startC][r][c] = Constants.DIRECTIONS[current[2]];
 
                     for (int i = 0; i < 4; i++)
-                        queue.add(new int[] {r + DELTA_R[i], c + DELTA_C[i], current[2]});
+                        queue.add(new int[] {r + Constants.DELTA_R[i], c + Constants.DELTA_C[i], current[2]});
                 }
             }
         }

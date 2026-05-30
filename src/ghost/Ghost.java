@@ -1,39 +1,77 @@
 package src.ghost;
 
-import javax.swing.*;
 import java.awt.*;
+import java.io.*;
+import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import javax.imageio.ImageIO;
+import java.util.*;
 
 import src.Maze;
+import src.Constants;
 import src.Direction;
 
 public abstract class Ghost {
     protected int x, y; // these represent center coordinates of ghost
     protected int targetX, targetY; // these represent the coordinates of the adjacent cell it is going towards
 
-    private final Image upImage, downImage, leftImage, rightImage;
+    private final Map<Direction, Image[]> ghostSprites;
+    private Direction facing;
+    private int frameIndex = 0;
+    private int frameCounter = 0;
 
-    public Ghost(String name) {
-        this.upImage = new ImageIcon("images/ghost/" + name + "/" + name + " up.gif").getImage();
-        this.downImage = new ImageIcon("images/ghost/" + name + "/" + name + " down.gif").getImage();
-        this.leftImage = new ImageIcon("images/ghost/" + name + "/" + name + " left.gif").getImage();
-        this.rightImage = new ImageIcon("images/ghost/" + name + "/" + name + " right.gif").getImage();
+    public Ghost(String name, int startR, int startC) {
+        ghostSprites = new HashMap<>();
+        try {
+            BufferedImage sheet = ImageIO.read(new File("images/ghost/" + name + ".png"));
+            for (int i = 0; i <= 3; i++) {
+                ghostSprites.put(
+                    Constants.DIRECTIONS[i],
+                    new Image[] {sheet.getSubimage(0, 16*i, 16, 16), sheet.getSubimage(16, 16*i, 16, 16)}
+                );
+            }
+        }
+        catch (IOException e) {
+            // no mercy
+            System.exit(0);
+        }
+
+        x = 8*startC+4;
+        targetX = 8*startC+4;
+        y = 8*startR+4;
+        targetY = 8*startR+4;
+
+        facing = Direction.DOWN;
     }
 
     public void draw(Graphics2D g, ImageObserver observer) {
         // ImageObserver is somehow needed to not have the gif frozen at one frame
-        g.drawImage(downImage, x-8, y-8, observer);
+        g.drawImage(ghostSprites.get(facing)[frameIndex], x-8, y-8, observer);
+
+        frameCounter++;
+        if (frameCounter >= 5) {
+            frameCounter = 0;
+            frameIndex = (frameIndex + 1) % 2;
+        }
     }
 
     public void updatePosition(Maze maze) {
-        if (x < targetX)
+        if (x < targetX) {
             x++;
-        else if (x > targetX)
+            facing = Direction.RIGHT;
+        }
+        else if (x > targetX) {
             x--;
-        else if (y < targetY)
+            facing = Direction.LEFT;
+        }
+        else if (y < targetY) {
             y++;
-        else if (y > targetY)
+            facing = Direction.DOWN;
+        }
+        else if (y > targetY) {
             y--;
+            facing = Direction.UP;
+        }
         
         // if reached target coordinate, update to next target
         if (x == targetX && y == targetY) {
