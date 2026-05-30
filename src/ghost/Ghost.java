@@ -18,8 +18,8 @@ public abstract class Ghost {
 
     private final Map<Direction, Image[]> ghostSprites;
     private Direction facing;
-    private int frameIndex = 0;
-    private int frameCounter = 0;
+    private int drawingFrameIndex = 0;
+    private int drawingFrameCounter = 0;
 
     public Ghost(String name, int startR, int startC) {
         ghostSprites = new HashMap<>();
@@ -45,18 +45,23 @@ public abstract class Ghost {
         facing = Direction.DOWN;
     }
 
+    public void advanceFrameCounters() {
+        drawingFrameCounter++;
+        if (drawingFrameCounter >= 5) {
+            drawingFrameCounter = 0;
+            drawingFrameIndex = (drawingFrameIndex + 1) % 2;
+        }
+        advanceSpecialFrameCounters();
+    }
+
     public void draw(Graphics2D g, ImageObserver observer) {
         // ImageObserver is somehow needed to not have the gif frozen at one frame
-        g.drawImage(ghostSprites.get(facing)[frameIndex], (int)x-8, (int)y-8, observer);
-
-        frameCounter++;
-        if (frameCounter >= 5) {
-            frameCounter = 0;
-            frameIndex = (frameIndex + 1) % 2;
-        }
+        g.drawImage(ghostSprites.get(facing)[drawingFrameIndex], (int)x-8, (int)y-8, observer);
     }
 
     public void updatePosition(Maze maze) {
+        chooseSpecialTarget();
+
         double remainingDistanceToTravel = velocity;
         
         while (remainingDistanceToTravel > 0) {
@@ -102,5 +107,17 @@ public abstract class Ghost {
                     break;
             }
         }
+    }
+
+    // this function can be overrided by ghost subclasses
+    // advances other frame counters
+    protected void advanceSpecialFrameCounters() {
+
+    }
+
+    // this function can be overrided by ghost subclasses
+    // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
+    protected void chooseSpecialTarget() {
+        
     }
 }

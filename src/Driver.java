@@ -49,6 +49,7 @@ public class Driver extends JPanel implements Runnable {
 
     public void update() {
         ghosts.get(0).updatePosition(maze);
+        ghosts.get(0).advanceFrameCounters();
     }
 
     public void paintComponent(Graphics g) {
