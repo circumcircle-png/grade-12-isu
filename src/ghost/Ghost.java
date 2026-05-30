@@ -12,8 +12,9 @@ import src.Constants;
 import src.Direction;
 
 public abstract class Ghost {
-    protected int x, y; // these represent center coordinates of ghost
+    protected double x, y; // these represent center coordinates of ghost
     protected int targetX, targetY; // these represent the coordinates of the adjacent cell it is going towards
+    protected double velocity = 1;
 
     private final Map<Direction, Image[]> ghostSprites;
     private Direction facing;
@@ -46,7 +47,7 @@ public abstract class Ghost {
 
     public void draw(Graphics2D g, ImageObserver observer) {
         // ImageObserver is somehow needed to not have the gif frozen at one frame
-        g.drawImage(ghostSprites.get(facing)[frameIndex], x-8, y-8, observer);
+        g.drawImage(ghostSprites.get(facing)[frameIndex], (int)x-8, (int)y-8, observer);
 
         frameCounter++;
         if (frameCounter >= 5) {
@@ -56,39 +57,50 @@ public abstract class Ghost {
     }
 
     public void updatePosition(Maze maze) {
-        if (x < targetX) {
-            x++;
-            facing = Direction.RIGHT;
-        }
-        else if (x > targetX) {
-            x--;
-            facing = Direction.LEFT;
-        }
-        else if (y < targetY) {
-            y++;
-            facing = Direction.DOWN;
-        }
-        else if (y > targetY) {
-            y--;
-            facing = Direction.UP;
-        }
+        double remainingDistanceToTravel = velocity;
         
-        // if reached target coordinate, update to next target
-        if (x == targetX && y == targetY) {
-            // convert x, y coordinates to row and column value of maze
-            int r = (y+3)/8;
-            int c = (x+3)/8;
+        while (remainingDistanceToTravel > 0) {
+            double oldX = x;
+            double oldY = y;
 
-            // TODO: currently only targets square at row 24 and column 2
-            Direction direction = maze.shortestPath[r][c][24][2];
-            if (direction == Direction.UP)
-                targetY -= 8;
-            else if (direction == Direction.DOWN)
-                targetY += 8;
-            else if (direction == Direction.LEFT)
-                targetX -= 8;
-            else if (direction == Direction.RIGHT)
-                targetX += 8;
+            if (x < targetX) {
+                x = Math.min(x+velocity, targetX);
+                facing = Direction.RIGHT;
+            }
+            else if (x > targetX) {
+                x = Math.max(x-velocity, targetX);
+                facing = Direction.LEFT;
+            }
+            else if (y < targetY) {
+                y = Math.min(y+velocity, targetY);
+                facing = Direction.DOWN;
+            }
+            else if (y > targetY) {
+                y = Math.max(y-velocity, targetY);
+                facing = Direction.UP;
+            }
+
+            remainingDistanceToTravel -= Math.abs(oldX - x) + Math.abs(oldY - y);
+            
+            // if reached target coordinate, update to next target
+            if (x == targetX && y == targetY) {
+                // convert x, y coordinates to row and column value of maze
+                int r = ((int)y+3)/8;
+                int c = ((int)x+3)/8;
+
+                // TODO: currently only targets square at row 24 and column 2
+                Direction direction = maze.shortestPath[r][c][24][2];
+                if (direction == Direction.UP)
+                    targetY -= 8;
+                else if (direction == Direction.DOWN)
+                    targetY += 8;
+                else if (direction == Direction.LEFT)
+                    targetX -= 8;
+                else if (direction == Direction.RIGHT)
+                    targetX += 8;
+                else if (direction == Direction.STILL)
+                    break;
+            }
         }
     }
 }
