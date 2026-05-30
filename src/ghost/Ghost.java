@@ -12,6 +12,8 @@ import src.Constants;
 import src.Direction;
 
 public abstract class Ghost {
+    private final boolean DEBUG = true;
+
     protected double x, y; // these represent center coordinates of ghost
     protected int targetX, targetY; // these represent the coordinates of the adjacent cell it is going towards
     protected double velocity = 1;
@@ -65,6 +67,14 @@ public abstract class Ghost {
     public void draw(Graphics2D g, ImageObserver observer) {
         // ImageObserver is somehow needed to not have the gif frozen at one frame
         g.drawImage(getCurrentSprite(), (int)x-8, (int)y-8, observer);
+
+        if (DEBUG) {
+            int r = ((int)y+3)/8;
+            int c = ((int)x+3)/8;
+            g.setColor(Color.YELLOW);
+            g.drawRect(c*8, r*8, 8, 8);
+            g.fillOval(targetX-2, targetY-2, 4, 4);
+        }
     }
 
     protected Image getCurrentSprite() {
