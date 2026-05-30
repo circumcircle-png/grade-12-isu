@@ -41,15 +41,15 @@ public class Driver extends JPanel implements Runnable {
     public void initialize() {
         try {
             maze = new Maze("maze.txt");
-            ghosts.add(new TeleportGhost());
+            ghosts.add(new PhoenixGhost());
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
         } catch (Exception e) {};
     }
 
     public void update() {
+        ghosts.get(0).nextFrame();
         ghosts.get(0).updatePosition(maze);
-        ghosts.get(0).advanceFrameCounters();
     }
 
     public void paintComponent(Graphics g) {
