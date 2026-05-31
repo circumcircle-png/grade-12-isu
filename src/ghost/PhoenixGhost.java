@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import src.Maze;
 
 public class PhoenixGhost extends Ghost {
+    public final static int FRAMES_PER_PHASE = 60;
+
     private int eggFrameCounter = 0;
     private final Image[] eggSprites = new Image[3];
 
@@ -30,15 +32,14 @@ public class PhoenixGhost extends Ghost {
         super.nextFrame(maze);
         if (state == State.EGG) {
             eggFrameCounter++; 
-            if (eggFrameCounter == 180) {
+            if (eggFrameCounter == FRAMES_PER_PHASE * 3)
                 state = State.NORMAL;
-            }
         }
     }
 
     protected Image getCurrentSprite() {
         if (state == State.EGG)
-            return eggSprites[eggFrameCounter / 60];
+            return eggSprites[FRAMES_PER_PHASE];
         return super.getCurrentSprite();
     }
 

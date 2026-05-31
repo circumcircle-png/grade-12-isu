@@ -4,6 +4,9 @@ import src.Maze;
 import src.Direction;
 
 public class BullGhost extends Ghost {
+    public final static double STRAIGHT_SPEED = 2;
+    public final static double TURN_SPEED = 0.1;
+
     public BullGhost() {
         super("bull", 24, 22);
     }
@@ -20,10 +23,10 @@ public class BullGhost extends Ghost {
         Direction second = maze.shortestPath[targetR][targetC][24][2];
 
         if (first == Direction.STILL || second == Direction.STILL)
-            speed = 2;
+            speed = STRAIGHT_SPEED;
         else if (first == second)
-            speed = 2;
+            speed = STRAIGHT_SPEED;
         else
-            speed = 0.1;
+            speed = TURN_SPEED;
     }
 }
