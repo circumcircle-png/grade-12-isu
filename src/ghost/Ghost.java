@@ -94,19 +94,19 @@ public abstract class Ghost {
             double oldX = x;
             double oldY = y;
 
-            if (x < 8*targetC) {
+            if (previousC < targetC) {
                 x = Math.min(x+remainingDistanceToTravel, 8*targetC);
                 facing = Direction.RIGHT;
             }
-            else if (x > 8*targetC) {
+            else if (targetC < previousC) {
                 x = Math.max(x-remainingDistanceToTravel, 8*targetC);
                 facing = Direction.LEFT;
             }
-            else if (y < 8*targetR) {
+            else if (previousR < targetR) {
                 y = Math.min(y+remainingDistanceToTravel, 8*targetR);
                 facing = Direction.DOWN;
             }
-            else if (y > 8*targetR) {
+            else if (targetR < previousR) {
                 y = Math.max(y-remainingDistanceToTravel, 8*targetR);
                 facing = Direction.UP;
             }
