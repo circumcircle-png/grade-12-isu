@@ -20,10 +20,10 @@ public class BullGhost extends Ghost {
         Direction second = maze.shortestPath[targetR][targetC][24][2];
 
         if (first == Direction.STILL || second == Direction.STILL)
-            velocity = 2;
+            speed = 2;
         else if (first == second)
-            velocity = 2;
+            speed = 2;
         else
-            velocity = 0.1;
+            speed = 0.1;
     }
 }

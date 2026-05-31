@@ -19,7 +19,7 @@ public abstract class Ghost {
     protected double x, y; // these represent top left coordinates of ghost
     protected int previousR, previousC; // these store the coordinate of cell the ghost left
     protected int targetR, targetC; // these store the coordinates of the cell it is going towards
-    protected double velocity = 1;
+    protected double speed = 1;
 
     protected enum State {
         NORMAL, // normal chasing
@@ -88,7 +88,7 @@ public abstract class Ghost {
     }
 
     public void updatePosition(Maze maze) {
-        double remainingDistanceToTravel = velocity;
+        double remainingDistanceToTravel = speed;
         
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
