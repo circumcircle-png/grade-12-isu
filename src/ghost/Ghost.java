@@ -10,12 +10,15 @@ import java.util.*;
 import src.Maze;
 import src.Constants;
 import src.Direction;
+import src.MathUtils;
 
 public abstract class Ghost {
     private final boolean DEBUG = true;
 
-    protected double x, y; // these represent center coordinates of ghost
-    protected int targetX, targetY; // these represent the coordinates of the adjacent cell it is going towards
+    // BASIC ASSUMPTION: A GHOST MUST REACH (TARGETR, TARGETC) BEFORE IT SWITCHES TO A NEW TARGET
+    protected double x, y; // these represent top left coordinates of ghost
+    protected int previousR, previousC; // these store the coordinate of cell the ghost left
+    protected int targetR, targetC; // these store the coordinates of the cell it is going towards
     protected double velocity = 1;
 
     protected enum State {
@@ -47,16 +50,16 @@ public abstract class Ghost {
             System.exit(0);
         }
 
-        x = 8*startC+4;
-        targetX = 8*startC+4;
-        y = 8*startR+4;
-        targetY = 8*startR+4;
+        x = 8*startC;
+        y = 8*startR;
+        previousR = targetR = startR;
+        previousC = targetC = startC;
 
         facing = Direction.DOWN;
     }
 
     // this function is run every frame
-    public void nextFrame() {
+    public void nextFrame(Maze maze) {
         drawingFrameCounter++;
         if (drawingFrameCounter >= 5) {
             drawingFrameCounter = 0;
@@ -66,14 +69,17 @@ public abstract class Ghost {
 
     public void draw(Graphics2D g, ImageObserver observer) {
         // ImageObserver is somehow needed to not have the gif frozen at one frame
-        g.drawImage(getCurrentSprite(), (int)x-8, (int)y-8, observer);
+        g.drawImage(getCurrentSprite(), (int)x-4, (int)y-4, observer);
 
         if (DEBUG) {
-            int r = ((int)y+3)/8;
-            int c = ((int)x+3)/8;
             g.setColor(Color.YELLOW);
-            g.drawRect(c*8, r*8, 8, 8);
-            g.fillOval(targetX-2, targetY-2, 4, 4);
+            g.drawRect(8*previousC, 8*previousR, 8, 8);
+
+            g.setColor(Color.BLUE);
+            g.fillOval((int)x-2, (int)y-2, 4, 4);
+
+            g.setColor(Color.GREEN);
+            g.drawRect(8*targetC, 8*targetR, 8, 8);
         }
     }
 
@@ -84,31 +90,31 @@ public abstract class Ghost {
     public void updatePosition(Maze maze) {
         double remainingDistanceToTravel = velocity;
         
-        while (remainingDistanceToTravel > 0) {
+        while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
             double oldY = y;
 
-            if (x < targetX) {
-                x = Math.min(x+velocity, targetX);
+            if (x < 8*targetC) {
+                x = Math.min(x+remainingDistanceToTravel, 8*targetC);
                 facing = Direction.RIGHT;
             }
-            else if (x > targetX) {
-                x = Math.max(x-velocity, targetX);
+            else if (x > 8*targetC) {
+                x = Math.max(x-remainingDistanceToTravel, 8*targetC);
                 facing = Direction.LEFT;
             }
-            else if (y < targetY) {
-                y = Math.min(y+velocity, targetY);
+            else if (y < 8*targetR) {
+                y = Math.min(y+remainingDistanceToTravel, 8*targetR);
                 facing = Direction.DOWN;
             }
-            else if (y > targetY) {
-                y = Math.max(y-velocity, targetY);
+            else if (y > 8*targetR) {
+                y = Math.max(y-remainingDistanceToTravel, 8*targetR);
                 facing = Direction.UP;
             }
 
             remainingDistanceToTravel -= Math.abs(oldX - x) + Math.abs(oldY - y);
             
             // if reached target coordinate, update to next target
-            if (x == targetX && y == targetY) {
+            if (MathUtils.nearlyEqual(x, 8*targetC) && MathUtils.nearlyEqual(y, 8*targetR)) {
                 if (chooseTarget(maze))
                     break;
             }
@@ -119,23 +125,17 @@ public abstract class Ghost {
     // returning true means stop break out of loop
     // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
     protected boolean chooseTarget(Maze maze) {
-        if (state == State.NORMAL) {
-            // convert x, y coordinates to row and column value of maze
-            int r = ((int)y+3)/8;
-            int c = ((int)x+3)/8;
+        previousR = targetR;
+        previousC = targetC;
 
+        if (state == State.NORMAL) {
             // TODO: Jonathan to implement player
-            Direction direction = maze.shortestPath[r][c][24][2];
-            if (direction == Direction.UP)
-                targetY -= 8;
-            else if (direction == Direction.DOWN)
-                targetY += 8;
-            else if (direction == Direction.LEFT)
-                targetX -= 8;
-            else if (direction == Direction.RIGHT)
-                targetX += 8;
-            else if (direction == Direction.STILL)
-                return true;
+            Direction direction = maze.shortestPath[previousR][previousC][24][2];
+            if (direction == Direction.UP) targetR--;
+            else if (direction == Direction.DOWN) targetR++;
+            else if (direction == Direction.LEFT) targetC--;
+            else if (direction == Direction.RIGHT) targetC++;
+            else if (direction == Direction.STILL) return true;
         }
         else if (state == State.SCARED) {
             // TODO: Jonathan to implement player

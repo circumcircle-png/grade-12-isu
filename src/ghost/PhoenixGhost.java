@@ -26,8 +26,8 @@ public class PhoenixGhost extends Ghost {
         state = State.EGG;
     }
 
-    public void nextFrame() {
-        super.nextFrame();
+    public void nextFrame(Maze maze) {
+        super.nextFrame(maze);
         if (state == State.EGG) {
             eggFrameCounter++; 
             if (eggFrameCounter == 180) {
