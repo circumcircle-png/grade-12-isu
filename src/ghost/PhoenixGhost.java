@@ -13,8 +13,8 @@ public class PhoenixGhost extends Ghost {
     private int eggFrameCounter = 0;
     private final Image[] eggSprites = new Image[3];
 
-    public PhoenixGhost() {
-        super("phoenix", 24, 22);
+    public PhoenixGhost(int startR, int startC) {
+        super("phoenix", startR, startC);
         try {
             BufferedImage sheet = ImageIO.read(new File("images/ghost/egg.png"));
             for (int i = 0; i <= 2; i++)

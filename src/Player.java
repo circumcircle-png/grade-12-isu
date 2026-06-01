@@ -1,0 +1,12 @@
+package src;
+
+public class Player extends Movable {
+    public Player(int startR, int startC) {
+        super(startR, startC);
+        // TODO: Jonathan, write code
+    }
+
+    public void updatePosition() {
+        // TODO: Jonathan, look at Ghost.updatePosition for inspiration
+    }
+}

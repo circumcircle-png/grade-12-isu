@@ -7,8 +7,8 @@ public class BullGhost extends Ghost {
     public final static double STRAIGHT_SPEED = 2;
     public final static double TURN_SPEED = 0.1;
 
-    public BullGhost() {
-        super("bull", 24, 22);
+    public BullGhost(int startR, int startC) {
+        super("bull", startR, startC);
     }
 
     public void nextFrame(Maze maze) {
