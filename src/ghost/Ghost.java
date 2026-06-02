@@ -21,7 +21,6 @@ public abstract class Ghost extends Movable {
         SCARED, // scared, running away from player
         GOING_THROUGH_WALL,
         ABOUT_TO_TELEPORT, 
-        EGG, // in egg (phoenix ghost)
     }
     protected State state;
 
@@ -59,7 +58,6 @@ public abstract class Ghost extends Movable {
     }
 
     public void setScared() {
-        System.out.println("SET SCARED");
         state = State.SCARED;
         scaredFrameTimer = FRAMES_SCARED;
     }
