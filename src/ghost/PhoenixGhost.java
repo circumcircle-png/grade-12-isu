@@ -13,6 +13,8 @@ public class PhoenixGhost extends Ghost {
     private int eggFrameCounter = 0;
     private final Image[] eggSprites = new Image[3];
 
+    private boolean isEgg = false;
+
     public PhoenixGhost(int startR, int startC) {
         super("phoenix", startR, startC);
         try {
@@ -23,27 +25,28 @@ public class PhoenixGhost extends Ghost {
         catch (IOException e) {
             System.exit(0);
         }
+
+        isEgg = true;
     }
 
     public void nextFrame(Maze maze) {
         super.nextFrame(maze);
 
-        // TODO: bug when in egg and scared
-        if (state == State.EGG) {
+        if (isEgg) {
             eggFrameCounter++; 
             if (eggFrameCounter == FRAMES_PER_PHASE * 3)
-                state = State.NORMAL;
+                isEgg = false;
         }
     }
 
     protected Image getCurrentSprite() {
-        if (state == State.EGG)
+        if (isEgg)
             return eggSprites[eggFrameCounter / FRAMES_PER_PHASE];
         return super.getCurrentSprite();
     }
 
     protected boolean chooseTarget(Maze maze, Player player) {
-        if (state == State.EGG)
+        if (isEgg)
             return false;
         return super.chooseTarget(maze, player);
     }

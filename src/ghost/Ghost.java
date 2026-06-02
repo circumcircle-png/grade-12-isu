@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import src.*;
 
 public abstract class Ghost extends Movable {
-    private final static int FRAMES_SCARED = 60 * 3;
+    private final static int FRAMES_SCARED = 60 * 5;
     private final static double NORMAL_SPEED = 1;
     private final static double SCARED_SPEED = 0.2;
 
