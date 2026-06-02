@@ -45,8 +45,8 @@ public class Driver extends JPanel implements Runnable {
         try {
             maze = new Maze("maze.txt");
             player = new Player(24, 2);
-            ghosts.add(new TeleportGhost(24, 22));
-            ghosts.get(0).setScared();
+            ghosts.add(new PolterGhost(24, 22));
+            // ghosts.get(0).setScared();
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
         } catch (Exception e) {};

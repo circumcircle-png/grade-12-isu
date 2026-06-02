@@ -92,19 +92,18 @@ public abstract class Ghost extends Movable {
             
             // if reached target coordinate, update to next target
             if (MathUtils.nearlyEqual(x, 8*targetC) && MathUtils.nearlyEqual(y, 8*targetR)) {
-                if (chooseTarget(maze, player))
+                previousR = targetR;
+                previousC = targetC;
+                if (!chooseTarget(maze, player))
                     break;
             }
         }
     }
 
     // this function can be overrided by ghost subclasses
-    // returning true means stop break out of loop
+    // returning true means target is chosen, false means we choose not to select a target to break
     // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
     protected boolean chooseTarget(Maze maze, Player player) {
-        previousR = targetR;
-        previousC = targetC;
-
         if (state == State.NORMAL) {
             int[] target = player.getCurrentPosition();
             Direction direction = maze.shortestPath[previousR][previousC][target[0]][target[1]];
@@ -112,7 +111,7 @@ public abstract class Ghost extends Movable {
             else if (direction == Direction.DOWN) targetR++;
             else if (direction == Direction.LEFT) targetC--;
             else if (direction == Direction.RIGHT) targetC++;
-            else if (direction == Direction.STILL) return true;
+            else if (direction == Direction.STILL) return false;
         }
         else if (state == State.SCARED) {
             // TODO: replace this with moving away from the player
@@ -121,8 +120,8 @@ public abstract class Ghost extends Movable {
             else if (direction == Direction.DOWN) targetR++;
             else if (direction == Direction.LEFT) targetC--;
             else if (direction == Direction.RIGHT) targetC++;
-            else if (direction == Direction.STILL) return true;
+            else if (direction == Direction.STILL) return false;
         }
-        return false;
+        return true;
     }
 }

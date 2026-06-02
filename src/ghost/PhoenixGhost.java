@@ -45,7 +45,7 @@ public class PhoenixGhost extends Ghost {
 
     protected boolean chooseTarget(Maze maze, Player player) {
         if (state == State.EGG)
-            return true;
+            return false;
         return super.chooseTarget(maze, player);
     }
 }
