@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import src.*;
 
 public class PhoenixGhost extends Ghost {
-    public final static int FRAMES_PER_PHASE = 60;
+    public final static int FRAMES_PER_PHASE = 1 * Constants.FPS;
 
     private int eggFrameCounter = 0;
     private final Image[] eggSprites = new Image[3];

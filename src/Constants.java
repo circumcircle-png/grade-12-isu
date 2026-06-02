@@ -1,6 +1,8 @@
 package src;
 
 public class Constants {
+    public static final int FPS = 60;
+
     public static final Direction[] DIRECTIONS = {
         Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT, Direction.STILL
     };

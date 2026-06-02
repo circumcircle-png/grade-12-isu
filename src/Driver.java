@@ -11,7 +11,6 @@ import src.ghost.*;
 public class Driver extends JPanel implements Runnable {
     // TODO: Jonathan, I think pickups can be implemented directly on the Maze class, if you decide to do so, make sure you update the Maze.isAccessible function
 
-    private final int FPS = 60;
     private Thread thread;
 
     private Player player;
@@ -33,7 +32,7 @@ public class Driver extends JPanel implements Runnable {
             update();
             this.repaint();
             try {
-                Thread.sleep(1000/FPS);
+                Thread.sleep(1000 / Constants.FPS);
             }
             catch (Exception e) {
                 e.printStackTrace();

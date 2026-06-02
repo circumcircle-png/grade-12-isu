@@ -1,10 +1,10 @@
 package src.ghost;
 
-import src.Maze;
+import src.*;
 import java.util.*;
 
 public class TeleportGhost extends Ghost {
-    public final static int FRAMES_PER_TELEPORT = 180;
+    public final static int FRAMES_PER_TELEPORT = 3 * Constants.FPS;
 
     private int teleportFrameCounter = 0;
 
