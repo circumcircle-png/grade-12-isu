@@ -45,7 +45,12 @@ public class Driver extends JPanel implements Runnable {
         try {
             maze = new Maze("maze.txt");
             player = new Player(24, 2);
+            // ghosts.add(new FearlessGhost(20, 22));
+            // ghosts.add(new SlowGhost(21, 22));
+            ghosts.add(new BullGhost(22, 22));
+            ghosts.add(new TeleportGhost(23, 22));
             ghosts.add(new PolterGhost(24, 22));
+            ghosts.add(new PhoenixGhost(25, 22));
             // ghosts.get(0).setScared();
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
@@ -53,8 +58,10 @@ public class Driver extends JPanel implements Runnable {
     }
 
     public void update() {
-        ghosts.get(0).nextFrame(maze);
-        ghosts.get(0).updatePosition(maze, player);
+        for (Ghost ghost: ghosts) {
+            ghost.nextFrame(maze);
+            ghost.updatePosition(maze, player);
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -69,7 +76,9 @@ public class Driver extends JPanel implements Runnable {
         maze.draw(g2);
 
         // draw ghosts
-        ghosts.get(0).draw(g2);
+        for (Ghost ghost: ghosts) {
+            ghost.draw(g2);
+        }
     }
 
     public static void main(String[] args) throws IOException {
