@@ -5,26 +5,30 @@ import java.io.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-import src.Maze;
-import src.Constants;
-import src.Direction;
-import src.MathUtils;
-import src.Movable;
+import src.*;
 
 public abstract class Ghost extends Movable {
+    private final static int FRAMES_SCARED = 60 * 3;
+    private final static double NORMAL_SPEED = 1;
+    private final static double SCARED_SPEED = 0.5;
+
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
+
+    private int scaredFrameTimer = 0;
 
     protected enum State {
         NORMAL, // normal chasing
         SCARED, // scared, running away from player
-        WALL, // going through wall (teleport ghost)
+        GOING_THROUGH_WALL,
+        ABOUT_TO_TELEPORT, 
         EGG, // in egg (phoenix ghost)
     }
-    protected State state = State.NORMAL;
+    protected State state;
 
     public Ghost(String name, int startR, int startC) {
         super(startR, startC);
-        DEBUG = true;
+        DEBUG = false;
+        state = State.NORMAL;
 
         try {
             BufferedImage sheet = ImageIO.read(new File("images/ghost/" + name + ".png"));
@@ -32,6 +36,7 @@ public abstract class Ghost extends Movable {
                 directionalSprites.put(
                     Constants.DIRECTIONS[i],
                     new Image[] {sheet.getSubimage(0, 16*i, 16, 16), sheet.getSubimage(16, 16*i, 16, 16)}
+                    // ghosts are always 16 by 16
                 );
             }
         }
@@ -41,8 +46,25 @@ public abstract class Ghost extends Movable {
         }
     }
 
+    public void nextFrame(Maze maze) {
+        super.nextFrame(maze);
+        scaredFrameTimer = Math.max(scaredFrameTimer - 1, 0);
+        if (state == State.NORMAL)
+            speed = NORMAL_SPEED;
+        else if (state == State.SCARED) {
+            speed = SCARED_SPEED;
+            if (scaredFrameTimer == 0)
+                state = State.NORMAL;
+        }
+    }
 
-    public void updatePosition(Maze maze) {
+    public void setScared() {
+        state = State.SCARED;
+        scaredFrameTimer = FRAMES_SCARED;
+    }
+
+
+    public void updatePosition(Maze maze, Player player) {
         double remainingDistanceToTravel = speed;
         
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
@@ -70,7 +92,7 @@ public abstract class Ghost extends Movable {
             
             // if reached target coordinate, update to next target
             if (MathUtils.nearlyEqual(x, 8*targetC) && MathUtils.nearlyEqual(y, 8*targetR)) {
-                if (chooseTarget(maze))
+                if (chooseTarget(maze, player))
                     break;
             }
         }
@@ -79,13 +101,13 @@ public abstract class Ghost extends Movable {
     // this function can be overrided by ghost subclasses
     // returning true means stop break out of loop
     // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
-    protected boolean chooseTarget(Maze maze) {
+    protected boolean chooseTarget(Maze maze, Player player) {
         previousR = targetR;
         previousC = targetC;
 
         if (state == State.NORMAL) {
-            // TODO: Jonathan to implement player
-            Direction direction = maze.shortestPath[previousR][previousC][24][2];
+            int[] target = player.getCurrentPosition();
+            Direction direction = maze.shortestPath[previousR][previousC][target[0]][target[1]];
             if (direction == Direction.UP) targetR--;
             else if (direction == Direction.DOWN) targetR++;
             else if (direction == Direction.LEFT) targetC--;
@@ -93,7 +115,13 @@ public abstract class Ghost extends Movable {
             else if (direction == Direction.STILL) return true;
         }
         else if (state == State.SCARED) {
-            // TODO: Jonathan to implement player
+            // TODO: replace this with moving away from the player
+            Direction direction = maze.shortestPath[previousR][previousC][24][2];
+            if (direction == Direction.UP) targetR--;
+            else if (direction == Direction.DOWN) targetR++;
+            else if (direction == Direction.LEFT) targetC--;
+            else if (direction == Direction.RIGHT) targetC++;
+            else if (direction == Direction.STILL) return true;
         }
         return false;
     }

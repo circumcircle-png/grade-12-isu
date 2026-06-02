@@ -1,7 +1,6 @@
 package src.ghost;
 
-import src.Maze;
-import src.Direction;
+import src.*;
 
 public class BullGhost extends Ghost {
     public final static double STRAIGHT_SPEED = 2;

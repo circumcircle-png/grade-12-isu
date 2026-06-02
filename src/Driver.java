@@ -11,9 +11,10 @@ import src.ghost.*;
 public class Driver extends JPanel implements Runnable {
     // TODO: Jonathan, I think pickups can be implemented directly on the Maze class, if you decide to do so, make sure you update the Maze.isAccessible function
 
-    final int FPS = 60;
-    Thread thread;
+    private final int FPS = 60;
+    private Thread thread;
 
+    private Player player;
     private Maze maze;
     private ArrayList<Ghost> ghosts = new ArrayList<>();
 
@@ -43,7 +44,9 @@ public class Driver extends JPanel implements Runnable {
     public void initialize() {
         try {
             maze = new Maze("maze.txt");
-            ghosts.add(new BullGhost(24, 22));
+            player = new Player(24, 2);
+            ghosts.add(new TeleportGhost(24, 22));
+            ghosts.get(0).setScared();
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
         } catch (Exception e) {};
@@ -51,7 +54,7 @@ public class Driver extends JPanel implements Runnable {
 
     public void update() {
         ghosts.get(0).nextFrame(maze);
-        ghosts.get(0).updatePosition(maze);
+        ghosts.get(0).updatePosition(maze, player);
     }
 
     public void paintComponent(Graphics g) {

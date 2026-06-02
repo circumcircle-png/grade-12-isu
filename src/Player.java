@@ -9,4 +9,8 @@ public class Player extends Movable {
     public void updatePosition() {
         // TODO: Jonathan, look at Ghost.updatePosition for inspiration
     }
+
+    public int[] getCurrentPosition() {
+        return new int[] {targetR, targetC};
+    }
 }

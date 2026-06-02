@@ -12,10 +12,10 @@ public class Maze {
 
     public char[][] maze;
     public Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
-    private int numRows, numColumns;
+    public int numRows, numColumns;
 
     // turning on DEBUG adds gridlines of 8x8 pixels
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     public Maze(String fileName) throws IOException {
         // read tileset
@@ -133,11 +133,11 @@ public class Maze {
         createTile("leftToBottomTurn2", 324, 45);
     }
 
-    private boolean isAccessible(int r, int c) {
+    public boolean isAccessible(int r, int c) {
         return maze[r][c] == '.' || maze[r][c] == '*' || maze[r][c] == 'a';
     }
 
-    private boolean isWall(int r, int c) {
+    public boolean isWall(int r, int c) {
         return maze[r][c] == '1' || maze[r][c] == '2' || maze[r][c] == '3' || maze[r][c] == '4';
     }
 

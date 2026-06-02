@@ -5,7 +5,7 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
-import src.Maze;
+import src.*;
 
 public class PhoenixGhost extends Ghost {
     public final static int FRAMES_PER_PHASE = 60;
@@ -39,13 +39,13 @@ public class PhoenixGhost extends Ghost {
 
     protected Image getCurrentSprite() {
         if (state == State.EGG)
-            return eggSprites[FRAMES_PER_PHASE];
+            return eggSprites[eggFrameCounter / FRAMES_PER_PHASE];
         return super.getCurrentSprite();
     }
 
-    protected boolean chooseTarget(Maze maze) {
+    protected boolean chooseTarget(Maze maze, Player player) {
         if (state == State.EGG)
             return true;
-        return super.chooseTarget(maze);
+        return super.chooseTarget(maze, player);
     }
 }
