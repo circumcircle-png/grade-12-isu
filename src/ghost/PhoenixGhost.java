@@ -23,13 +23,12 @@ public class PhoenixGhost extends Ghost {
         catch (IOException e) {
             System.exit(0);
         }
-
-        // to test dead
-        state = State.EGG;
     }
 
     public void nextFrame(Maze maze) {
         super.nextFrame(maze);
+
+        // TODO: bug when in egg and scared
         if (state == State.EGG) {
             eggFrameCounter++; 
             if (eggFrameCounter == FRAMES_PER_PHASE * 3)

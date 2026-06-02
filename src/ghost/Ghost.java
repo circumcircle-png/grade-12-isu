@@ -10,7 +10,7 @@ import src.*;
 public abstract class Ghost extends Movable {
     private final static int FRAMES_SCARED = 60 * 3;
     private final static double NORMAL_SPEED = 1;
-    private final static double SCARED_SPEED = 0.5;
+    private final static double SCARED_SPEED = 0.2;
 
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
@@ -59,6 +59,7 @@ public abstract class Ghost extends Movable {
     }
 
     public void setScared() {
+        System.out.println("SET SCARED");
         state = State.SCARED;
         scaredFrameTimer = FRAMES_SCARED;
     }
@@ -104,9 +105,11 @@ public abstract class Ghost extends Movable {
     // returning true means target is chosen, false means we choose not to select a target to break
     // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
     protected boolean chooseTarget(Maze maze, Player player) {
+        int[] target = player.getCurrentPosition();
+        int playerR = target[0];
+        int playerC = target[1];
         if (state == State.NORMAL) {
-            int[] target = player.getCurrentPosition();
-            Direction direction = maze.shortestPath[previousR][previousC][target[0]][target[1]];
+            Direction direction = maze.shortestPath[previousR][previousC][playerR][playerC];
             if (direction == Direction.UP) targetR--;
             else if (direction == Direction.DOWN) targetR++;
             else if (direction == Direction.LEFT) targetC--;
@@ -114,13 +117,17 @@ public abstract class Ghost extends Movable {
             else if (direction == Direction.STILL) return false;
         }
         else if (state == State.SCARED) {
-            // TODO: replace this with moving away from the player
-            Direction direction = maze.shortestPath[previousR][previousC][24][2];
-            if (direction == Direction.UP) targetR--;
-            else if (direction == Direction.DOWN) targetR++;
-            else if (direction == Direction.LEFT) targetC--;
-            else if (direction == Direction.RIGHT) targetC++;
-            else if (direction == Direction.STILL) return false;
+            // moves away from player based on position
+            if (targetR < playerR && maze.isAccessible(targetR-1, targetC))
+                targetR--;
+            else if (playerR < targetR && maze.isAccessible(targetR+1, targetC))
+                targetR++;
+            else if (targetC < playerC && maze.isAccessible(targetR, targetC-1))
+                targetC--;
+            else if (playerC < targetC && maze.isAccessible(targetR, targetC+1))
+                targetC++;
+            else
+                return false;
         }
         return true;
     }
