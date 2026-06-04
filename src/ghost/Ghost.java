@@ -19,8 +19,6 @@ public abstract class Ghost extends Movable {
     protected enum State {
         NORMAL, // normal chasing
         SCARED, // scared, running away from player
-        GOING_THROUGH_WALL,
-        ABOUT_TO_TELEPORT, 
     }
     protected State state;
 
