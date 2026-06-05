@@ -13,7 +13,7 @@ import src.*;
 public class Player extends Movable implements KeyListener{
     protected enum State {
         NORMAL, // normal chasing
-        SCARED, // scared, running away from player
+        SCARY, // scary, run away from player
     }
 
     protected State state;
