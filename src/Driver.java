@@ -57,7 +57,7 @@ public class Driver extends JPanel implements Runnable {
 
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
-
+            addKeyListener(player);
             ghosts.get(3).setScared();
         } catch (Exception e) {
             e.printStackTrace();
