@@ -2,6 +2,7 @@ package src.ghost;
 
 import java.awt.*;
 import java.io.*;
+import java.util.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
@@ -22,6 +23,8 @@ public abstract class Ghost extends Movable {
     }
     protected State state;
 
+    protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
+
     public Ghost(String name, int startR, int startC) {
         super(startR, startC);
         DEBUG = false;
@@ -34,6 +37,14 @@ public abstract class Ghost extends Movable {
                     Constants.DIRECTIONS[i],
                     new Image[] {sheet.getSubimage(0, 16*i, 16, 16), sheet.getSubimage(16, 16*i, 16, 16)}
                     // ghosts are always 16 by 16
+                );
+            }
+
+            BufferedImage scaredSheet = ImageIO.read(new File("images/ghost/scared " + name + ".png"));
+            for (int i = 0; i <= 3; i++) {
+                scaredDirectionalSprites.put(
+                    Constants.DIRECTIONS[i],
+                    new Image[] {scaredSheet.getSubimage(0, 16*i, 16, 16), scaredSheet.getSubimage(16, 16*i, 16, 16)}
                 );
             }
         }
@@ -53,6 +64,12 @@ public abstract class Ghost extends Movable {
             if (scaredFrameTimer == 0)
                 state = State.NORMAL;
         }
+    }
+
+    protected Map<Direction, Image[]> getDirectionalSpriteMap() {
+        if (state == State.SCARED)
+            return scaredDirectionalSprites;
+        return super.getDirectionalSpriteMap();
     }
 
     public void setScared() {

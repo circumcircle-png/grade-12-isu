@@ -44,6 +44,10 @@ public abstract class Movable {
     }
 
     protected Image getCurrentSprite() {
-        return directionalSprites.get(facing)[drawingFrameCounter / FRAMES_PER_DRAWING];
+        return getDirectionalSpriteMap().get(facing)[drawingFrameCounter / FRAMES_PER_DRAWING];
+    }
+
+    protected Map<Direction, Image[]> getDirectionalSpriteMap() {
+        return directionalSprites;
     }
 }

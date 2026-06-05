@@ -15,7 +15,7 @@ public class Maze {
     public int numRows, numColumns;
 
     // turning on DEBUG adds gridlines of 8x8 pixels
-    private final boolean DEBUG = false;
+    private final boolean DEBUG = true;
 
     public Maze(String fileName) throws IOException {
         // read tileset

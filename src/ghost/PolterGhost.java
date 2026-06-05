@@ -8,6 +8,8 @@ public class PolterGhost extends Ghost {
     }
 
     protected boolean chooseTarget(Maze maze, Player player) {
+        if (state == State.SCARED)
+            return super.chooseTarget(maze, player);
         int playerR = player.getCurrentPosition()[0];
         int playerC = player.getCurrentPosition()[1];
         int DELTA_R = 0;
