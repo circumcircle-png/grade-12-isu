@@ -98,19 +98,20 @@ public class Player extends Movable implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
         int input = e.getKeyCode();
-        if(input == KeyEvent.VK_W){
+        if(input == KeyEvent.VK_W||input==KeyEvent.VK_UP){
             facing = Direction.UP;
             //targetR -=1;
         }
-        if(input == KeyEvent.VK_A){
+        
+        if(input == KeyEvent.VK_A||input==KeyEvent.VK_LEFT){
             facing = Direction.LEFT;
             //targetC -= 1;
         }
-        if(input == KeyEvent.VK_D){
+        if(input == KeyEvent.VK_D||input==KeyEvent.VK_RIGHT){
             facing = Direction.RIGHT;
             //targetC += 1;
         }
-        if(input == KeyEvent.VK_S){
+        if(input == KeyEvent.VK_S||input==KeyEvent.VK_DOWN){
             facing = Direction.DOWN;
             //targetR += 1;
         }
