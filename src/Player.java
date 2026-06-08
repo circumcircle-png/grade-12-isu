@@ -39,18 +39,50 @@ public class Player extends Movable implements KeyListener{
 
 
     public void updatePosition(Maze maze) {
-        // System.out.println(facing + " " + targetR + " " + targetC);
         if(nextFacing != facing){
             if(nextFacing == Direction.UP && maze.isAccessible(targetR-1, targetC)){
+                if(facing == Direction.DOWN){
+                    int tempC = previousC;
+                    int tempR = previousR;
+                    previousC = targetC;
+                    previousR= targetR;
+                    targetC = tempC;
+                    targetR = tempR;
+                    
+                }
                 facing = nextFacing;
             }
             else if(nextFacing == Direction.LEFT && maze.isAccessible(targetR, targetC-1)){
+                if(facing == Direction.RIGHT){
+                    int tempC = previousC;
+                    int tempR = previousR;
+                    previousC = targetC;
+                    previousR= targetR;
+                    targetC = tempC;
+                    targetR = tempR;
+                }
                 facing = nextFacing;
             }
             else if(nextFacing == Direction.RIGHT && maze.isAccessible(targetR, targetC+1)){
+                if(facing == Direction.LEFT){
+                    int tempC = previousC;
+                    int tempR = previousR;
+                    previousC = targetC;
+                    previousR= targetR;
+                    targetC = tempC;
+                    targetR = tempR;
+                }
                 facing = nextFacing;
             }
             else if(nextFacing == Direction.DOWN && maze.isAccessible(targetR+1, targetC)){
+                if(facing == Direction.UP){
+                    int tempC = previousC;
+                    int tempR = previousR;
+                    previousC = targetC;
+                    previousR= targetR;
+                    targetC = tempC;
+                    targetR = tempR;
+                }
                 facing = nextFacing;
             }
         }
@@ -58,7 +90,6 @@ public class Player extends Movable implements KeyListener{
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
             double oldY = y;
-
             if (previousC < targetC) {
                 x = Math.min(x+remainingDistanceToTravel, 8*targetC);
                // facing = Direction.RIGHT;
