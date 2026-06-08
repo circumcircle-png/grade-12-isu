@@ -4,6 +4,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import javax.imageio.ImageIO;
 
 import src.ghost.*;
 
@@ -17,8 +18,14 @@ public class Driver extends JPanel implements Runnable {
     private Maze maze;
     private ArrayList<Ghost> ghosts = new ArrayList<>();
 
-    public Driver() {
+    private enum Screen {
+        MAIN_MENU,
+        GAME,
+    }
+    private Screen currentScreen = Screen.MAIN_MENU;
+    private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
+    public Driver() {
         setPreferredSize(new Dimension(600, 600));
         setVisible(true);
 
@@ -42,6 +49,8 @@ public class Driver extends JPanel implements Runnable {
 
     public void initialize() {
         try {
+            screens.put(Screen.MAIN_MENU, ImageIO.read(new File("images/screen/main-menu.png")));
+
             maze = new Maze("maze.txt");
             player = new Player(24, 2);
 
@@ -57,7 +66,7 @@ public class Driver extends JPanel implements Runnable {
 
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
-            addKeyListener(player);
+            // addKeyListener(player);
             ghosts.get(3).setScared();
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,18 +82,36 @@ public class Driver extends JPanel implements Runnable {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
-        // scale up
+
         Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        double scale = 2;
-        g2.scale(scale, scale);
+        
+        if (currentScreen == Screen.MAIN_MENU) {
+            g2.drawImage(screens.get(Screen.MAIN_MENU), 0, 0, null);
 
-        maze.draw(g2);
+            // scale up
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            double scale = 2;
+            g2.scale(scale, scale);
 
-        // draw ghosts
-        for (Ghost ghost: ghosts) {
-            ghost.draw(g2);
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
+            maze.draw(g2);
+            g2.setComposite(AlphaComposite.SrcOver);
+        }
+        else if (currentScreen == Screen.GAME) {
+            // scale up
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            double scale = 2;
+            g2.scale(scale, scale);
+
+            maze.draw(g2);
+
+            // draw ghosts
+            for (Ghost ghost: ghosts) {
+                ghost.draw(g2);
+            }
+
+            // draw player
+            player.draw(g2);
         }
     }
 

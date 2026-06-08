@@ -23,7 +23,7 @@ public class Player extends Movable implements KeyListener{
         state = State.NORMAL;
 
         try {
-            BufferedImage sheet = ImageIO.read(new File("images/pacman.png"));
+            BufferedImage sheet = ImageIO.read(new File("images/pacman/pacman.png"));
             for (int i = 0; i <= 3; i++) {
                 directionalSprites.put(
                     Constants.DIRECTIONS[i],
