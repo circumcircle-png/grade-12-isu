@@ -10,12 +10,12 @@ import src.*;
 
 public abstract class Ghost extends Movable {
     private final static int FRAMES_SCARED = 5 * Constants.FPS;
-    private final static double NORMAL_SPEED = (double) 60 / Constants.FPS;
+    private final static double NORMAL_SPEED = (double) 45 / Constants.FPS;
     private final static double SCARED_SPEED = (double) 12 / Constants.FPS;
 
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
-    private int scaredFrameTimer = 0;
+    public int scaredFrameTimer = 0;
 
     protected enum State {
         NORMAL, // normal chasing

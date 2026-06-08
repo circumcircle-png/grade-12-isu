@@ -11,7 +11,7 @@ public class BullGhost extends Ghost {
     }
 
     public void nextFrame(Maze maze, Player player) {
-        super.nextFrame(maze);
+        super.nextFrame(maze, player);
 
         Direction first = Direction.STILL;
         if (targetR < previousR) first = Direction.UP;
@@ -24,7 +24,6 @@ public class BullGhost extends Ghost {
 
         Direction second = maze.shortestPath[targetR][targetC][playerR][playerC];
 
-        System.out.println(first + " " + second);
         if (first == Direction.STILL || second == Direction.STILL)
             speed = STRAIGHT_SPEED;
         else if (first == second)

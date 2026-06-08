@@ -57,9 +57,6 @@ public class Driver extends JPanel implements Runnable{
             // ghosts.add(new SlowGhost(21, 22));
             ghosts.add(new BullGhost(22, 22));
             ghosts.add(new TeleportGhost(23, 22));
-            ghosts.add(new TeleportGhost(23, 22));
-            ghosts.add(new TeleportGhost(23, 22));
-            ghosts.add(new TeleportGhost(23, 22));
             ghosts.add(new PolterGhost(24, 22));
             ghosts.add(new PhoenixGhost(25, 22));
             addKeyListener(player);

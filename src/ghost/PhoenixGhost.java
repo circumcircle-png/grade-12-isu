@@ -30,7 +30,7 @@ public class PhoenixGhost extends Ghost {
     }
 
     public void nextFrame(Maze maze, Player player) {
-        super.nextFrame(maze);
+        super.nextFrame(maze, player);
 
         if (isEgg) {
             eggFrameCounter++; 
