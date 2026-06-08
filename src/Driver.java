@@ -76,7 +76,7 @@ public class Driver extends JPanel implements Runnable{
         player.nextFrame(maze);
         player.updatePosition(maze);
          for (Ghost ghost: ghosts) {
-            ghost.nextFrame(maze);
+            ghost.nextFrame(maze, player);
             ghost.updatePosition(maze, player);
          }
     }

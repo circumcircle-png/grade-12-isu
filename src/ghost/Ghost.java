@@ -54,7 +54,7 @@ public abstract class Ghost extends Movable {
         }
     }
 
-    public void nextFrame(Maze maze) {
+    public void nextFrame(Maze maze, Player player) {
         super.nextFrame(maze);
         scaredFrameTimer = Math.max(scaredFrameTimer - 1, 0);
         if (state == State.NORMAL)

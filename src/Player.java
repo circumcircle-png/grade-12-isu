@@ -39,7 +39,7 @@ public class Player extends Movable implements KeyListener{
 
 
     public void updatePosition(Maze maze) {
-        System.out.println(facing + " " + targetR + " " + targetC);
+        // System.out.println(facing + " " + targetR + " " + targetC);
         if(nextFacing != facing){
             if(nextFacing == Direction.UP && maze.isAccessible(targetR-1, targetC)){
                 facing = nextFacing;
