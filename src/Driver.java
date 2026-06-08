@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import src.ghost.*;
 
 @SuppressWarnings("serial")
-public class Driver extends JPanel implements Runnable {
+public class Driver extends JPanel implements Runnable{
     // TODO: Jonathan, I think pickups can be implemented directly on the Maze class, if you decide to do so, make sure you update the Maze.isAccessible function
 
     private Thread thread;
@@ -22,15 +22,15 @@ public class Driver extends JPanel implements Runnable {
         MAIN_MENU,
         GAME,
     }
-    private Screen currentScreen = Screen.MAIN_MENU;
+    private Screen currentScreen = Screen.GAME;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
     public Driver() {
         setPreferredSize(new Dimension(600, 600));
-        setVisible(true);
-
+        setVisible(true);    
         thread = new Thread(this);
         thread.start();
+
     }
 
     public void run() {
@@ -53,7 +53,6 @@ public class Driver extends JPanel implements Runnable {
 
             maze = new Maze("maze.txt");
             player = new Player(24, 2);
-
             // ghosts.add(new FearlessGhost(20, 22));
             // ghosts.add(new SlowGhost(21, 22));
             ghosts.add(new BullGhost(22, 22));
@@ -63,10 +62,10 @@ public class Driver extends JPanel implements Runnable {
             ghosts.add(new TeleportGhost(23, 22));
             ghosts.add(new PolterGhost(24, 22));
             ghosts.add(new PhoenixGhost(25, 22));
-
+            addKeyListener(player);
+            setFocusable(true);
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
-            // addKeyListener(player);
             ghosts.get(3).setScared();
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,10 +73,12 @@ public class Driver extends JPanel implements Runnable {
     }
 
     public void update() {
-        for (Ghost ghost: ghosts) {
+        player.nextFrame(maze);
+        player.updatePosition(maze);
+         for (Ghost ghost: ghosts) {
             ghost.nextFrame(maze);
             ghost.updatePosition(maze, player);
-        }
+         }
     }
 
     public void paintComponent(Graphics g) {

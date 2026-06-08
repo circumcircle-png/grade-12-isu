@@ -35,30 +35,12 @@ public class Player extends Movable implements KeyListener{
             // no mercy
             System.exit(0);
         }
-        // TODO: Jonathan, write code
-        // no
     }
 
 
     public void updatePosition(Maze maze) {
-        // TODO: Jonathan, look at Ghost.updatePosition for inspiration
+        System.out.println(facing + " " + targetR + " " + targetC);
         double remainingDistanceToTravel = speed;
-        if(facing == Direction.UP){
-            targetR -= 1;
-        }
-        if(facing == Direction.LEFT){
-            targetC -= 1;
-        }
-        if(facing == Direction.RIGHT){
-            targetC +=1;
-        }
-        if(facing == Direction.DOWN){
-            targetR += 1;
-        }
-        if(!maze.isAccessible(targetR, targetC)){
-            targetC = previousC;
-            targetR = previousR;
-        }
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
             double oldY = y;
@@ -81,6 +63,27 @@ public class Player extends Movable implements KeyListener{
             }
 
             remainingDistanceToTravel -= Math.abs(oldX - x) + Math.abs(oldY - y);
+
+            // change target
+            if (MathUtils.nearlyEqual(x, 8*targetC) && MathUtils.nearlyEqual(y, 8*targetR)) {
+                previousR = targetR;
+                previousC = targetC;
+                if(facing == Direction.UP && maze.isAccessible(targetR-1, targetC)){
+                    targetR -= 1;
+                }
+                else if(facing == Direction.LEFT && maze.isAccessible(targetR, targetC-1)){
+                    targetC -= 1;
+                }
+                else if(facing == Direction.RIGHT && maze.isAccessible(targetR, targetC+1)){
+                    targetC +=1;
+                }
+                else if(facing == Direction.DOWN && maze.isAccessible(targetR+1, targetC)){
+                    targetR += 1;
+                }
+                else {
+                    break;
+                }
+            }
         }
     }
     public int[] getCurrentPosition() {
@@ -89,8 +92,7 @@ public class Player extends Movable implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
+        //throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
     }
 
     @Override
@@ -98,15 +100,19 @@ public class Player extends Movable implements KeyListener{
         int input = e.getKeyCode();
         if(input == KeyEvent.VK_W){
             facing = Direction.UP;
+            //targetR -=1;
         }
         if(input == KeyEvent.VK_A){
             facing = Direction.LEFT;
-        }
-        if(input == KeyEvent.VK_S){
-            facing = Direction.RIGHT;
+            //targetC -= 1;
         }
         if(input == KeyEvent.VK_D){
+            facing = Direction.RIGHT;
+            //targetC += 1;
+        }
+        if(input == KeyEvent.VK_S){
             facing = Direction.DOWN;
+            //targetR += 1;
         }
 
         
@@ -114,7 +120,6 @@ public class Player extends Movable implements KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'keyReleased'");
+        //throw new UnsupportedOperationException("Unimplemented method 'keyReleased'");
     }
 }
