@@ -15,9 +15,9 @@ public class PolterGhost extends Ghost {
         int DELTA_R = 0;
         int DELTA_C = 0;
         if (targetR < playerR)
-            DELTA_R = -1;
-        else if (playerR < targetR)
             DELTA_R = 1;
+        else if (playerR < targetR)
+            DELTA_R = -1;
         else if (targetC < playerC)
             DELTA_C = 1;
         else if (playerC < targetC)
