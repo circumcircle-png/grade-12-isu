@@ -15,8 +15,8 @@ public class Player extends Movable implements KeyListener{
         NORMAL, // normal chasing
         SCARY, // scary, run away from player
     }
-
     protected State state;
+    protected Direction nextFacing;
     public Player(int startR, int startC) {
         super(startR, startC);
         DEBUG = false;
@@ -40,6 +40,20 @@ public class Player extends Movable implements KeyListener{
 
     public void updatePosition(Maze maze) {
         System.out.println(facing + " " + targetR + " " + targetC);
+        if(nextFacing != facing){
+            if(nextFacing == Direction.UP && maze.isAccessible(targetR-1, targetC)){
+                facing = nextFacing;
+            }
+            else if(nextFacing == Direction.LEFT && maze.isAccessible(targetR, targetC-1)){
+                facing = nextFacing;
+            }
+            else if(nextFacing == Direction.RIGHT && maze.isAccessible(targetR, targetC+1)){
+                facing = nextFacing;
+            }
+            else if(nextFacing == Direction.DOWN && maze.isAccessible(targetR+1, targetC)){
+                facing = nextFacing;
+            }
+        }
         double remainingDistanceToTravel = speed;
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
@@ -99,20 +113,20 @@ public class Player extends Movable implements KeyListener{
     public void keyPressed(KeyEvent e) {
         int input = e.getKeyCode();
         if(input == KeyEvent.VK_W||input==KeyEvent.VK_UP){
-            facing = Direction.UP;
+            nextFacing = Direction.UP;
             //targetR -=1;
         }
         
         if(input == KeyEvent.VK_A||input==KeyEvent.VK_LEFT){
-            facing = Direction.LEFT;
+            nextFacing = Direction.LEFT;
             //targetC -= 1;
         }
         if(input == KeyEvent.VK_D||input==KeyEvent.VK_RIGHT){
-            facing = Direction.RIGHT;
+            nextFacing = Direction.RIGHT;
             //targetC += 1;
         }
         if(input == KeyEvent.VK_S||input==KeyEvent.VK_DOWN){
-            facing = Direction.DOWN;
+            nextFacing = Direction.DOWN;
             //targetR += 1;
         }
 
