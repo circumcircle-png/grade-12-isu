@@ -220,16 +220,22 @@ public class Maze {
     }
 
     public void draw(Graphics2D g) {
-        for (int r = 1; r < numRows-1; r++) {
-            for (int c = 1; c < numColumns-1; c++) {
-                String nameToDraw = getTileType(r, c);
-                if (nameToDraw.equals("UNKNOWN")) {
-                    g.setColor(Color.RED);
-                    g.fillRect(8*c, 8*r, 8*c+8, 8*r+8);
-                    continue;
+        for (int r = 0; r < numRows; r++) {
+            for (int c = 0; c < numColumns; c++) {
+                String nameToDraw = "";
+                if (r == 0 && c == 0 && r == numRows-1 && c == numColumns-1) {
+                    nameToDraw = "blank";
                 }
-                if (maze[r][c] == '2')
-                    nameToDraw += "2";
+                else {
+                    nameToDraw = getTileType(r, c);
+                    if (nameToDraw.equals("UNKNOWN")) {
+                        g.setColor(Color.RED);
+                        g.fillRect(8*c, 8*r, 8*c+8, 8*r+8);
+                        continue;
+                    }
+                    if (maze[r][c] == '2')
+                        nameToDraw += "2";
+                }
                 g.drawImage(tilesetComponents.get(nameToDraw), 8*c, 8*r, null);
             }
         }
