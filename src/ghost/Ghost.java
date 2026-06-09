@@ -24,12 +24,10 @@ public abstract class Ghost extends Movable {
     protected State state;
 
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
-
     public Ghost(String name, int startR, int startC) {
         super(startR, startC);
         DEBUG = false;
         state = State.NORMAL;
-
         try {
             BufferedImage sheet = ImageIO.read(new File("images/ghost/" + name + ".png"));
             for (int i = 0; i <= 3; i++) {
@@ -77,7 +75,22 @@ public abstract class Ghost extends Movable {
         scaredFrameTimer = FRAMES_SCARED;
     }
 
+    public boolean checkCollision(Player player){
+        int [] playerPos = player.getCurrentPosition();
+        int left = playerPos[1]*8-8;
+        int right = playerPos[1]*8+8;
+        int top = playerPos[0]*8-8;
+        int bottom = playerPos[0]*8+8;
+        int leftG = (int) x-8;
+        int rightG = (int)x+8;
+        int topG = (int)y-8;
+        int bottomG = (int)y+8;
+        if(((left<=rightG&&left>=leftG)||(right>=leftG&&right<=rightG))&&((top<=bottomG&&top>=topG)||(bottom>=topG&&bottom<=bottomG))){
+            return true;
+        }
+        return false;
 
+    }
     public void updatePosition(Maze maze, Player player) {
         double remainingDistanceToTravel = speed;
         
