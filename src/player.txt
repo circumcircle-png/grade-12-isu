@@ -37,30 +37,7 @@ public class Player extends Movable implements KeyListener{
         }
     }
 
-    public void nextFrame(Maze maze){
-        super.nextFrame(maze);
-        String tile = maze.getTileType(previousR, previousC);
-        if(tile.equals("dot")){
-            maze.remove(previousR,previousC);
-        }
-        if(tile.equals("bigDot")){
-            maze.remove(previousR, previousC);
-            state = State.SCARY;
-            try {
-                BufferedImage sheet = ImageIO.read(new File("images/pacman/scary pacman.png"));
-                for (int i = 0; i <= 3; i++) {
-                    directionalSprites.put(
-                        Constants.DIRECTIONS[i],
-                        new Image[] {sheet.getSubimage(0, 16*i, 16, 16), sheet.getSubimage(16, 16*i, 16, 16)}
-                    );
-                } 
-            }
-             catch (IOException e) {
-            // no mercy
-            System.exit(0);
-        }
-        }
-    }
+
     public void updatePosition(Maze maze) {
         if(nextFacing != facing){
             if(nextFacing == Direction.UP && maze.isAccessible(targetR-1, targetC)){

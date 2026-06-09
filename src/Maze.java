@@ -33,7 +33,9 @@ public class Maze {
         }
         toFile.close();
     }
-
+    public void remove(int i, int j){
+        maze[i][j]= 'a';
+    }
     public void generateShortestPathMatrix() {
         shortestPath = new Direction[numRows][numColumns][numRows][numColumns];
 
@@ -141,7 +143,7 @@ public class Maze {
         return maze[r][c] == '1' || maze[r][c] == '2' || maze[r][c] == '3' || maze[r][c] == '4';
     }
 
-    private String getTileType(int r, int c) {
+    public String getTileType(int r, int c) {
         if (maze[r][c] == '.')
             return "dot";
         if (maze[r][c] == '*')
