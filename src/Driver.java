@@ -3,15 +3,13 @@ package src;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import javax.imageio.ImageIO;
 
 import src.ghost.*;
 
-@SuppressWarnings("serial")
-public class Driver extends JPanel implements Runnable{
-    // TODO: Jonathan, I think pickups can be implemented directly on the Maze class, if you decide to do so, make sure you update the Maze.isAccessible function
-
+public class Driver extends JPanel implements Runnable, MouseListener {
     private Thread thread;
 
     private Player player;
@@ -22,15 +20,15 @@ public class Driver extends JPanel implements Runnable{
         MAIN_MENU,
         GAME,
     }
-    private Screen currentScreen = Screen.GAME;
+    private Screen currentScreen = Screen.MAIN_MENU;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
     public Driver() {
-        setPreferredSize(new Dimension(600, 600));
+        setPreferredSize(new Dimension(16 * 30, 16 * 33));
+        addMouseListener(this);
         setVisible(true);    
         thread = new Thread(this);
         thread.start();
-
     }
 
     public void run() {
@@ -63,22 +61,23 @@ public class Driver extends JPanel implements Runnable{
             setFocusable(true);
             maze.createTileSetComponent();
             maze.generateShortestPathMatrix();
-            ghosts.get(3).setScared();
         } catch (Exception e) {
             e.printStackTrace();
         };
     }
 
     public void update() {
-        player.nextFrame(maze);
-        player.updatePosition(maze);
-        boolean scare = player.getScary();
-         for (Ghost ghost: ghosts) {
-            if(scare&&ghost.scaredFrameTimer == 0)
-                ghost.setScared();
-            ghost.nextFrame(maze, player);
-            ghost.updatePosition(maze, player);
-         }
+        if (currentScreen == Screen.GAME) {
+            player.nextFrame(maze);
+            player.updatePosition(maze);
+            boolean scare = player.getScary();
+            for (Ghost ghost: ghosts) {
+                if(scare&&ghost.scaredFrameTimer == 0)
+                    ghost.setScared();
+                ghost.nextFrame(maze, player);
+                ghost.updatePosition(maze, player);
+            }
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -116,12 +115,39 @@ public class Driver extends JPanel implements Runnable{
         }
     }
 
+    private boolean rectangleClicked(MouseEvent e, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
+        return (topLeftX <= e.getX() && e.getX() <= bottomRightX && topLeftY <= e.getY() && e.getY() <= bottomRightY);
+    }
+
+    public void mousePressed(MouseEvent e) {
+        if (currentScreen == Screen.MAIN_MENU) {
+            if (rectangleClicked(e, 101, 155, 379, 272)) {
+                currentScreen = Screen.GAME;
+            }
+            else if (rectangleClicked(e, 101, 299, 379, 341)) {
+                // clicked leaderboard
+            }
+            else if (rectangleClicked(e, 101, 356, 379, 398)) {
+                // clicked settings
+            }
+            else if (rectangleClicked(e, 15, 456, 174, 498)) {
+                // clicked help
+            }
+            else if (rectangleClicked(e, 305, 456, 464, 498)) {
+                // clicked credit
+            }
+        }
+    }
+    public void mouseClicked(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {}
+
     public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame("Pac-Man");
         JPanel panel = new Driver();
         frame.add(panel);
         // frame.addKeyListener(panel);
-        // frame.addMouseListener(panel);
         frame.setVisible(true);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
