@@ -202,4 +202,9 @@ public class Player extends Movable implements KeyListener{
     public void keyReleased(KeyEvent e) {
         //throw new UnsupportedOperationException("Unimplemented method 'keyReleased'");
     }
+    public boolean getScary(){
+        if(state == State.SCARY)
+            return true;
+        return false;
+    }
 }
