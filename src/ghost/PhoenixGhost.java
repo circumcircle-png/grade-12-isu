@@ -33,10 +33,13 @@ public class PhoenixGhost extends Ghost {
         super.nextFrame(maze, player);
 
         if (isEgg) {
+            speed = 0;
             eggFrameCounter++; 
-            if (eggFrameCounter == FRAMES_PER_PHASE * 3)
+            if (eggFrameCounter == FRAMES_PER_PHASE * 3) {
                 isEgg = false;
-        }
+                eggFrameCounter = 0;
+            }
+        } 
     }
 
     protected Image getCurrentSprite() {
@@ -49,5 +52,9 @@ public class PhoenixGhost extends Ghost {
         if (isEgg)
             return false;
         return super.chooseTarget(maze, player);
+    }
+
+    public void die() {
+        isEgg = true;
     }
 }

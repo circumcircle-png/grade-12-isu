@@ -22,11 +22,13 @@ public abstract class Ghost extends Movable {
         SCARED, // scared, running away from player
     }
     protected State state;
+    protected String name;
 
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
     public Ghost(String name, int startR, int startC) {
         super(startR, startC);
         DEBUG = true;
+        this.name = name;
         state = State.NORMAL;
         try {
             BufferedImage sheet = ImageIO.read(new File("images/ghost/" + name + ".png"));
@@ -50,6 +52,10 @@ public abstract class Ghost extends Movable {
             // no mercy
             System.exit(0);
         }
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void nextFrame(Maze maze, Player player) {
