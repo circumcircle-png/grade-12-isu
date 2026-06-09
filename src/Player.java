@@ -4,11 +4,14 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import src.*;
+import src.ghost.Ghost;
 
 public class Player extends Movable implements KeyListener{
     protected enum State {
@@ -17,6 +20,9 @@ public class Player extends Movable implements KeyListener{
     }
     protected State state;
     protected Direction nextFacing;
+    private final static int FRAMES_SCARY = 5* Constants.FPS;
+    public int scaryFrameTimer = 0;
+    protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
     public Player(int startR, int startC) {
         super(startR, startC);
         DEBUG = false;
@@ -30,6 +36,13 @@ public class Player extends Movable implements KeyListener{
                     new Image[] {sheet.getSubimage(0, 16*i, 16, 16), sheet.getSubimage(16, 16*i, 16, 16)}
                 );
             }
+         BufferedImage scarySheet = ImageIO.read(new File("images/pacman/scary pacman.png"));
+            for (int i = 0; i <= 3; i++) {
+                scaryDirectionalSprites.put(
+                    Constants.DIRECTIONS[i],
+                    new Image[] {scarySheet.getSubimage(0, 16*i, 16, 16), scarySheet.getSubimage(16, 16*i, 16, 16)}
+                );
+            }
         }
         catch (IOException e) {
             // no mercy
@@ -39,6 +52,7 @@ public class Player extends Movable implements KeyListener{
 
     public void nextFrame(Maze maze){
         super.nextFrame(maze);
+        scaryFrameTimer = Math.max(scaryFrameTimer - 1, 0);
         String tile = maze.getTileType(previousR, previousC);
         if(tile.equals("dot")){
             maze.remove(previousR,previousC);
@@ -46,20 +60,17 @@ public class Player extends Movable implements KeyListener{
         if(tile.equals("bigDot")){
             maze.remove(previousR, previousC);
             state = State.SCARY;
-            try {
-                BufferedImage sheet = ImageIO.read(new File("images/pacman/scary pacman.png"));
-                for (int i = 0; i <= 3; i++) {
-                    directionalSprites.put(
-                        Constants.DIRECTIONS[i],
-                        new Image[] {sheet.getSubimage(0, 16*i, 16, 16), sheet.getSubimage(16, 16*i, 16, 16)}
-                    );
-                } 
-            }
-             catch (IOException e) {
-            // no mercy
-            System.exit(0);
+            scaryFrameTimer = FRAMES_SCARY;
         }
+        if(scaryFrameTimer == 0){
+            state = State.NORMAL;
+            
         }
+    }
+    protected Map<Direction, Image[]> getDirectionalSpriteMap() {
+        if (state == State.SCARY)
+            return scaryDirectionalSprites;
+        return super.getDirectionalSpriteMap();
     }
     public void updatePosition(Maze maze) {
         if(nextFacing != facing){
