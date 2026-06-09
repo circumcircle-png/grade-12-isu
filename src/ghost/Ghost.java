@@ -26,7 +26,7 @@ public abstract class Ghost extends Movable {
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
     public Ghost(String name, int startR, int startC) {
         super(startR, startC);
-        DEBUG = false;
+        DEBUG = true;
         state = State.NORMAL;
         try {
             BufferedImage sheet = ImageIO.read(new File("images/ghost/" + name + ".png"));
@@ -77,14 +77,14 @@ public abstract class Ghost extends Movable {
 
     public boolean checkCollision(Player player){
         int [] playerPos = player.getCurrentPosition();
-        int left = playerPos[1]*8-8;
-        int right = playerPos[1]*8+8;
-        int top = playerPos[0]*8-8;
-        int bottom = playerPos[0]*8+8;
-        int leftG = (int) x-8;
-        int rightG = (int)x+8;
-        int topG = (int)y-8;
-        int bottomG = (int)y+8;
+        int left = playerPos[1]*8-2;
+        int right = playerPos[1]*8+10;
+        int top = playerPos[0]*8-2;
+        int bottom = playerPos[0]*8+10;
+        int leftG = (int) x-2;
+        int rightG = (int)x+10;
+        int topG = (int)y-2;
+        int bottomG = (int)y+10;
         if(((left<=rightG&&left>=leftG)||(right>=leftG&&right<=rightG))&&((top<=bottomG&&top>=topG)||(bottom>=topG&&bottom<=bottomG))){
             return true;
         }

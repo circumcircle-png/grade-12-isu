@@ -4,7 +4,7 @@ import java.util.*;
 import java.awt.*;
 
 public abstract class Movable {
-    protected boolean DEBUG = false;
+    protected boolean DEBUG = true;
     private final static int FRAMES_PER_DRAWING = Constants.FPS / 12;
 
     protected double x, y; // these represent top left coordinates of ghost

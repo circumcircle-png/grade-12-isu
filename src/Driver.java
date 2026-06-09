@@ -71,14 +71,17 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             player.nextFrame(maze);
             player.updatePosition(maze);
             boolean scare = player.getScary();
-            int i = 0;
-            for (Ghost ghost: ghosts) {
-
+            for (int i = ghosts.size()-1; i>=0;i--) {
+                Ghost ghost = ghosts.get(i);
                 if(scare&&ghost.scaredFrameTimer == 0)
                     ghost.setScared();
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
+                if(scare&&ghost.checkCollision(player)){
+                    ghosts.remove(i);
+                }
             }
+            
         }
     }
 

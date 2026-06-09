@@ -25,7 +25,7 @@ public class Player extends Movable implements KeyListener{
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
     public Player(int startR, int startC) {
         super(startR, startC);
-        DEBUG = false;
+        DEBUG = true;
         state = State.NORMAL;
 
         try {
