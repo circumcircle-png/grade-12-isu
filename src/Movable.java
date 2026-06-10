@@ -12,7 +12,6 @@ public abstract class Movable {
     public enum State {
         NORMAL,
         SCARY,
-        INVINCIBLE,
         EGG,
         BULL_STRAIGHT,
         BULL_TURN,
