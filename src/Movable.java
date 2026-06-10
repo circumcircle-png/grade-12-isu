@@ -7,10 +7,20 @@ public abstract class Movable {
     protected boolean DEBUG = false;
     private final static int FRAMES_PER_DRAWING = Constants.FPS / 12;
 
+    public enum State {
+        NORMAL,
+        SCARY,
+        INVINCIBLE,
+        EGG,
+        BULL_STRAIGHT,
+        BULL_TURN,
+    }
+    public State state;
+    protected Map<State, Integer> speeds = new HashMap<>();
+
     public double x, y; // these represent top left coordinates of ghost
     protected int previousR, previousC; // these store the coordinate of cell the ghost left
     protected int targetR, targetC; // these store the coordinates of the cell it is going towards
-    protected double speed = (double) 60 / Constants.FPS;
 
     protected final Map<Direction, Image[]> directionalSprites = new HashMap<>();
     protected Direction facing = Direction.DOWN;
@@ -21,7 +31,10 @@ public abstract class Movable {
         y = 8*startR;
         previousR = targetR = startR;
         previousC = targetC = startC;
+        initSpeeds();
     }
+
+    public abstract void initSpeeds();
 
     // this function is run every frame
     public void nextFrame(Maze maze) {

@@ -17,13 +17,6 @@ public class Player extends Movable implements KeyListener {
     private final static int FRAMES_SCARY = 5 * Constants.FPS;
     private final static int FRAMES_INVICIBLE = 3 * Constants.FPS;
 
-    protected enum State {
-        NORMAL, // normal chasing
-        SCARY, // scary, run away from player
-        INVINCIBLE,// invincibility frames
-    }
-
-    protected State state;
     protected Direction nextFacing;
     public int scaryFrameTimer = 0;
     private int invicibleTimer = 0;
@@ -53,6 +46,11 @@ public class Player extends Movable implements KeyListener {
             // no mercy
             System.exit(0);
         }
+    }
+
+    public void initSpeeds() {
+        speeds.put(State.NORMAL, 80);
+        speeds.put(State.SCARY, 80);
     }
 
     public void nextFrame(Maze maze) {
@@ -124,7 +122,7 @@ public class Player extends Movable implements KeyListener {
                 facing = nextFacing;
             }
         }
-        double remainingDistanceToTravel = speed;
+        double remainingDistanceToTravel = (double) speeds.get(state) / 60;
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
             double oldY = y;
@@ -170,7 +168,6 @@ public class Player extends Movable implements KeyListener {
             heartCount--;
             System.out.println(heartCount);
             invicibleTimer = FRAMES_INVICIBLE;
-
         }
     }
 

@@ -10,21 +10,14 @@ import src.*;
 
 public abstract class Ghost extends Movable {
     private final static int FRAMES_SCARED = 5 * Constants.FPS;
-    private final static double NORMAL_SPEED = (double) 45 / Constants.FPS;
-    private final static double SCARED_SPEED = (double) 12 / Constants.FPS;
 
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
-    public int scaredFrameTimer = 0;
-
-    protected enum State {
-        NORMAL, // normal chasing
-        SCARED, // scared, running away from player
-    }
     protected State state;
     protected String name;
 
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
+
     public Ghost(String name, int startR, int startC) {
         super(startR, startC);
         DEBUG = true;
@@ -54,31 +47,27 @@ public abstract class Ghost extends Movable {
         }
     }
 
+    public void initSpeeds() {
+        speeds.put(State.NORMAL, 70);
+        speeds.put(State.SCARY, 40);
+    }
+
     public String getName() {
         return name;
     }
 
     public void nextFrame(Maze maze, Player player) {
         super.nextFrame(maze);
-        scaredFrameTimer = Math.max(scaredFrameTimer - 1, 0);
-        if (state == State.NORMAL)
-            speed = NORMAL_SPEED;
-        else if (state == State.SCARED) {
-            speed = SCARED_SPEED;
-            if (scaredFrameTimer == 0)
-                state = State.NORMAL;
-        }
+        if (player.state == State.SCARY)
+            state = State.SCARY;
+        else
+            state = State.NORMAL;
     }
 
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
-        if (state == State.SCARED)
+        if (state == State.SCARY)
             return scaredDirectionalSprites;
         return super.getDirectionalSpriteMap();
-    }
-
-    public void setScared() {
-        state = State.SCARED;
-        scaredFrameTimer = FRAMES_SCARED;
     }
 
     public boolean checkCollision(Player player){
@@ -97,7 +86,7 @@ public abstract class Ghost extends Movable {
 
     }
     public void updatePosition(Maze maze, Player player) {
-        double remainingDistanceToTravel = speed;
+        double remainingDistanceToTravel = (double) speeds.get(state) / 60;
         
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
@@ -132,34 +121,49 @@ public abstract class Ghost extends Movable {
         }
     }
 
-    // this function can be overrided by ghost subclasses
-    // returning true means target is chosen, false means we choose not to select a target to break
-    // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
-    protected boolean chooseTarget(Maze maze, Player player) {
+    protected boolean chooseTargetWhenNormal(Maze maze, Player player) {
         int[] target = player.getCurrentPosition();
         int playerR = target[0];
         int playerC = target[1];
-        if (state == State.NORMAL) {
-            Direction direction = maze.shortestPath[previousR][previousC][playerR][playerC];
-            if (direction == Direction.UP) targetR--;
-            else if (direction == Direction.DOWN) targetR++;
-            else if (direction == Direction.LEFT) targetC--;
-            else if (direction == Direction.RIGHT) targetC++;
-            else if (direction == Direction.STILL) return false;
-        }
-        else if (state == State.SCARED) {
-            // moves away from player based on position
-            if (targetR < playerR && maze.isAccessible(targetR-1, targetC))
-                targetR--;
-            else if (playerR < targetR && maze.isAccessible(targetR+1, targetC))
-                targetR++;
-            else if (targetC < playerC && maze.isAccessible(targetR, targetC-1))
-                targetC--;
-            else if (playerC < targetC && maze.isAccessible(targetR, targetC+1))
-                targetC++;
-            else
-                return false;
-        }
+
+        Direction direction = maze.shortestPath[previousR][previousC][playerR][playerC];
+        if (direction == Direction.UP) targetR--;
+        else if (direction == Direction.DOWN) targetR++;
+        else if (direction == Direction.LEFT) targetC--;
+        else if (direction == Direction.RIGHT) targetC++;
+        else if (direction == Direction.STILL) return false;
+
         return true;
+    }
+
+    protected boolean chooseTargetWhenScary(Maze maze, Player player) {
+        int[] target = player.getCurrentPosition();
+        int playerR = target[0];
+        int playerC = target[1];
+
+        // moves away from player based on position
+        if (targetR < playerR && maze.isAccessible(targetR-1, targetC))
+            targetR--;
+        else if (playerR < targetR && maze.isAccessible(targetR+1, targetC))
+            targetR++;
+        else if (targetC < playerC && maze.isAccessible(targetR, targetC-1))
+            targetC--;
+        else if (playerC < targetC && maze.isAccessible(targetR, targetC+1))
+            targetC++;
+        else
+            return false;
+
+        return true;
+    }
+
+    // this function can be overrided by ghost subclasses
+    // returning true means target is chosen, false means we choose not to select a target to break
+    // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
+    protected boolean chooseTarget(Maze maze, Player player) throws UnsupportedOperationException {
+        if (state == State.NORMAL)
+            return chooseTargetWhenNormal(maze, player);
+        else if (state == State.SCARY)
+            return chooseTargetWhenScary(maze, player);
+        throw new UnsupportedOperationException("Ghost sublcass forgot to override a state.");
     }
 }

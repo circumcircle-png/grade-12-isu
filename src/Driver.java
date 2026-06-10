@@ -21,7 +21,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         GAME,
         GAME_OVER,
     }
-    private Screen currentScreen = Screen.MAIN_MENU;
+    private Screen currentScreen = Screen.GAME;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
     public Driver() {
@@ -72,29 +72,27 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         if (currentScreen == Screen.GAME) {
             player.nextFrame(maze);
             player.updatePosition(maze);
-            boolean scare = player.getScary();
-            for (int i = ghosts.size()-1; i>=0;i--) {
+            for (int i = ghosts.size()-1; i >= 0; i--) {
                 Ghost ghost = ghosts.get(i);
-                if(scare&&ghost.scaredFrameTimer == 0)
-                    ghost.setScared();
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
-                if(scare&&ghost.checkCollision(player)){
-                    if (ghost.getName().equals("phoenix")) {
-                        PhoenixGhost phoenix = (PhoenixGhost) ghost;
-                        phoenix.die();
+                if (ghost.checkCollision(player)) {
+                    if (player.getScary()) {
+                        if (ghost.getName().equals("phoenix")) {
+                            PhoenixGhost phoenix = (PhoenixGhost) ghost;
+                            phoenix.die();
+                        }
+                        else
+                            ghosts.remove(i);
                     }
-                    else
-                        ghosts.remove(i);
-                }
-                if(!scare&&ghost.checkCollision(player)){
-                    player.loseHeart();
-                    if(player.getHearts()==0){
-                        currentScreen=Screen.GAME_OVER;
+                    else {
+                        player.loseHeart();
+                        if (player.getHearts() == 0) {
+                            currentScreen = Screen.GAME_OVER;
+                        }
                     }
                 }
             }
-            
         }
     }
 
@@ -176,7 +174,6 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         JFrame frame = new JFrame("Pac-Man");
         JPanel panel = new Driver();
         frame.add(panel);
-        // frame.addKeyListener(panel);
         frame.setVisible(true);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

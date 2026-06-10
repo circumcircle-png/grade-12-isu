@@ -3,15 +3,26 @@ package src.ghost;
 import src.*;
 
 public class BullGhost extends Ghost {
-    public final static double STRAIGHT_SPEED = (double) 120 / Constants.FPS;
-    public final static double TURN_SPEED = (double) 6 / Constants.FPS ;
-
     public BullGhost(int startR, int startC) {
         super("bull", startR, startC);
     }
 
+    public void initSpeeds() {
+        super.initSpeeds();
+        speeds.put(State.BULL_STRAIGHT, 120);
+        speeds.put(State.BULL_TURN, 20);
+    }
+
+    protected boolean chooseTarget(Maze maze, Player player) {
+        if (state == State.BULL_TURN || state == State.BULL_STRAIGHT)
+            return chooseTargetWhenNormal(maze, player);
+        return super.chooseTarget(maze, player);
+    }
+
     public void nextFrame(Maze maze, Player player) {
         super.nextFrame(maze, player);
+
+        if (state == State.SCARY) return;
 
         Direction first = Direction.STILL;
         if (targetR < previousR) first = Direction.UP;
@@ -25,10 +36,10 @@ public class BullGhost extends Ghost {
         Direction second = maze.shortestPath[targetR][targetC][playerR][playerC];
 
         if (first == Direction.STILL || second == Direction.STILL)
-            speed = STRAIGHT_SPEED;
+            state = State.BULL_STRAIGHT;
         else if (first == second)
-            speed = STRAIGHT_SPEED;
+            state = State.BULL_STRAIGHT;
         else
-            speed = TURN_SPEED;
+            state = State.BULL_TURN;
     }
 }
