@@ -24,8 +24,11 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     private Screen currentScreen = Screen.GAME;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
+    private final int WINDOW_WIDTH = 8 * 30;
+    private final int WINDOW_HEIGHT = 8 * 38;
+
     public Driver() {
-        setPreferredSize(new Dimension(16 * 30, 16 * 33));
+        setPreferredSize(new Dimension(2 * WINDOW_WIDTH, 2 * WINDOW_HEIGHT));
         addMouseListener(this);
         setVisible(true);    
         thread = new Thread(this);
@@ -101,6 +104,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
         Graphics2D g2 = (Graphics2D) g;
         
+
         if (currentScreen == Screen.MAIN_MENU) {
             g2.drawImage(screens.get(Screen.MAIN_MENU), 0, 0, null);
 
@@ -117,6 +121,25 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             g2.drawImage(screens.get(Screen.GAME_OVER), 0, 0, null);
         }
         else if (currentScreen == Screen.GAME) {
+            // draw hud at the top
+            try {
+                for (int i = 0; i < player.getHearts(); i++) {
+                    g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 10, 10, null);
+                }
+
+                Font font = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
+                font = font.deriveFont(24f);
+                g2.setFont(font);
+                // g2.drawString("Score", 200, 30);
+                
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // shift graphics to add heart containers
+            g2.translate(0, 8 * 10);
+
             // scale up
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
             double scale = 2;
@@ -131,6 +154,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
             // draw player
             player.draw(g2);
+
         }
     }
 
