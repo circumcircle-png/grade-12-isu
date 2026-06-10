@@ -35,22 +35,29 @@ public class Maze {
         pickups = new char[1];
         pickups[0]='.';
     }
-    public void remove(int i, int j){
-        maze[i][j]= 'a';
+
+    public void remove(int i, int j) {
+        maze[i][j] = 'a';
     }
-    public void generatePickUp(){
-        boolean validSpot = true;;
-        do{
-            int randRow = (int)(Math.random()*numRows);
-            int randCol = (int)(Math.random()*numColumns);
-            if(maze[randRow][randCol]=='a'){//can spawn on player idk
+
+    public void generatePickUp() {
+        boolean validSpot = true;
+        do {
+            int randRow = (int) (Math.random()*numRows);
+            int randCol = (int) (Math.random()*numColumns);
+            if (maze[randRow][randCol] == 'a') {//can spawn on player idk
                 validSpot = false;
-                int power = (int)(Math.random()*pickups.length);
+                int power = (int) (Math.random()*pickups.length);
                 maze[randRow][randCol] = pickups[power];
             }
-        }while(validSpot);
+        } while (validSpot);
     }
+
     public void generateShortestPathMatrix() {
+        // Description: This method uses BFS to find the shortest path from one cell to another.
+        // Parameters: None
+        // Return: void
+
         shortestPath = new Direction[numRows][numColumns][numRows][numColumns];
 
         // loop through every starting point
@@ -94,10 +101,18 @@ public class Maze {
     }
 
     private void createTile(String name, int x, int y) {
+        // Description: This method inserts a sub image of the tileset into the map.
+        // Parameters: Name of the tile, top left coordinate of 8x8 subimage
+        // Return: void
+
         tilesetComponents.put(name, tileset.getSubimage(x, y, 8, 8));
     }
 
     public void createTileSetComponent() throws IOException {
+        // Description: This method fills the tile map.
+        // Parameters: None
+        // Return: void
+
         createTile("blank", 333, 45);
 
         createTile("dot", 342, 45);
@@ -150,16 +165,28 @@ public class Maze {
     }
 
     public boolean isAccessible(int r, int c) {
+        // Description: This method checks whether row r and column c is accessible.
+        // Parameters: Row and column
+        // Return: Whether the cell is accessible
+
         return maze[r][c] == '.' || maze[r][c] == '*' || maze[r][c] == 'a';
     }
 
     public boolean isWall(int r, int c) {
+        // Description: This method checks whether row r and column c is a wall.
+        // Parameters: Row and column
+        // Return: Whether the cell is a wall
+
         return maze[r][c] == '1' || maze[r][c] == '2' || maze[r][c] == '3' || maze[r][c] == '4';
     }
     public void summonPickUp(){
         
     }
     public String getTileType(int r, int c) {
+        // Description: This method returns the name of the tile to be displayed for the specific cell.
+        // Parameters: Row and column of target cell
+        // Return: Name
+
         if (maze[r][c] == '.')
             return "dot";
         if (maze[r][c] == '*')
@@ -238,6 +265,10 @@ public class Maze {
     }
 
     public void draw(Graphics2D g) {
+        // Description: This method draws the entire maze onto the screen.
+        // Parameters: The Graphics2D associated with the screen
+        // Return: void
+
         for (int r = 0; r < numRows; r++) {
             for (int c = 0; c < numColumns; c++) {
                 String nameToDraw = "";

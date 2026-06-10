@@ -50,7 +50,7 @@ public class Player extends Movable implements KeyListener {
     }
 
     public void nextFrame(Maze maze) {
-        super.nextFrame(maze);
+        super.nextFrame();
         scaryFrameTimer = Math.max(scaryFrameTimer - 1, 0);
         invicibleTimer = Math.max(invicibleTimer - 1, 0);
         String tile = maze.getTileType(previousR, previousC);

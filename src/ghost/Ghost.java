@@ -54,7 +54,7 @@ public abstract class Ghost extends Movable {
     }
 
     public void nextFrame(Maze maze, Player player) {
-        super.nextFrame(maze);
+        super.nextFrame();
         if (player.state == State.SCARY)
             state = State.SCARY;
         else
