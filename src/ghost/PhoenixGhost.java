@@ -31,8 +31,6 @@ public class PhoenixGhost extends Ghost {
     }
 
     public void nextFrame(Maze maze, Player player) {
-        super.nextFrame(maze, player);
-
         if (state == State.EGG) {
             eggFrameCounter++; 
             if (eggFrameCounter == FRAMES_PER_PHASE * 3) {
@@ -41,7 +39,10 @@ public class PhoenixGhost extends Ghost {
                 state = player.state;
                 eggFrameCounter = 0;
             }
-        } 
+        }
+        else {
+            super.nextFrame(maze, player);
+        }
     }
 
     protected Image getCurrentSprite() {

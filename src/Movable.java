@@ -7,6 +7,8 @@ public abstract class Movable {
     protected boolean DEBUG = false;
     private final static int FRAMES_PER_DRAWING = Constants.FPS / 12;
 
+    public String name = "NO NAME";
+
     public enum State {
         NORMAL,
         SCARY,
@@ -26,7 +28,8 @@ public abstract class Movable {
     protected Direction facing = Direction.DOWN;
     private int drawingFrameCounter = 0;
 
-    public Movable(int startR, int startC) {
+    public Movable(String name, int startR, int startC) {
+        this.name = name;
         x = 8*startC;
         y = 8*startR;
         previousR = targetR = startR;

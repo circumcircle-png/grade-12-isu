@@ -9,17 +9,14 @@ import javax.imageio.ImageIO;
 import src.*;
 
 public abstract class Ghost extends Movable {
-    private final static int FRAMES_SCARED = 5 * Constants.FPS;
-
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
     protected State state;
-    protected String name;
 
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
 
     public Ghost(String name, int startR, int startC) {
-        super(startR, startC);
+        super(name, startR, startC);
         DEBUG = true;
         this.name = name;
         state = State.NORMAL;

@@ -8,10 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import src.*;
-import src.ghost.Ghost;
 
 public class Player extends Movable implements KeyListener {
     private final static int FRAMES_SCARY = 5 * Constants.FPS;
@@ -24,7 +20,7 @@ public class Player extends Movable implements KeyListener {
     private int heartCount = 3;
 
     public Player(int startR, int startC) {
-        super(startR, startC);
+        super("player", startR, startC);
         DEBUG = false;
         state = State.NORMAL;
 
