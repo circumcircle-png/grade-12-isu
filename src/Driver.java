@@ -102,8 +102,10 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
         Graphics2D g2 = (Graphics2D) g;
-        
 
         if (currentScreen == Screen.MAIN_MENU) {
             g2.drawImage(screens.get(Screen.MAIN_MENU), 0, 0, null);
