@@ -1,6 +1,7 @@
 package src;
 
 import java.util.*;
+import java.util.Queue;
 import java.io.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,14 +14,14 @@ public class Maze {
     public char[][] maze;
     public Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
     public int numRows, numColumns;
-
+    private final BufferedImage pickUpSet;
     // turning on DEBUG adds gridlines of 8x8 pixels
     private final boolean DEBUG = false;
 
     public Maze(String fileName) throws IOException {
         // read tileset
         tileset = ImageIO.read(new File("images/maze-tiles.png"));
-
+        pickUpSet = ImageIO.read(new File( "images/pickups.png"));
         // read maze
         Scanner toFile = new Scanner(new File("maze.txt"));
         numRows = Integer.parseInt(toFile.nextLine());
@@ -32,25 +33,30 @@ public class Maze {
                 maze[i][j] = row.charAt(j);
         }
         toFile.close();
-        pickups = new char[1];
-        pickups[0]='.';
+        pickups = new char[6];
+        pickups[0] = 'h';
+        pickups[1] = 's';
+        pickups[2] = 'f';
+        pickups[3] = 'F';
+        pickups[4] = 'm';
+        pickups[5] = '*';
+
+    }
+    public void remove(int i, int j){
+        maze[i][j]= 'a';
     }
 
-    public void remove(int i, int j) {
-        maze[i][j] = 'a';
-    }
-
-    public void generatePickUp() {
-        boolean validSpot = true;
-        do {
-            int randRow = (int) (Math.random()*numRows);
-            int randCol = (int) (Math.random()*numColumns);
-            if (maze[randRow][randCol] == 'a') {//can spawn on player idk
+    public void generatePickUp(){
+        boolean validSpot = true;;
+        do{
+            int randRow = (int)(Math.random()*numRows);
+            int randCol = (int)(Math.random()*numColumns);
+            if(maze[randRow][randCol]=='a'){//can spawn on player idk
                 validSpot = false;
-                int power = (int) (Math.random()*pickups.length);
+                int power = (int)(Math.random()*pickups.length);
                 maze[randRow][randCol] = pickups[power];
             }
-        } while (validSpot);
+        }while(validSpot);
     }
 
     public void generateShortestPathMatrix() {
@@ -107,7 +113,12 @@ public class Maze {
 
         tilesetComponents.put(name, tileset.getSubimage(x, y, 8, 8));
     }
+    
+    private void createPickups(String name, int i){
 
+        tilesetComponents.put(name, pickUpSet.getSubimage(0, 8*i, 8, 8));
+
+    }
     public void createTileSetComponent() throws IOException {
         // Description: This method fills the tile map.
         // Parameters: None
@@ -162,6 +173,11 @@ public class Maze {
         createTile("bottomToRightTurn2", 306, 27);
         createTile("rightToBottomTurn2", 315, 45);
         createTile("leftToBottomTurn2", 324, 45);
+        createPickups("heart", 0);
+        createPickups("speed", 1);
+        createPickups("frost", 2);
+        createPickups("fire",3);
+        createPickups("missile", 4);
     }
 
     public boolean isAccessible(int r, int c) {
@@ -169,7 +185,7 @@ public class Maze {
         // Parameters: Row and column
         // Return: Whether the cell is accessible
 
-        return maze[r][c] == '.' || maze[r][c] == '*' || maze[r][c] == 'a';
+        return maze[r][c] == '.' || maze[r][c] == '*' || maze[r][c] == 'a'||maze[r][c]=='h'||maze[r][c]=='s'||maze[r][c]=='f'||maze[r][c]=='F'||maze[r][c]=='m';
     }
 
     public boolean isWall(int r, int c) {
@@ -191,9 +207,18 @@ public class Maze {
             return "dot";
         if (maze[r][c] == '*')
             return "bigDot";
+        if(maze[r][c] == 'h')
+            return "heart";
+        if(maze[r][c]=='s')
+            return "speed";
+        if(maze[r][c]=='f')
+            return "frost";
+        if(maze[r][c]=='F')
+            return "fire";
+        if(maze[r][c]=='m')
+            return "missile";
         if (!isWall(r, c))
             return "blank";
-
         // special wall
         if (maze[r][c] == '3') {
             if (maze[r][c-1] == '2' && maze[r][c+1] == '3') return "leftToBottomTurn2";
