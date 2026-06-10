@@ -21,7 +21,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         GAME,
         GAME_OVER,
     }
-    private Screen currentScreen = Screen.GAME_OVER;
+    private Screen currentScreen = Screen.MAIN_MENU;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
     public Driver() {
@@ -89,7 +89,9 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                 }
                 if(!scare&&ghost.checkCollision(player)){
                     player.loseHeart();
-                    
+                    if(player.getHearts()==0){
+                        currentScreen=Screen.GAME_OVER;
+                    }
                 }
             }
             

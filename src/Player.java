@@ -180,6 +180,7 @@ public class Player extends Movable implements KeyListener{
             heartCount-=1;
             System.out.println(heartCount);
             invicibleTimer = FRAMES_INVICIBLE;
+            
         }
     }
     public void gainHeart(){

@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 public class Maze {
     private final BufferedImage tileset;
     private Map<String, BufferedImage> tilesetComponents = new HashMap<>();
-    
+    public char[] pickups;
     public char[][] maze;
     public Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
     public int numRows, numColumns;
@@ -32,12 +32,23 @@ public class Maze {
                 maze[i][j] = row.charAt(j);
         }
         toFile.close();
+        pickups = new char[1];
+        pickups[0]='.';
     }
     public void remove(int i, int j){
         maze[i][j]= 'a';
     }
     public void generatePickUp(){
-
+        boolean validSpot = true;;
+        do{
+            int randRow = (int)(Math.random()*numRows);
+            int randCol = (int)(Math.random()*numColumns);
+            if(maze[randRow][randCol]=='a'){//can spawn on player idk
+                validSpot = false;
+                int power = (int)(Math.random()*pickups.length);
+                maze[randRow][randCol] = pickups[power];
+            }
+        }while(validSpot);
     }
     public void generateShortestPathMatrix() {
         shortestPath = new Direction[numRows][numColumns][numRows][numColumns];
