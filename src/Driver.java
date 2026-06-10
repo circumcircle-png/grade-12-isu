@@ -19,8 +19,9 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     private enum Screen {
         MAIN_MENU,
         GAME,
+        GAME_OVER,
     }
-    private Screen currentScreen = Screen.MAIN_MENU;
+    private Screen currentScreen = Screen.GAME_OVER;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
     public Driver() {
@@ -48,6 +49,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     public void initialize() {
         try {
             screens.put(Screen.MAIN_MENU, ImageIO.read(new File("images/screen/main-menu.png")));
+            screens.put(Screen.GAME_OVER, ImageIO.read(new File("images/screen/game-over.png")));
 
             maze = new Maze("maze.txt");
             player = new Player(24, 2);
@@ -111,6 +113,9 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             maze.draw(g2);
             g2.setComposite(AlphaComposite.SrcOver);
         }
+        else if (currentScreen == Screen.GAME_OVER) {
+            g2.drawImage(screens.get(Screen.GAME_OVER), 0, 0, null);
+        }
         else if (currentScreen == Screen.GAME) {
             // scale up
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
@@ -149,6 +154,14 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             }
             else if (rectangleClicked(e, 305, 456, 464, 498)) {
                 // clicked credit
+            }
+        }
+        else if (currentScreen == Screen.GAME_OVER) {
+            if (rectangleClicked(e, 101, 283, 379, 352)) {
+                // clicked home
+            }
+            else if (rectangleClicked(e, 101, 376, 379, 445)) {
+                // clicked play again
             }
         }
     }
