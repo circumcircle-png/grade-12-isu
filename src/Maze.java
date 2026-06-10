@@ -17,6 +17,8 @@ public class Maze {
     private final BufferedImage pickUpSet;
     // turning on DEBUG adds gridlines of 8x8 pixels
     private final boolean DEBUG = false;
+    private int pickUpTimer = 0;
+    private final static int FRAMES_PICKUP = 10 * Constants.FPS;
 
     public Maze(String fileName) throws IOException {
         // read tileset
@@ -47,18 +49,30 @@ public class Maze {
     }
 
     public void generatePickUp(){
-        boolean validSpot = true;;
-        do{
-            int randRow = (int)(Math.random()*numRows);
-            int randCol = (int)(Math.random()*numColumns);
-            if(maze[randRow][randCol]=='a'){//can spawn on player idk
-                validSpot = false;
-                int power = (int)(Math.random()*pickups.length);
-                maze[randRow][randCol] = pickups[power];
-            }
-        }while(validSpot);
-    }
+        pickUpTimer+=1;
+        if(pickUpTimer%FRAMES_PICKUP==0){
+            boolean validSpot = true;
+            int blankSpots = 0;
+            for(int i = 0;i<numRows;i++){
+                for(int j = 0;j<numColumns;j++){
+                    if(maze[i][j]=='a')
+                        blankSpots+=1;
 
+                }
+            }
+            if(blankSpots>=1){
+                do{
+                    int randRow = (int)(Math.random()*numRows);
+                    int randCol = (int)(Math.random()*numColumns);
+                    if(maze[randRow][randCol]=='a'){//can spawn on player idk
+                        validSpot = false;
+                        int power = (int)(Math.random()*pickups.length);
+                        maze[randRow][randCol] = pickups[power];
+                    }
+                }while(validSpot);
+            }
+        }
+    }
     public void generateShortestPathMatrix() {
         // Description: This method uses BFS to find the shortest path from one cell to another.
         // Parameters: None

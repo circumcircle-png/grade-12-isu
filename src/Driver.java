@@ -75,6 +75,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         if (currentScreen == Screen.GAME) {
             player.nextFrame(maze);
             player.updatePosition(maze);
+            maze.generatePickUp();
             for (int i = ghosts.size()-1; i >= 0; i--) {
                 Ghost ghost = ghosts.get(i);
                 ghost.nextFrame(maze, player);

@@ -158,7 +158,7 @@ public class Player extends Movable implements KeyListener {
     public int getHearts() {
         return heartCount;
     }
-
+    
     public void loseHeart() {
         if (invicibleTimer == 0) {
             heartCount--;
