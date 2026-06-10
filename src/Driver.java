@@ -85,6 +85,10 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                     else
                         ghosts.remove(i);
                 }
+                if(!scare&&ghost.checkCollision(player)){
+                    player.loseHeart();
+                    
+                }
             }
             
         }

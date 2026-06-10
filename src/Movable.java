@@ -4,10 +4,10 @@ import java.util.*;
 import java.awt.*;
 
 public abstract class Movable {
-    protected boolean DEBUG = true;
+    protected boolean DEBUG = false;
     private final static int FRAMES_PER_DRAWING = Constants.FPS / 12;
 
-    protected double x, y; // these represent top left coordinates of ghost
+    public double x, y; // these represent top left coordinates of ghost
     protected int previousR, previousC; // these store the coordinate of cell the ghost left
     protected int targetR, targetC; // these store the coordinates of the cell it is going towards
     protected double speed = (double) 60 / Constants.FPS;

@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 public class Maze {
     private final BufferedImage tileset;
     private Map<String, BufferedImage> tilesetComponents = new HashMap<>();
-
+    
     public char[][] maze;
     public Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
     public int numRows, numColumns;
@@ -35,6 +35,9 @@ public class Maze {
     }
     public void remove(int i, int j){
         maze[i][j]= 'a';
+    }
+    public void generatePickUp(){
+
     }
     public void generateShortestPathMatrix() {
         shortestPath = new Direction[numRows][numColumns][numRows][numColumns];
@@ -142,7 +145,9 @@ public class Maze {
     public boolean isWall(int r, int c) {
         return maze[r][c] == '1' || maze[r][c] == '2' || maze[r][c] == '3' || maze[r][c] == '4';
     }
-
+    public void summonPickUp(){
+        
+    }
     public String getTileType(int r, int c) {
         if (maze[r][c] == '.')
             return "dot";

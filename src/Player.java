@@ -17,15 +17,19 @@ public class Player extends Movable implements KeyListener{
     protected enum State {
         NORMAL, // normal chasing
         SCARY, // scary, run away from player
+        INVINCIBLE,// invincibility frames
     }
     protected State state;
     protected Direction nextFacing;
     private final static int FRAMES_SCARY = 5* Constants.FPS;
     public int scaryFrameTimer = 0;
+    private final static int FRAMES_INVICIBLE = 3*Constants.FPS;
+    private int invicibleTimer = 0;
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
+    private int heartCount=3;
     public Player(int startR, int startC) {
         super(startR, startC);
-        DEBUG = true;
+        DEBUG = false;
         state = State.NORMAL;
 
         try {
@@ -53,6 +57,7 @@ public class Player extends Movable implements KeyListener{
     public void nextFrame(Maze maze){
         super.nextFrame(maze);
         scaryFrameTimer = Math.max(scaryFrameTimer - 1, 0);
+        invicibleTimer = Math.max(invicibleTimer-1, 0);
         String tile = maze.getTileType(previousR, previousC);
         if(tile.equals("dot")){
             maze.remove(previousR,previousC);
@@ -64,7 +69,6 @@ public class Player extends Movable implements KeyListener{
         }
         if(scaryFrameTimer == 0){
             state = State.NORMAL;
-            
         }
     }
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
@@ -168,7 +172,19 @@ public class Player extends Movable implements KeyListener{
     public int[] getCurrentPosition() {
         return new int[] {targetR, targetC};
     }
-
+    public int getHearts(){
+        return heartCount;
+    }
+    public void loseHeart(){
+        if(invicibleTimer == 0){
+            heartCount-=1;
+            System.out.println(heartCount);
+            invicibleTimer = FRAMES_INVICIBLE;
+        }
+    }
+    public void gainHeart(){
+        heartCount++;
+    }
     @Override
     public void keyTyped(KeyEvent e) {
         //throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");

@@ -82,11 +82,10 @@ public abstract class Ghost extends Movable {
     }
 
     public boolean checkCollision(Player player){
-        int [] playerPos = player.getCurrentPosition();
-        int left = playerPos[1]*8-2;
-        int right = playerPos[1]*8+10;
-        int top = playerPos[0]*8-2;
-        int bottom = playerPos[0]*8+10;
+        int left = (int)player.x-2;
+        int right = (int)player.x+10;
+        int top = (int)player.y-2;
+        int bottom = (int)player.y+10;
         int leftG = (int) x-2;
         int rightG = (int)x+10;
         int topG = (int)y-2;
