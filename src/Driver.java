@@ -134,6 +134,13 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         g2.setTransform(t);
     }
 
+    public void createCenteredButton(Graphics2D g2, String text, int y) {
+        FontMetrics fm = g2.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int x = (WINDOW_WIDTH - textWidth) / 2;
+        createButton(g2, text, x, y);
+    }
+
     public void createButton(Graphics2D g2, String text, int x, int y) {
         FontMetrics fm = g2.getFontMetrics();
         int textWidth = fm.stringWidth(text);
@@ -175,10 +182,10 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.setColor(Color.WHITE);
 
         if (currentScreen == Screen.MAIN_MENU) {
-            drawGame(g2);
-            g2.drawImage(screens.get(Screen.MAIN_MENU), 0, 0, null);
+            createCenteredButton(g2, "play", 300);
         }
         else if (currentScreen == Screen.GAME_OVER) {
             g2.drawImage(screens.get(Screen.GAME_OVER), 0, 0, null);
@@ -190,7 +197,6 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                     g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 30 + mazeTopLeftX, mazeBottomRightY + 10, null);
                 }
 
-                g2.setColor(Color.WHITE);
                 g2.drawString("Score: 20", mazeTopLeftX + 30, mazeTopLeftY - 40);
                 g2.drawString("Time: 20", mazeTopLeftX + 30, mazeTopLeftY - 5);
                 createButton(g2, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
@@ -209,37 +215,23 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     }
 
     public void mousePressed(MouseEvent e) {
-        if (currentScreen == Screen.MAIN_MENU) {
-            if (rectangleClicked(e, 101, 155, 379, 272)) {
-                currentScreen = Screen.GAME;
-            }
-            else if (rectangleClicked(e, 101, 299, 379, 341)) {
-                // clicked leaderboard
-            }
-            else if (rectangleClicked(e, 101, 356, 379, 398)) {
-                // clicked settings
-            }
-            else if (rectangleClicked(e, 15, 456, 174, 498)) {
-                // clicked help
-            }
-            else if (rectangleClicked(e, 305, 456, 464, 498)) {
-                // clicked credit
-            }
-        }
-        else if (currentScreen == Screen.GAME_OVER) {
-            if (rectangleClicked(e, 101, 283, 379, 352)) {
-                // clicked home
-            }
-            else if (rectangleClicked(e, 101, 376, 379, 445)) {
-                // clicked play again
-            }
-        }
-        else if (currentScreen == Screen.GAME) {
-            for (Rectangle area: buttons.keySet()) {
-                if (area.contains(e.getPoint())) {
-                    currentScreen = Screen.MAIN_MENU;
+        for (Rectangle area: buttons.keySet()) {
+            String name = buttons.get(area);
+            if (!area.contains(e.getPoint()))
+                continue;
+
+            if (currentScreen == Screen.MAIN_MENU) {
+                if (name.equals("play")) {
+                    currentScreen = Screen.GAME;
                 }
             }
+            else if (currentScreen == Screen.GAME) {
+                if (name.equals("quit")) {
+                        currentScreen = Screen.MAIN_MENU;
+                }
+            }
+
+            break;
         }
     }
     public void mouseClicked(MouseEvent e) {}
