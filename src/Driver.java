@@ -24,12 +24,15 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     }
     private Screen currentScreen = Screen.MAIN_MENU;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
+    private Map<Rectangle, String> buttons = new HashMap<Rectangle, String>();
 
-    private final int WINDOW_WIDTH = 8 * 30;
-    private final int WINDOW_HEIGHT = 8 * 38;
+    private final int WINDOW_WIDTH = 600;
+    private final int WINDOW_HEIGHT = 700;
+
+    private int mazeTopLeftX, mazeTopLeftY, mazeBottomRightX, mazeBottomRightY;
 
     public Driver() {
-        setPreferredSize(new Dimension(2 * WINDOW_WIDTH, 2 * WINDOW_HEIGHT));
+        setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         addMouseListener(this);
         setVisible(true);    
         thread = new Thread(this);
@@ -56,6 +59,12 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             screens.put(Screen.GAME_OVER, ImageIO.read(new File("images/screen/game-over.png")));
 
             maze = new Maze("maze.txt");
+
+            mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.numColumns) / 2;
+            mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.numRows) / 2;
+            mazeBottomRightX = mazeTopLeftX + 16 * maze.numColumns;
+            mazeBottomRightY = mazeTopLeftY + 16 * maze.numRows;
+
             player = new Player(24, 2);
             // ghosts.add(new FearlessGhost(20, 22));
             // ghosts.add(new SlowGhost(21, 22));
@@ -104,8 +113,8 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     public void drawGame(Graphics2D g2) {
         AffineTransform t = g2.getTransform();
 
-        // shift to leave space on top
-        g2.translate(0, 8 * 10);
+        // shift to the middle of the screen
+        g2.translate(mazeTopLeftX, mazeTopLeftY);
 
         // scale up
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
@@ -124,6 +133,28 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
         g2.setTransform(t);
     }
+
+    public void createButton(Graphics2D g2, String text, int x, int y) {
+        FontMetrics fm = g2.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int textHeight = fm.getAscent();
+
+        int padding = 24;
+
+        int boxX = x - padding;
+        int boxY = y - textHeight - padding / 2 + 1;
+        int boxW = textWidth + padding * 2;
+        int boxH = textHeight + padding;
+
+        // Draw rounded box
+        g2.drawRoundRect(boxX, boxY, boxW, boxH, 12, 12);
+
+        // Draw text
+        g2.drawString(text, x, y);
+
+        buttons.put(new Rectangle(boxX, boxY, boxW, boxH), text);
+    }
+
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -156,12 +187,13 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             // draw hud at the top
             try {
                 for (int i = 0; i < player.getHearts(); i++) {
-                    g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 10, 10, null);
+                    g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 30 + mazeTopLeftX, mazeBottomRightY + 10, null);
                 }
 
                 g2.setColor(Color.WHITE);
-                g2.drawString("Score: 20", 200, 30);
-                g2.drawString("Time: 20", 200, 60);
+                g2.drawString("Score: 20", mazeTopLeftX + 30, mazeTopLeftY - 40);
+                g2.drawString("Time: 20", mazeTopLeftX + 30, mazeTopLeftY - 5);
+                createButton(g2, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -200,6 +232,13 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             }
             else if (rectangleClicked(e, 101, 376, 379, 445)) {
                 // clicked play again
+            }
+        }
+        else if (currentScreen == Screen.GAME) {
+            for (Rectangle area: buttons.keySet()) {
+                if (area.contains(e.getPoint())) {
+                    currentScreen = Screen.MAIN_MENU;
+                }
             }
         }
     }
