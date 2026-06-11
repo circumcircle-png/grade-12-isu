@@ -47,20 +47,22 @@ public class Maze {
     public void remove(int i, int j){
         maze[i][j]= 'a';
     }
+    public int tilesLeft(char a){
+        int spots = 0;
+        for(int i = 0;i<numRows;i++){
+                for(int j = 0;j<numColumns;j++){
+                    if(maze[i][j]==a)
+                        spots+=1;
 
+                }
+        }
+        return spots;
+    }
     public void generatePickUp(){
         pickUpTimer+=1;
         if(pickUpTimer%FRAMES_PICKUP==0){
             boolean validSpot = true;
-            int blankSpots = 0;
-            for(int i = 0;i<numRows;i++){
-                for(int j = 0;j<numColumns;j++){
-                    if(maze[i][j]=='a')
-                        blankSpots+=1;
-
-                }
-            }
-            if(blankSpots>=1){
+            if(tilesLeft('a')>=1){
                 do{
                     int randRow = (int)(Math.random()*numRows);
                     int randCol = (int)(Math.random()*numColumns);

@@ -107,6 +107,9 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                     }
                 }
             }
+            if(maze.tilesLeft('.')==0){
+                currentScreen = Screen.GAME_OVER;
+            }
         }
     }
 
