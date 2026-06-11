@@ -4,6 +4,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
 import java.io.*;
 import javax.imageio.ImageIO;
 
@@ -21,7 +22,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         GAME,
         GAME_OVER,
     }
-    private Screen currentScreen = Screen.GAME;
+    private Screen currentScreen = Screen.MAIN_MENU;
     private Map<Screen, Image> screens = new HashMap<Screen, Image>();
 
     private final int WINDOW_WIDTH = 8 * 30;
@@ -100,25 +101,53 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         }
     }
 
+    public void drawGame(Graphics2D g2) {
+        AffineTransform t = g2.getTransform();
+
+        // shift to leave space on top
+        g2.translate(0, 8 * 10);
+
+        // scale up
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        double scale = 2;
+        g2.scale(scale, scale);
+
+        maze.draw(g2);
+
+        // draw ghosts
+        for (Ghost ghost: ghosts) {
+            ghost.draw(g2);
+        }
+
+        // draw player
+        player.draw(g2);
+
+        g2.setTransform(t);
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight());
-
         Graphics2D g2 = (Graphics2D) g;
 
+        Font font; 
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        
+        font = font.deriveFont(24f);
+        g2.setFont(font);
+
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
         if (currentScreen == Screen.MAIN_MENU) {
+            drawGame(g2);
             g2.drawImage(screens.get(Screen.MAIN_MENU), 0, 0, null);
-
-            // scale up
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-            double scale = 2;
-            g2.scale(scale, scale);
-
-            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-            maze.draw(g2);
-            g2.setComposite(AlphaComposite.SrcOver);
         }
         else if (currentScreen == Screen.GAME_OVER) {
             g2.drawImage(screens.get(Screen.GAME_OVER), 0, 0, null);
@@ -130,34 +159,16 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                     g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 10, 10, null);
                 }
 
-                Font font = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
-                font = font.deriveFont(24f);
-                g2.setFont(font);
-                // g2.drawString("Score", 200, 30);
-                
+                g2.setColor(Color.WHITE);
+                g2.drawString("Score: 20", 200, 30);
+                g2.drawString("Time: 20", 200, 60);
             }
             catch (Exception e) {
                 e.printStackTrace();
+                return;
             }
 
-            // shift graphics to add heart containers
-            g2.translate(0, 8 * 10);
-
-            // scale up
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-            double scale = 2;
-            g2.scale(scale, scale);
-
-            maze.draw(g2);
-
-            // draw ghosts
-            for (Ghost ghost: ghosts) {
-                ghost.draw(g2);
-            }
-
-            // draw player
-            player.draw(g2);
-
+            drawGame(g2);
         }
     }
 
