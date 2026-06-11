@@ -20,11 +20,13 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     private enum Screen {
         MAIN_MENU,
         GAME,
+        VICTORY,
         GAME_OVER,
     }
     private Screen currentScreen = Screen.MAIN_MENU;
-    private Map<Screen, Image> screens = new HashMap<Screen, Image>();
     private Map<Rectangle, String> buttons = new HashMap<Rectangle, String>();
+
+    private Font pacmanFont;
 
     private final int WINDOW_WIDTH = 600;
     private final int WINDOW_HEIGHT = 700;
@@ -55,15 +57,14 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
     public void initialize() {
         try {
-            screens.put(Screen.MAIN_MENU, ImageIO.read(new File("images/screen/main-menu.png")));
-            screens.put(Screen.GAME_OVER, ImageIO.read(new File("images/screen/game-over.png")));
-
             maze = new Maze("maze.txt");
 
             mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.numColumns) / 2;
             mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.numRows) / 2;
             mazeBottomRightX = mazeTopLeftX + 16 * maze.numColumns;
             mazeBottomRightY = mazeTopLeftY + 16 * maze.numRows;
+
+            pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
 
             player = new Player(24, 2);
             // ghosts.add(new FearlessGhost(20, 22));
@@ -134,14 +135,38 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         g2.setTransform(t);
     }
 
-    public void createCenteredButton(Graphics2D g2, String text, int y) {
+    public void createCenteredString(Graphics2D g2, float fontSize, String text, int y) {
+        Font font = pacmanFont.deriveFont(fontSize);
+        g2.setFont(font);
+
         FontMetrics fm = g2.getFontMetrics();
         int textWidth = fm.stringWidth(text);
         int x = (WINDOW_WIDTH - textWidth) / 2;
-        createButton(g2, text, x, y);
+
+        createString(g2, fontSize, text, x, y);
     }
 
-    public void createButton(Graphics2D g2, String text, int x, int y) {
+    public void createString(Graphics2D g2, float fontSize, String text, int x, int y) {
+        Font font = pacmanFont.deriveFont(fontSize);
+        g2.setFont(font);
+        g2.drawString(text, x, y);
+    }
+
+    public void createCenteredButton(Graphics2D g2, float fontSize, String text, int y) {
+        Font font = pacmanFont.deriveFont(fontSize);
+        g2.setFont(font);
+
+        FontMetrics fm = g2.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int x = (WINDOW_WIDTH - textWidth) / 2;
+
+        createButton(g2, fontSize, text, x, y);
+    }
+
+    public void createButton(Graphics2D g2, float fontSize, String text, int x, int y) {
+        Font font = pacmanFont.deriveFont(fontSize);
+        g2.setFont(font);
+
         FontMetrics fm = g2.getFontMetrics();
         int textWidth = fm.stringWidth(text);
         int textHeight = fm.getAscent();
@@ -157,7 +182,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
         g2.drawRoundRect(boxX, boxY, boxW, boxH, 12, 12);
 
         // Draw text
-        g2.drawString(text, x, y);
+        createString(g2, fontSize, text, x, y);
 
         buttons.put(new Rectangle(boxX, boxY, boxW, boxH), text);
     }
@@ -168,27 +193,25 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
         Graphics2D g2 = (Graphics2D) g;
 
-        Font font; 
-        try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        
-        font = font.deriveFont(24f);
-        g2.setFont(font);
-
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, getWidth(), getHeight());
+
         g2.setColor(Color.WHITE);
 
         if (currentScreen == Screen.MAIN_MENU) {
-            createCenteredButton(g2, "play", 300);
+            createCenteredString(g2, 24f, "pac-man", 100);
+            createCenteredButton(g2, 24f, "play", 300);
+            createCenteredButton(g2, 24f, "leaderboard", 400);
+            createCenteredButton(g2, 24f, "settings", 500);
+            createCenteredButton(g2, 24f, "credits", 600);
         }
         else if (currentScreen == Screen.GAME_OVER) {
-            g2.drawImage(screens.get(Screen.GAME_OVER), 0, 0, null);
+            createCenteredString(g2, 30f, "defeat", 100);
+            createCenteredButton(g2, 24f, "home", 300);
+        }
+        else if (currentScreen == Screen.VICTORY) {
+            createCenteredString(g2, 30f, "victory", 100);
+            createCenteredButton(g2, 24f, "home", 300);
         }
         else if (currentScreen == Screen.GAME) {
             // draw hud at the top
@@ -197,9 +220,9 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                     g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 30 + mazeTopLeftX, mazeBottomRightY + 10, null);
                 }
 
-                g2.drawString("Score: 20", mazeTopLeftX + 30, mazeTopLeftY - 40);
-                g2.drawString("Time: 20", mazeTopLeftX + 30, mazeTopLeftY - 5);
-                createButton(g2, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
+                createString(g2, 24, "Score: 20", mazeTopLeftX + 30, mazeTopLeftY - 40);
+                createString(g2, 24, "Time: 20", mazeTopLeftX + 30, mazeTopLeftY - 5);
+                createButton(g2, 24f, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -208,10 +231,6 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
             drawGame(g2);
         }
-    }
-
-    private boolean rectangleClicked(MouseEvent e, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
-        return (topLeftX <= e.getX() && e.getX() <= bottomRightX && topLeftY <= e.getY() && e.getY() <= bottomRightY);
     }
 
     public void mousePressed(MouseEvent e) {
@@ -227,8 +246,11 @@ public class Driver extends JPanel implements Runnable, MouseListener {
             }
             else if (currentScreen == Screen.GAME) {
                 if (name.equals("quit")) {
-                        currentScreen = Screen.MAIN_MENU;
+                    currentScreen = Screen.MAIN_MENU;
                 }
+            }
+            if (name.equals("home")) {
+                currentScreen = Screen.MAIN_MENU;
             }
 
             break;
