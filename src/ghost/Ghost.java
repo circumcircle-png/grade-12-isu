@@ -45,15 +45,19 @@ public abstract class Ghost extends Movable {
     }
 
     public void initSpeeds() {
+        // Description: This method puts speeds into the speed map.
+        // Parameters: None
+        // Return: void
+
         speeds.put(State.NORMAL, 70);
         speeds.put(State.SCARY, 40);
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void nextFrame(Maze maze, Player player) {
+        // Description: This method simulates one additional frame for the Ghost, and it always updates the state (even if the state remains the same).
+        // Parameters: Maze and player
+        // Return: void
+
         super.nextFrame();
         if (player.state == State.SCARY)
             state = State.SCARY;
@@ -62,12 +66,20 @@ public abstract class Ghost extends Movable {
     }
 
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
+        // Description: This method returns the directional sprite map used to draw the ghost (purpose is to handle scary ghost graphics).
+        // Parameters: None
+        // Return: Map from Direction to an Image array (Image array represents gif)
+
         if (state == State.SCARY)
             return scaredDirectionalSprites;
         return super.getDirectionalSpriteMap();
     }
 
     public boolean checkCollision(Player player){
+        // Description: This method checks if the ghost collides with the player.
+        // Parameters: Player
+        // Return: Boolean representing whether the ghost collides with the player
+
         int left = (int)player.x-2;
         int right = (int)player.x+10;
         int top = (int)player.y-2;
@@ -83,6 +95,10 @@ public abstract class Ghost extends Movable {
 
     }
     public void updatePosition(Maze maze, Player player) {
+        // Description: This method updates the position of the ghost based on its state.
+        // Parameters: Maze and player
+        // Return: void
+
         double remainingDistanceToTravel = (double) speeds.get(state) / 60;
         
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
@@ -119,6 +135,10 @@ public abstract class Ghost extends Movable {
     }
 
     protected boolean chooseTargetWhenNormal(Maze maze, Player player) {
+        // Description: This method updates the target coordinate (targetR and targetC) to get the next step towards the player.
+        // Parameters: Maze and player
+        // Return: Boolean representing a target coordinate is selected, or the ghost will remain still
+
         int[] target = player.getCurrentPosition();
         int playerR = target[0];
         int playerC = target[1];
@@ -134,6 +154,10 @@ public abstract class Ghost extends Movable {
     }
 
     protected boolean chooseTargetWhenScary(Maze maze, Player player) {
+        // Description: This method updates the target coordinate (targetR and targetC) to get the next step away from the player.
+        // Parameters: Maze and player
+        // Return: Boolean representing a target coordinate is selected, or the ghost will remain still
+
         int[] target = player.getCurrentPosition();
         int playerR = target[0];
         int playerC = target[1];
@@ -153,14 +177,20 @@ public abstract class Ghost extends Movable {
         return true;
     }
 
-    // this function can be overrided by ghost subclasses
-    // returning true means target is chosen, false means we choose not to select a target to break
-    // assumption for final target chosen is it must be on an "available" square, so that the ghost can resume normal pathing reaching it
     protected boolean chooseTarget(Maze maze, Player player) throws UnsupportedOperationException {
+        // Description: This method chooses the next target coordinate for the ghost.
+        // Parameters: Maze and player
+        // Return: Boolean representing a target coordinate is selected, or the ghost will remain still
+
         if (state == State.NORMAL)
             return chooseTargetWhenNormal(maze, player);
         else if (state == State.SCARY)
             return chooseTargetWhenScary(maze, player);
-        throw new UnsupportedOperationException("Ghost sublcass forgot to override a state.");
+
+        String message = String.format(
+            "Ghost subclass '%s' forgot to override the state '%s'",
+            name, state
+        );
+        throw new UnsupportedOperationException(message);
     }
 }

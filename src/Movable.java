@@ -31,7 +31,8 @@ public abstract class Movable {
     // these store the coordinates of the 8x8 cell the movable is going towards
     protected int targetR, targetC;
 
-    // BASIC ASSUMPTION: previousR, previousC, targetR, targtC must ALWAYS point to an accessible square
+    // BASIC ASSUMPTION: the cells (previousR, previousC) and (targetR, targetC) ALWAYS point to an accessible square
+    // BASIC ASSUMPTION: the cells (previousR, previousC) and (targetR, targetC) are ALWAYS on the same row or same column
 
     protected final Map<Direction, Image[]> directionalSprites = new HashMap<>();
     protected Direction facing = Direction.DOWN;
@@ -45,6 +46,12 @@ public abstract class Movable {
         previousC = targetC = startC;
         initSpeeds();
     }
+
+    // getter for name
+    public String getName() {
+        return name;
+    }
+
 
     // this method adds to the speeds map
     public abstract void initSpeeds();
