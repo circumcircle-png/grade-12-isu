@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import src.ghost.*;
 
-public class Driver extends JPanel implements Runnable, MouseListener {
+public class Driver extends JPanel implements Runnable, MouseListener, KeyListener {
     private Thread thread;
 
     private Player player;
@@ -56,42 +56,51 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     }
 
     public void initialize() {
+        addKeyListener(this);
+        setFocusable(true);
         try {
-            maze = new Maze("maze.txt");
-            ghosts.clear();
-            mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.numColumns) / 2;
-            mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.numRows) / 2;
-            mazeBottomRightX = mazeTopLeftX + 16 * maze.numColumns;
-            mazeBottomRightY = mazeTopLeftY + 16 * maze.numRows;
-
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
-
-            player = new Player(24, 2);
-            // ghosts.add(new FearlessGhost(20, 22));
-            // ghosts.add(new SlowGhost(21, 22));
-            ghosts.add(new BullGhost(22, 22));
-            ghosts.add(new TeleportGhost(23, 22));
-            ghosts.add(new PolterGhost(24, 22));
-            ghosts.add(new PhoenixGhost(25, 22));
-            addKeyListener(player);
-            setFocusable(true);
-            maze.createTileSetComponent();
-            maze.generateShortestPathMatrix();
         } catch (Exception e) {
             e.printStackTrace();
         };
     }
 
+    public void startNewGame() throws IOException {
+        System.out.println("HERE");
+        timer = 0;
+        maze = new Maze("maze.txt");
+        ghosts.clear();
+        mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.numColumns) / 2;
+        mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.numRows) / 2;
+        mazeBottomRightX = mazeTopLeftX + 16 * maze.numColumns;
+        mazeBottomRightY = mazeTopLeftY + 16 * maze.numRows;
+
+        player = new Player(24, 14);
+        // ghosts.add(new FearlessGhost(20, 22));
+        // ghosts.add(new SlowGhost(21, 22));
+        ghosts.add(new BullGhost(22, 22));
+        ghosts.add(new TeleportGhost(23, 22));
+        ghosts.add(new PolterGhost(24, 22));
+        ghosts.add(new PhoenixGhost(25, 22));
+
+        for (Ghost ghost: ghosts)
+            ghost.respawn(player);
+
+        maze.createTileSetComponent();
+        maze.generateShortestPathMatrix();
+    }
+
     public void update() {
-        timer += 1;
         if (currentScreen == Screen.GAME) {
+            timer += 1;
             player.nextFrame(maze, timer);
             player.updatePosition(maze);
             maze.generatePickUp();
             
             for (int i = ghosts.size()-1; i >= 0; i--) {
                 Ghost ghost = ghosts.get(i);
-                ghost.respawn(timer, player);
+                if (timer == ghost.respawnTimer)
+                    ghost.respawn(player);
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
                 if (ghost.checkCollision(player)) {
@@ -248,10 +257,12 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
             if (currentScreen == Screen.MAIN_MENU) {
                 if (name.equals("play")) {
-                    timer = 0;
+                    try {
+                        startNewGame();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    };
                     currentScreen = Screen.GAME;
-                    initialize();
-
                 }
             }
             else if (currentScreen == Screen.GAME) {
@@ -270,6 +281,29 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     public void mouseReleased(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
+
+    public void keyTyped(KeyEvent e) {
+        // throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
+    }
+
+    public void keyPressed(KeyEvent e) {
+        if (currentScreen == Screen.GAME) {
+            int input = e.getKeyCode();
+            if (input == KeyEvent.VK_W || input == KeyEvent.VK_UP)
+                player.nextFacing = Direction.UP;
+            else if (input == KeyEvent.VK_A || input == KeyEvent.VK_LEFT)
+                player.nextFacing = Direction.LEFT;
+            else if (input == KeyEvent.VK_D || input == KeyEvent.VK_RIGHT)
+                player.nextFacing = Direction.RIGHT;
+            else if (input == KeyEvent.VK_S || input == KeyEvent.VK_DOWN)
+                player.nextFacing = Direction.DOWN;
+        }
+    }
+
+    public void keyReleased(KeyEvent e) {
+        // throw new UnsupportedOperationException("Unimplemented method
+        // 'keyReleased'");
+    }
 
     public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame("Pac-Man");

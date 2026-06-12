@@ -9,7 +9,7 @@ import java.util.Map;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-public class Player extends Movable implements KeyListener {
+public class Player extends Movable {
     private final static int FRAMES_SCARY = 5 * Constants.FPS;
     private final static int FRAMES_INVICIBLE = 3 * Constants.FPS;
     private final static int FRAMES_SPEEDY = 5 * Constants.FPS;
@@ -190,30 +190,6 @@ public class Player extends Movable implements KeyListener {
 
     public void gainHeart() {
         heartCount++;
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int input = e.getKeyCode();
-        if (input == KeyEvent.VK_W || input == KeyEvent.VK_UP)
-            nextFacing = Direction.UP;
-        else if (input == KeyEvent.VK_A || input == KeyEvent.VK_LEFT)
-            nextFacing = Direction.LEFT;
-        else if (input == KeyEvent.VK_D || input == KeyEvent.VK_RIGHT)
-            nextFacing = Direction.RIGHT;
-        else if (input == KeyEvent.VK_S || input == KeyEvent.VK_DOWN)
-            nextFacing = Direction.DOWN;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // throw new UnsupportedOperationException("Unimplemented method
-        // 'keyReleased'");
     }
 
     public boolean getScary() {

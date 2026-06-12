@@ -12,10 +12,11 @@ public abstract class Ghost extends Movable {
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
     protected State state;
-    protected int respawnTimer;
+    public int respawnTimer;
     protected Map <Direction, Image[]> blankArray = new HashMap<>();
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
     protected final int RESPAWN_FRAMES = 5*Constants.FPS;
+
     public Ghost(String name, int startR, int startC) {
         super(name, startR, startC);
         DEBUG = true;
@@ -190,20 +191,20 @@ public abstract class Ghost extends Movable {
 
         return true;
     }
-    public void respawn(int timer, Player player){
-        if(timer == respawnTimer){
-            if(player.getScary())
-                state = State.SCARY;
-            else
-                state=State.NORMAL;
-            previousC = 22;
-            previousR = 22;
-            x = 8*previousR;
-            y = 8*previousC;
-            targetC=22;
-            targetR=22;
-        }
+
+    public void respawn(Player player){
+        if (player.getScary())
+            state = State.SCARY;
+        else
+            state = State.NORMAL;
+        previousR = 15;
+        previousC = 14;
+        x = 8*previousC;
+        y = 8*previousR;
+        targetR = 12;
+        targetC = 14;
     }
+
     public boolean getDead(){
         if(state==State.DEAD)
             return true;

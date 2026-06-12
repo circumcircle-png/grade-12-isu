@@ -150,6 +150,10 @@ public class Maze {
         // directions are taken from the perspective of the hallway
         // i.e. pacman can move at a square, so that leftWall is to its left
 
+        createTile("topGhostSpawnWall", 104, 96);
+        createTile("topGhostSpawnWallLeft", 234, 45);
+        createTile("topGhostSpawnWallRight", 225, 45);
+
         createTile("topRightCorner", 279, 36);
         createTile("topLeftCorner", 288, 36);
         createTile("bottomRightCorner", 315, 36);
@@ -191,6 +195,7 @@ public class Maze {
         createTile("bottomToRightTurn2", 306, 27);
         createTile("rightToBottomTurn2", 315, 45);
         createTile("leftToBottomTurn2", 324, 45);
+
         createPickups("heart", 0);
         createPickups("speed", 1);
         // createPickups("frost", 2);
@@ -203,7 +208,7 @@ public class Maze {
         // Parameters: Row and column
         // Return: Whether the cell is accessible
 
-        return maze[r][c] == '.' || maze[r][c] == '*' || maze[r][c] == 'a'||maze[r][c]=='h'||maze[r][c]=='s'||maze[r][c]=='f'||maze[r][c]=='F'||maze[r][c]=='m';
+        return ".*ahs".indexOf(maze[r][c]) >= 0;
     }
 
     public boolean isWall(int r, int c) {
@@ -211,11 +216,9 @@ public class Maze {
         // Parameters: Row and column
         // Return: Whether the cell is a wall
 
-        return maze[r][c] == '1' || maze[r][c] == '2' || maze[r][c] == '3' || maze[r][c] == '4';
+        return "12345RL".indexOf(maze[r][c]) >= 0;
     }
-    public void summonPickUp(){
-        
-    }
+    
     public String getTileType(int r, int c) {
         // Description: This method returns the name of the tile to be displayed for the specific cell.
         // Parameters: Row and column of target cell
@@ -237,6 +240,15 @@ public class Maze {
             return "missile";
         if (!isWall(r, c))
             return "blank";
+
+        // ghost spawn walls
+        if (maze[r][c] == '5')
+            return "topGhostSpawnWall";
+        else if (maze[r][c] == 'R')
+            return "topGhostSpawnWallRight";
+        else if (maze[r][c] == 'L')
+            return "topGhostSpawnWallLeft";
+
         // special wall
         if (maze[r][c] == '3') {
             if (maze[r][c-1] == '2' && maze[r][c+1] == '3') return "leftToBottomTurn2";
