@@ -21,13 +21,14 @@ public class Player extends Movable {
     private int speed;
     private int score;
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
-    private int heartCount = 10;
+    private int heartCount;
 
     public Player(int startR, int startC) {
         super("player", startR, startC);
         DEBUG = false;
         state = State.NORMAL;
         score = 0;
+        heartCount = 3;
         try {
             BufferedImage sheet = ImageIO.read(new File("images/pacman/pacman.png"));
             for (int i = 0; i <= 3; i++) {
@@ -72,7 +73,7 @@ public class Player extends Movable {
             score+=50;
         }
         if(tile.equals("speed")){
-            maze.remove(previousR,previousC);//add the speed
+            maze.remove(previousR,previousC);
             speedTimer = timer+FRAMES_SPEEDY;
             score+=50;
         }

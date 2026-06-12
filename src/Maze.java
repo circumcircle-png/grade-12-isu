@@ -20,7 +20,7 @@ public class Maze {
     // turning on DEBUG adds gridlines of 8x8 pixels
     private final boolean DEBUG = false;
     private int pickUpTimer = 0;
-    private final static int FRAMES_PICKUP = 10 * Constants.FPS;
+    private final static int FRAMES_PICKUP = 5 * Constants.FPS;
 
     public Maze(String fileName) throws IOException {
         // read tileset
