@@ -21,7 +21,7 @@ public class Player extends Movable implements KeyListener {
     private int speed;
     private int score;
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
-    private int heartCount = 3;
+    private int heartCount = 10;
 
     public Player(int startR, int startC) {
         super("player", startR, startC);

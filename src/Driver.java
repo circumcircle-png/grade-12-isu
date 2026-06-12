@@ -58,7 +58,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     public void initialize() {
         try {
             maze = new Maze("maze.txt");
-
+            ghosts.clear();
             mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.numColumns) / 2;
             mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.numRows) / 2;
             mazeBottomRightX = mazeTopLeftX + 16 * maze.numColumns;
@@ -250,6 +250,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                 if (name.equals("play")) {
                     timer = 0;
                     currentScreen = Screen.GAME;
+                    initialize();
 
                 }
             }
