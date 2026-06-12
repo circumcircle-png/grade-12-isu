@@ -12,10 +12,13 @@ import javax.imageio.ImageIO;
 public class Player extends Movable implements KeyListener {
     private final static int FRAMES_SCARY = 5 * Constants.FPS;
     private final static int FRAMES_INVICIBLE = 3 * Constants.FPS;
-
+    private final static int FRAMES_SPEEDY = 5 * Constants.FPS;
+    private final int TEMP_SPEED = 80;
     protected Direction nextFacing;
     public int scaryFrameTimer = 0;
     private int invicibleTimer = 0;
+    private int speedTimer = 0;
+    private int speed;
     private int score;
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
     private int heartCount = 3;
@@ -56,7 +59,6 @@ public class Player extends Movable implements KeyListener {
         if (tile.equals("dot")) {
             maze.remove(previousR, previousC);
             score+=10;
-            
         }
         if (tile.equals("bigDot")) {
             maze.remove(previousR, previousC);
@@ -71,9 +73,16 @@ public class Player extends Movable implements KeyListener {
         }
         if(tile.equals("speed")){
             maze.remove(previousR,previousC);//add the speed
+            speedTimer = timer+speedTimer;
+            score+=50;
         }
         if (scaryFrameTimer == timer) {
             state = State.NORMAL;
+        }
+        if(speedTimer>=timer){
+            speed =speeds.get(state)+TEMP_SPEED;
+        }else{
+            speed = speeds.get(state);
         }
     }
     public int getScore(){
@@ -130,7 +139,8 @@ public class Player extends Movable implements KeyListener {
                 facing = nextFacing;
             }
         }
-        double remainingDistanceToTravel = (double) speeds.get(state) / 60;
+        
+        double remainingDistanceToTravel = (double) speed / 60;
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
             double oldY = y;
