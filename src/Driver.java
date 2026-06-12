@@ -76,8 +76,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         mazeBottomRightY = mazeTopLeftY + 16 * maze.numRows;
 
         player = new Player(24, 14);
-        // ghosts.add(new FearlessGhost(20, 22));
-        // ghosts.add(new SlowGhost(21, 22));
+        ghosts.add(new FearlessGhost(20, 22));
+        ghosts.add(new SlowGhost(21, 22));
         ghosts.add(new BullGhost(22, 22));
         ghosts.add(new TeleportGhost(23, 22));
         ghosts.add(new PolterGhost(24, 22));
@@ -104,12 +104,12 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
                 if (ghost.checkCollision(player)) {
-                    if (player.getScary()&&!ghost.getDead()) {
+                    if (ghost.isScared() && !ghost.getDead()) {
                         if (ghost.getName().equals("phoenix")) {
                             PhoenixGhost phoenix = (PhoenixGhost) ghost;
                             phoenix.die(timer);
                         }
-                       else
+                        else
                             System.out.println(ghost.getName());
                            ghost.die(timer);
                     }

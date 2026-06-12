@@ -53,6 +53,10 @@ public abstract class Ghost extends Movable {
         }
     }
 
+    public boolean isScared() {
+        return state == State.SCARY;
+    }
+
     public void initSpeeds() {
         // Description: This method puts speeds into the speed map.
         // Parameters: None
