@@ -15,6 +15,7 @@ public abstract class Movable {
         EGG,
         BULL_STRAIGHT,
         BULL_TURN,
+        DEAD,
     }
     public State state;
 

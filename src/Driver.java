@@ -16,7 +16,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     private Player player;
     private Maze maze;
     private ArrayList<Ghost> ghosts = new ArrayList<>();
-
+    private int timer;
     private enum Screen {
         MAIN_MENU,
         GAME,
@@ -83,25 +83,29 @@ public class Driver extends JPanel implements Runnable, MouseListener {
     }
 
     public void update() {
+        timer += 1;
         if (currentScreen == Screen.GAME) {
-            player.nextFrame(maze);
+            player.nextFrame(maze, timer);
             player.updatePosition(maze);
             maze.generatePickUp();
+            
             for (int i = ghosts.size()-1; i >= 0; i--) {
                 Ghost ghost = ghosts.get(i);
+                ghost.respawn(timer, player);
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
-                if (ghost.checkCollision(player)) {//what
-                    if (player.getScary()) {
+                if (ghost.checkCollision(player)) {
+                    if (player.getScary()&&!ghost.getDead()) {
                         if (ghost.getName().equals("phoenix")) {
                             PhoenixGhost phoenix = (PhoenixGhost) ghost;
-                            phoenix.die();
+                            phoenix.die(timer);
                         }
-                        else
-                            ghosts.remove(i);
+                       else
+                            System.out.println(ghost.getName());
+                           ghost.die(timer);
                     }
-                    else {
-                        player.loseHeart();
+                    else if(!ghost.getDead()){
+                        player.loseHeart(timer);
                         if (player.getHearts() == 0) {
                             currentScreen = Screen.GAME_OVER;
                         }
@@ -109,7 +113,7 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                 }
             }
             if(maze.tilesLeft('.')==0){
-                currentScreen = Screen.GAME_OVER;
+                currentScreen = Screen.VICTORY;
             }
         }
     }
@@ -223,8 +227,8 @@ public class Driver extends JPanel implements Runnable, MouseListener {
                     g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 30 + mazeTopLeftX, mazeBottomRightY + 10, null);
                 }
 
-                createString(g2, 24, "Score: 20", mazeTopLeftX + 30, mazeTopLeftY - 40);
-                createString(g2, 24, "Time: 20", mazeTopLeftX + 30, mazeTopLeftY - 5);
+                createString(g2, 24, "Score: "+player.getScore(), mazeTopLeftX + 30, mazeTopLeftY - 40);
+                createString(g2, 24, "Time: "+timer/Constants.FPS, mazeTopLeftX + 30, mazeTopLeftY - 5);
                 createButton(g2, 24f, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
             }
             catch (Exception e) {
@@ -244,7 +248,9 @@ public class Driver extends JPanel implements Runnable, MouseListener {
 
             if (currentScreen == Screen.MAIN_MENU) {
                 if (name.equals("play")) {
+                    timer = 0;
                     currentScreen = Screen.GAME;
+
                 }
             }
             else if (currentScreen == Screen.GAME) {

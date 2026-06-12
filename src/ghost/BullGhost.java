@@ -22,7 +22,7 @@ public class BullGhost extends Ghost {
     public void nextFrame(Maze maze, Player player) {
         super.nextFrame(maze, player);
 
-        if (state == State.SCARY) return;
+        if (state == State.SCARY||state==State.DEAD) return;
 
         Direction first = Direction.STILL;
         if (targetR < previousR) first = Direction.UP;

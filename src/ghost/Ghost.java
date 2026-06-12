@@ -12,9 +12,10 @@ public abstract class Ghost extends Movable {
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
     protected State state;
-
+    protected int respawnTimer;
+    protected Map <Direction, Image[]> blankArray = new HashMap<>();
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
-
+    protected final int RESPAWN_FRAMES = 5*Constants.FPS;
     public Ghost(String name, int startR, int startC) {
         super(name, startR, startC);
         DEBUG = true;
@@ -37,6 +38,13 @@ public abstract class Ghost extends Movable {
                     new Image[] {scaredSheet.getSubimage(0, 16*i, 16, 16), scaredSheet.getSubimage(16, 16*i, 16, 16)}
                 );
             }
+            for(int i = 0; i<=3;i++){
+                BufferedImage blank = new BufferedImage(16,16,BufferedImage.TYPE_INT_ARGB);
+                blankArray.put(
+                    Constants.DIRECTIONS[i],
+                    new Image[] {blank, blank}
+                );
+            }
         }
         catch (IOException e) {
             // no mercy
@@ -51,17 +59,17 @@ public abstract class Ghost extends Movable {
 
         speeds.put(State.NORMAL, 70);
         speeds.put(State.SCARY, 40);
+        speeds.put(State.DEAD, 0);
     }
 
     public void nextFrame(Maze maze, Player player) {
         // Description: This method simulates one additional frame for the Ghost, and it always updates the state (even if the state remains the same).
         // Parameters: Maze and player
         // Return: void
-
         super.nextFrame();
-        if (player.state == State.SCARY)
+        if (player.state == State.SCARY&&state!=State.DEAD)
             state = State.SCARY;
-        else
+        else if(state!=State.DEAD)
             state = State.NORMAL;
     }
 
@@ -69,12 +77,13 @@ public abstract class Ghost extends Movable {
         // Description: This method returns the directional sprite map used to draw the ghost (purpose is to handle scary ghost graphics).
         // Parameters: None
         // Return: Map from Direction to an Image array (Image array represents gif)
-
+        if(state == State.DEAD)
+            return blankArray;
         if (state == State.SCARY)
             return scaredDirectionalSprites;
         return super.getDirectionalSpriteMap();
     }
-
+    
     public boolean checkCollision(Player player){
         // Description: This method checks if the ghost collides with the player.
         // Parameters: Player
@@ -92,6 +101,11 @@ public abstract class Ghost extends Movable {
             return true;
         }
         return false;
+
+    }
+    public void die(int timer){
+        respawnTimer = timer+RESPAWN_FRAMES;
+        state = State.DEAD;
 
     }
     public void updatePosition(Maze maze, Player player) {
@@ -176,7 +190,25 @@ public abstract class Ghost extends Movable {
 
         return true;
     }
-
+    public void respawn(int timer, Player player){
+        if(timer == respawnTimer){
+            if(player.getScary())
+                state = State.SCARY;
+            else
+                state=State.NORMAL;
+            previousC = 22;
+            previousR = 22;
+            x = 8*previousR;
+            y = 8*previousC;
+            targetC=22;
+            targetR=22;
+        }
+    }
+    public boolean getDead(){
+        if(state==State.DEAD)
+            return true;
+        return false;
+    }
     protected boolean chooseTarget(Maze maze, Player player) throws UnsupportedOperationException {
         // Description: This method chooses the next target coordinate for the ghost.
         // Parameters: Maze and player

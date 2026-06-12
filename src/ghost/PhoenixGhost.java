@@ -27,11 +27,11 @@ public class PhoenixGhost extends Ghost {
 
     public void initSpeeds() {
         super.initSpeeds();
-        speeds.put(State.EGG, 0);
+        speeds.put(State.DEAD, 0);
     }
 
     public void nextFrame(Maze maze, Player player) {
-        if (state == State.EGG) {
+        if (state == State.DEAD) {
             eggFrameCounter++; 
             if (eggFrameCounter == FRAMES_PER_PHASE * 3) {
                 // if player is normal, turn back to normal
@@ -41,23 +41,25 @@ public class PhoenixGhost extends Ghost {
             }
         }
         else {
+
             super.nextFrame(maze, player);
         }
     }
 
     protected Image getCurrentSprite() {
-        if (state == State.EGG)
-            return eggSprites[eggFrameCounter / FRAMES_PER_PHASE];
+        if (state == State.DEAD)
+            return eggSprites[eggFrameCounter/FRAMES_PER_PHASE];
         return super.getCurrentSprite();
     }
 
     protected boolean chooseTarget(Maze maze, Player player) {
-        if (state == State.EGG)
+        if (state == State.DEAD)
             return false;
         return super.chooseTarget(maze, player);
     }
 
-    public void die() {
-        state = State.EGG;
+    public void die(int timer) {
+        state = State.DEAD;
+        eggFrameCounter = 0;
     }
 }

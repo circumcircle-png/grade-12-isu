@@ -16,6 +16,7 @@ public class Player extends Movable implements KeyListener {
     protected Direction nextFacing;
     public int scaryFrameTimer = 0;
     private int invicibleTimer = 0;
+    private int score;
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
     private int heartCount = 3;
 
@@ -23,7 +24,7 @@ public class Player extends Movable implements KeyListener {
         super("player", startR, startC);
         DEBUG = false;
         state = State.NORMAL;
-
+        score = 0;
         try {
             BufferedImage sheet = ImageIO.read(new File("images/pacman/pacman.png"));
             for (int i = 0; i <= 3; i++) {
@@ -49,24 +50,35 @@ public class Player extends Movable implements KeyListener {
         speeds.put(State.SCARY, 80);
     }
 
-    public void nextFrame(Maze maze) {
+    public void nextFrame(Maze maze,int timer) {
         super.nextFrame();
-        scaryFrameTimer = Math.max(scaryFrameTimer - 1, 0);
-        invicibleTimer = Math.max(invicibleTimer - 1, 0);
         String tile = maze.getTileType(previousR, previousC);
         if (tile.equals("dot")) {
             maze.remove(previousR, previousC);
+            score+=10;
+            
         }
         if (tile.equals("bigDot")) {
             maze.remove(previousR, previousC);
             state = State.SCARY;
-            scaryFrameTimer = FRAMES_SCARY;
+            scaryFrameTimer = FRAMES_SCARY+timer;
+            score+=50;
         }
-        if (scaryFrameTimer == 0) {
+        if(tile.equals("heart")){
+            maze.remove(previousR,previousC);
+            gainHeart();
+            score+=50;
+        }
+        if(tile.equals("speed")){
+            maze.remove(previousR,previousC);//add the speed
+        }
+        if (scaryFrameTimer == timer) {
             state = State.NORMAL;
         }
     }
-
+    public int getScore(){
+        return score;
+    }
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
         if (state == State.SCARY)
             return scaryDirectionalSprites;
@@ -159,11 +171,10 @@ public class Player extends Movable implements KeyListener {
         return heartCount;
     }
     
-    public void loseHeart() {
-        if (invicibleTimer == 0) {
+    public void loseHeart(int timer) {
+        if (invicibleTimer <= timer) {
             heartCount--;
-            System.out.println(heartCount);
-            invicibleTimer = FRAMES_INVICIBLE;
+            invicibleTimer = FRAMES_INVICIBLE+timer;
         }
     }
 

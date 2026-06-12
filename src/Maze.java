@@ -6,7 +6,9 @@ import java.io.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
+// reset game????? prolly not
+// global timer
+// speed pickup
 public class Maze {
     private final BufferedImage tileset;
     private Map<String, BufferedImage> tilesetComponents = new HashMap<>();
@@ -35,13 +37,13 @@ public class Maze {
                 maze[i][j] = row.charAt(j);
         }
         toFile.close();
-        pickups = new char[6];
+        pickups = new char[3];
         pickups[0] = 'h';
         pickups[1] = 's';
-        pickups[2] = 'f';
-        pickups[3] = 'F';
-        pickups[4] = 'm';
-        pickups[5] = '*';
+        // pickups[2] = 'f';
+        // pickups[3] = 'F';
+        // pickups[4] = 'm';
+        pickups[2] = '*';
 
     }
     public void remove(int i, int j){
@@ -191,9 +193,9 @@ public class Maze {
         createTile("leftToBottomTurn2", 324, 45);
         createPickups("heart", 0);
         createPickups("speed", 1);
-        createPickups("frost", 2);
-        createPickups("fire",3);
-        createPickups("missile", 4);
+        // createPickups("frost", 2);
+        // createPickups("fire",3);
+        // createPickups("missile", 4);
     }
 
     public boolean isAccessible(int r, int c) {
