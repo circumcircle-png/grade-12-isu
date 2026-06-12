@@ -73,7 +73,7 @@ public class Player extends Movable {
         }
         if(tile.equals("speed")){
             maze.remove(previousR,previousC);//add the speed
-            speedTimer = timer+speedTimer;
+            speedTimer = timer+FRAMES_SPEEDY;
             score+=50;
         }
         if (scaryFrameTimer == timer) {
