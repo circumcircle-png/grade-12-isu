@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 
 public class Player extends Movable {
     private final static int FRAMES_SCARY = 5 * Constants.FPS;
-    private final static int FRAMES_INVICIBLE = 3 * Constants.FPS;
+    private final static int FRAMES_INVICIBLE = 5 * Constants.FPS;
     private final static int FRAMES_SPEEDY = 5 * Constants.FPS;
     private final int TEMP_SPEED = 80;
     protected Direction nextFacing;
@@ -28,7 +28,7 @@ public class Player extends Movable {
         DEBUG = false;
         state = State.NORMAL;
         score = 0;
-        heartCount = 3;
+        heartCount = 5;
         try {
             BufferedImage sheet = ImageIO.read(new File("images/pacman/pacman.png"));
             for (int i = 0; i <= 3; i++) {
