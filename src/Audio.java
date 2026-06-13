@@ -4,66 +4,109 @@ import javax.sound.sampled.*;
 import java.io.*;
 
 public class Audio {
-    private static Clip musicClip;
+    private static float volume;
 
-    public static void playMainMenuMusic(float volume) {
-        // Description: This method plays the main menu music and loops it continuously.
-        // Parameters: Float representing volume (0 to 100)
-        // Return: void
+    private static Clip musicClip, pingClip, powerUpClip, damageClip, ghostKillClip;
+    private static FloatControl musicVolumeControl, pingVolumeControl, powerUpVolumeControl, damageVolumeControl, ghostKillVolumeControl;
 
+    public static void initialize() {
+        musicClip = readAudioFile("sounds/pac-man-theme-remix.wav");
+        pingClip = readAudioFile("sounds/sfx_coin_single2.wav");
+        powerUpClip = readAudioFile("sounds/sfx_sounds_powerup6.wav");
+        damageClip = readAudioFile("sounds/sfx_sounds_damage3.wav");
+        ghostKillClip = readAudioFile("sounds/sfx_sounds_powerup4.wav");
+
+        musicVolumeControl = (FloatControl) musicClip.getControl(FloatControl.Type.MASTER_GAIN);
+        pingVolumeControl = (FloatControl) pingClip.getControl(FloatControl.Type.MASTER_GAIN);
+        powerUpVolumeControl = (FloatControl) powerUpClip.getControl(FloatControl.Type.MASTER_GAIN);
+        damageVolumeControl = (FloatControl) damageClip.getControl(FloatControl.Type.MASTER_GAIN);
+        ghostKillVolumeControl = (FloatControl) ghostKillClip.getControl(FloatControl.Type.MASTER_GAIN);
+
+        changeVolume(20);
+    }
+
+    private static Clip readAudioFile(String filename) {
         try {
             AudioInputStream audio = AudioSystem.getAudioInputStream(
-                new File("sounds/pac-man-theme-remix.wav")
+                new File(filename)
             );
-            musicClip = AudioSystem.getClip();
-            musicClip.open(audio);
-
-            FloatControl vol = (FloatControl) musicClip.getControl(FloatControl.Type.MASTER_GAIN);
-            vol.setValue(volume * 50 / 100 - 50);
-
-            musicClip.loop(Clip.LOOP_CONTINUOUSLY);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void playPing(float volume) {
-        // Description: This method plays the ping sound effect.
-        // Parameters: Float representing volume (0 to 100)
-        // Return: void
-
-        playSound("sounds/sfx_coin_single2.wav", volume);
-    }
-
-    public static void playPowerUp(float volume) {
-        // Description: This method plays the power up sound effect.
-        // Parameters: Float representing volume (0 to 100)
-        // Return: void
-
-        playSound("sounds/sfx_sounds_powerup6.wav", volume);
-    }
-
-    private static void playSound(String filename, float volume) {
-        // Description: This method plays a sound effect.
-        // Parameters: Filename and float representing volume (0 to 100)
-        // Return: void
-
-        // volume is between 0 and 100
-        if (volume == 0)
-            return;
-
-        try {
-            AudioInputStream audio = AudioSystem.getAudioInputStream(new File(filename));
             Clip clip = AudioSystem.getClip();
             clip.open(audio);
-
-            // change volume
-            FloatControl vol = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            vol.setValue(volume * 50 / 100 - 50);
-
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
+            return clip;
         }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // getter for volume
+    public static float getVolume() {
+        return volume;
+    }
+
+    public static void changeVolume(float newVolume) {
+        volume = newVolume;
+        float db = newVolume * 50 / 100 - 50;
+        musicVolumeControl.setValue(db);
+        pingVolumeControl.setValue(db);
+        powerUpVolumeControl.setValue(db);
+        damageVolumeControl.setValue(db);
+        ghostKillVolumeControl.setValue(db);
+    }
+
+    public static void playMainMenuMusic() {
+        // Description: This method plays the main menu music and loops it continuously.
+        // Parameters: None
+        // Return: void
+
+        if (musicClip.isRunning())
+            return;
+        musicClip.setFramePosition(0);
+        musicClip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+
+    public static void stopMainMenuMusic() {
+        // Description: This method plays the main menu music and loops it continuously.
+        // Parameters: None
+        // Return: void
+
+        musicClip.stop();
+    }
+
+    public static void playPing() {
+        // Description: This method plays the ping sound effect.
+        // Parameters: None
+        // Return: void
+
+        pingClip.setFramePosition(0);
+        pingClip.start();
+    }
+
+    public static void playPowerUp() {
+        // Description: This method plays the power up sound effect.
+        // Parameters: None
+        // Return: void
+
+        powerUpClip.setFramePosition(0);
+        powerUpClip.start();
+    }
+
+    public static void playDamage() {
+        // Description: This method plays the lose hearts sound effect.
+        // Parameters: None
+        // Return: void
+
+        damageClip.setFramePosition(0);
+        damageClip.start();
+    }
+
+    public static void playGhostKill() {
+        // Description: This method plays the lose hearts sound effect.
+        // Parameters: None
+        // Return: void
+
+        ghostKillClip.setFramePosition(0);
+        ghostKillClip.start();
     }
 }

@@ -126,7 +126,7 @@ public abstract class Ghost extends Movable {
 
         respawnTimer = timer + RESPAWN_FRAMES;
         state = State.DEAD;
-
+        Audio.playGhostKill();
     }
 
     public void updatePosition(Maze maze, Player player) {

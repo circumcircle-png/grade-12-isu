@@ -42,7 +42,6 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         initialize();
         thread = new Thread(this);
         thread.start();
-
     }
 
     public void run() {
@@ -63,6 +62,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         setFocusable(true);
         setLayout(null);
         gameName = new JTextField();
+
+        Audio.initialize();
+        Audio.playMainMenuMusic();
 
         try {
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
@@ -326,6 +328,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             String name = buttons.get(area);
             if (!area.contains(e.getPoint()))
                 continue;
+
+            if (name.equals("play"))
+                Audio.stopMainMenuMusic();
+            else
+                Audio.playMainMenuMusic();
 
             if (name.equals("play")) {
                 try {

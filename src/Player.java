@@ -70,22 +70,26 @@ public class Player extends Movable {
         if (tile.equals("dot")) {
             maze.remove(previousR, previousC);
             score += 10;
+            Audio.playPing();
         }
         if (tile.equals("bigDot")) {
             maze.remove(previousR, previousC);
             state = State.SCARY;
             scaryFrameTimer = FRAMES_SCARY + timer;
             score += 50;
+            Audio.playPowerUp();
         }
         if (tile.equals("heart")) {
             maze.remove(previousR, previousC);
             gainHeart();
             score += 50;
+            Audio.playPowerUp();
         }
         if (tile.equals("speed")) {
             maze.remove(previousR, previousC);
             speedTimer = timer + FRAMES_SPEEDY;
             score += 50;
+            Audio.playPowerUp();
         }
 
         if (scaryFrameTimer == timer) {
@@ -206,6 +210,7 @@ public class Player extends Movable {
 
     public void loseHeart(int timer) {
         if (invicibleTimer <= timer) {
+            Audio.playDamage();
             heartCount--;
             invicibleTimer = FRAMES_INVICIBLE + timer;
         }
