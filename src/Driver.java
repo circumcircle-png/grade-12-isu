@@ -21,8 +21,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     private enum Screen {
         MAIN_MENU, GAME, VICTORY, GAME_OVER, TUTORIAL, CREDITS, LEADERBOARD, SETTINGS
     }
-    private Screen currentScreen = Screen.TUTORIAL;
-    private Map<Rectangle, String> buttons = new HashMap<Rectangle, String>();
+    private Screen currentScreen = Screen.MAIN_MENU;
+    private Map<Rectangle, String> buttons = new HashMap<>();
+    private Map<Screen, Image> screenImages = new HashMap<>();
 
     private Font pacmanFont;
 
@@ -58,13 +59,14 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         setFocusable(true);
         try {
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
+
+            screenImages.put(Screen.TUTORIAL, ImageIO.read(new File("images/screen/tutorial.png")));
         } catch (Exception e) {
             e.printStackTrace();
         };
     }
 
     public void startNewGame() throws IOException {
-        System.out.println("HERE");
         timer = 0;
         maze = new Maze("maze.txt");
         ghosts.clear();
@@ -212,6 +214,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
         g2.setColor(Color.WHITE);
 
+        g.drawImage(screenImages.get(currentScreen), 0, 0, null);
+
         if (currentScreen == Screen.MAIN_MENU) {
             createCenteredString(g2, 24, "pac-man", 100);
 
@@ -256,36 +260,26 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             String[] text = {
                 "You are Pac-Man.",
                 "Use WASD or arrow keys to move.",
-                "",
                 "Collect all dots to win.",
-                "",
                 "Run away from ghosts.",
-                "",
                 "Collect big dots to scare and eat ghosts.",
-                "",
                 "Other power ups: hearts and speed.",
-                "",
                 "Slow ghost is slow.",
-                "",
                 "Fearless ghost is never scared.",
-                "",
-                "Bull ghost runs straight fast",
-                "but turns slow.",
-                "",
-                "Phoenix ghost becomes an egg",
-                "after dying.",
-                "",
+                "Bull ghost runs straight fast, turns slow.",
+                "Phoenix ghost becomes egg after dying.",
                 "Teleport ghost periodically teleports.",
-                "",
                 "Polter ghost goes through walls.",
             };
             int currentY = 100;
-            int incrementY = 22;
+            int incrementY = 40;
 
             for (String s: text) {
                 createString(g2, 12, s, 80, currentY);
                 currentY += incrementY;
             }
+
+            createCenteredButton(g2, 24, "home", currentY + 20);
         }
         else if (currentScreen == Screen.CREDITS) {
             createCenteredString(g2, 30, "Credits", 50);
