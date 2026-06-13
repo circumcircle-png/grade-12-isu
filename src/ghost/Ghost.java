@@ -205,17 +205,31 @@ public abstract class Ghost extends Movable {
         int playerR = target[0];
         int playerC = target[1];
 
-        // moves away from player based on position
-        if (targetR < playerR && maze.isAccessible(targetR-1, targetC))
-            targetR--;
-        else if (playerR < targetR && maze.isAccessible(targetR+1, targetC))
-            targetR++;
-        else if (targetC < playerC && maze.isAccessible(targetR, targetC-1))
-            targetC--;
-        else if (playerC < targetC && maze.isAccessible(targetR, targetC+1))
-            targetC++;
-        else
+        // moves away from player to the square that maximizes distance
+        int furthestR = -1;
+        int furthestC = -1;
+        int furthestDistance = -1;
+
+        for (int i = 0; i <= 3; i++) {
+            int testR = targetR + Constants.DELTA_R[i];
+            int testC = targetC + Constants.DELTA_C[i];
+
+            if (!maze.isAccessible(testR, testC))
+                continue;
+
+            int testDistance = Math.abs(playerR - testR) + Math.abs(playerC - testC);
+            if (testDistance > furthestDistance) {
+                furthestR = testR;
+                furthestC = testC;
+                furthestDistance = testDistance;
+            }
+        }
+
+        if (furthestDistance == -1)
             return false;
+            
+        targetR = furthestR;
+        targetC = furthestC;
 
         return true;
     }
