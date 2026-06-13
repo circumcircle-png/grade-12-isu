@@ -276,7 +276,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             drawGame(g2);
         }
         else if (currentScreen == Screen.TUTORIAL) {
-            createCenteredString(g2, 30, "Tutorial", 50);
+            createCenteredString(g2, 30, "Tutorial", 75);
+            createButton(g2, 16, "home", 500, 70);
 
             String[] text = {
                 "You are Pac-Man.",
@@ -292,21 +293,19 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 "Teleport ghost periodically teleports.",
                 "Polter ghost goes through walls.",
             };
-            int currentY = 100;
+            int currentY = 125;
             int incrementY = 40;
 
             for (String s: text) {
                 createString(g2, 12, s, 80, currentY);
                 currentY += incrementY;
             }
-
-            createCenteredButton(g2, 24, "home", currentY + 20);
         }
         else if (currentScreen == Screen.CREDITS) {
-            createCenteredString(g2, 30, "Credits", 50);
-            createCenteredString(g2, 12, "Created by Jonathan Zhou and Christopher Li", 100);
-            createCenteredString(g2, 12, "June 13, 2026", 150);
-            createCenteredButton(g2, 24, "home", 250);
+            createCenteredString(g2, 30, "Credits", 75);
+            createButton(g2, 16, "home", 500, 70);
+            createCenteredString(g2, 12, "Created by Jonathan Zhou and Christopher Li", 125);
+            createCenteredString(g2, 12, "June 13, 2026", 175);
         }
         else if(currentScreen == Screen.LEADERBOARD){
             displayLeaderboard(g2);
