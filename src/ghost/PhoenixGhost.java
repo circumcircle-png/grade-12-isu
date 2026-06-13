@@ -26,11 +26,19 @@ public class PhoenixGhost extends Ghost {
     }
 
     public void initSpeeds() {
+        // Description: This method puts speeds into the speed map.
+        // Parameters: None
+        // Return: void
+
         super.initSpeeds();
         speeds.put(State.DEAD, 0);
     }
 
     public void nextFrame(Maze maze, Player player) {
+        // Description: This method simulates one additional frame for the Ghost, and it always updates the state (even if the state remains the same).
+        // Parameters: Maze and player
+        // Return: void
+
         if (state == State.DEAD) {
             eggFrameCounter++; 
             if (eggFrameCounter == FRAMES_PER_PHASE * 3) {
@@ -47,18 +55,30 @@ public class PhoenixGhost extends Ghost {
     }
 
     protected Image getCurrentSprite() {
+        // Description: This method gets the sprite to be displayed based on the whether the ghost is an egg, the direction, and the frame counter.
+        // Parameters: None
+        // Return: The sprite to de displayed
+
         if (state == State.DEAD)
-            return eggSprites[eggFrameCounter/FRAMES_PER_PHASE];
+            return eggSprites[eggFrameCounter / FRAMES_PER_PHASE];
         return super.getCurrentSprite();
     }
 
     protected boolean chooseTarget(Maze maze, Player player) {
+        // Description: This method chooses the next target coordinate for the ghost.
+        // Parameters: Maze and player
+        // Return: Boolean representing a target coordinate is selected, or the ghost will remain still
+        
         if (state == State.DEAD)
             return false;
         return super.chooseTarget(maze, player);
     }
 
     public void die(int timer) {
+        // Description: This method kills the phoenix ghost and starts the timer for the egg to respawn.
+        // Parameters: The current timer
+        // Return: void
+
         state = State.DEAD;
         eggFrameCounter = 0;
     }

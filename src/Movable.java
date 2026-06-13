@@ -53,7 +53,6 @@ public abstract class Movable {
         return name;
     }
 
-
     // this method adds to the speeds map
     public abstract void initSpeeds();
 

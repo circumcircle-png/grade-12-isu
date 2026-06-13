@@ -44,39 +44,50 @@ public class Maze {
         // pickups[3] = 'F';
         // pickups[4] = 'm';
         pickups[2] = '*';
+    }
 
+    public void remove(int r, int c) {
+        // Description: This method removes the pick up at row r and column c.
+        // Parameters: Row and column
+        // Return: void
+
+        maze[r][c] = 'a';
     }
-    public void remove(int i, int j){
-        maze[i][j]= 'a';
-    }
-    public int tilesLeft(char a){
+
+    public int tilesLeft(char a) {
+        // Description: This method returns the number of tiles with a character.
+        // Parameters: The character to search for
+        // Return: void
+
         int spots = 0;
-        for(int i = 0;i<numRows;i++){
-                for(int j = 0;j<numColumns;j++){
-                    if(maze[i][j]==a)
-                        spots+=1;
-
-                }
+        for (int r = 0; r < numRows; r++) {
+            for (int c = 0; c < numColumns; c++){
+                if (maze[r][c] == a)
+                    spots++;
+            }
         }
         return spots;
     }
-    public void generatePickUp(){
-        pickUpTimer+=1;
-        if(pickUpTimer%FRAMES_PICKUP==0){
-            boolean validSpot = true;
-            if(tilesLeft('a')>=1){
-                do{
-                    int randRow = (int)(Math.random()*numRows);
-                    int randCol = (int)(Math.random()*numColumns);
-                    if(maze[randRow][randCol]=='a'){//can spawn on player idk
-                        validSpot = false;
-                        int power = (int)(Math.random()*pickups.length);
-                        maze[randRow][randCol] = pickups[power];
-                    }
-                }while(validSpot);
-            }
+
+    public void generatePickUp() {
+        pickUpTimer++;
+        if (pickUpTimer % FRAMES_PICKUP != 0)
+            return;
+
+        boolean validSpot = true;
+        if (tilesLeft('a') >= 1) {
+            do {
+                int randRow = (int)(Math.random()*numRows);
+                int randCol = (int)(Math.random()*numColumns);
+                if (maze[randRow][randCol] == 'a') {//can spawn on player idk
+                    validSpot = false;
+                    int power = (int)(Math.random()*pickups.length);
+                    maze[randRow][randCol] = pickups[power];
+                }
+            } while(validSpot);
         }
     }
+
     public void generateShortestPathMatrix() {
         // Description: This method uses BFS to find the shortest path from one cell to another.
         // Parameters: None
@@ -355,19 +366,26 @@ public class Maze {
         }
     }
 
+    // getter for number of columns of maze
     public int getNumColumns() {
         return numColumns;
     }
 
+    // getter for number of rows of maze
     public int getNumRows() {
         return numRows;
     }
 
+    // getter for shortest path matrix
     public Direction[][][][] getShortestPath() {
         return shortestPath;
     }
 
     public java.util.List<int[]> getAllAccessibleCells() {
+        // Description: This method gets a list of all accessible cells.
+        // Parameters: None
+        // Return: list containing all accessible cells
+
         java.util.List<int[]> list = new ArrayList<>();
         for (int r = 0; r < numRows; r++) {
             for (int c = 0; c < numColumns; c++) {

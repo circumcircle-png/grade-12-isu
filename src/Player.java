@@ -28,6 +28,8 @@ public class Player extends Movable {
         state = State.NORMAL;
         score = 0;
         heartCount = 5;
+
+        // read spitesheets
         try {
             BufferedImage sheet = ImageIO.read(new File("images/pacman/pacman.png"));
             for (int i = 0; i <= 3; i++) {
@@ -43,19 +45,28 @@ public class Player extends Movable {
                                 scarySheet.getSubimage(16, 16 * i, 16, 16) });
             }
         } catch (IOException e) {
-            // no mercy
-            System.exit(0);
+            e.printStackTrace();
         }
     }
 
     public void initSpeeds() {
+        // Description: This method puts speeds into the speed map.
+        // Parameters: None
+        // Return: void
+
         speeds.put(State.NORMAL, 80);
         speeds.put(State.SCARY, 80);
     }
 
     public void nextFrame(Maze maze, int timer) {
+        // Description: This method simulates one extra frame for the player.
+        // Parameters: Maze and timer
+        // Return: void
+
         super.nextFrame();
         String tile = maze.getTileType(previousR, previousC);
+
+        // handle collision with pickups
         if (tile.equals("dot")) {
             maze.remove(previousR, previousC);
             score += 10;
@@ -76,6 +87,7 @@ public class Player extends Movable {
             speedTimer = timer + FRAMES_SPEEDY;
             score += 50;
         }
+
         if (scaryFrameTimer == timer) {
             state = State.NORMAL;
         }
@@ -86,11 +98,24 @@ public class Player extends Movable {
         }
     }
 
+    // getter for score
     public int getScore() {
         return score;
     }
 
+    public void updateScore(int points){
+        // Description: This method increases the score by some number of points.
+        // Parameters: The number of points
+        // Return: void
+
+        score += points;
+    }
+
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
+        // Description: This method returns the sprite map to be used by getCurrentSprite.
+        // Parameters: None
+        // Return: The sprite map to be used
+
         if (state == State.SCARY)
             return scaryDirectionalSprites;
         return super.getDirectionalSpriteMap();
@@ -174,12 +199,9 @@ public class Player extends Movable {
         }
     }
 
+    // getter for current position
     public int[] getCurrentPosition() {
         return new int[] { targetR, targetC };
-    }
-
-    public int getHearts() {
-        return heartCount;
     }
 
     public void loseHeart(int timer) {
@@ -189,19 +211,31 @@ public class Player extends Movable {
         }
     }
 
+    // getter for number of hearts
+    public int getHearts() {
+        return heartCount;
+    }
+
     public void gainHeart() {
+        // Description: This method gives the player an extra heart.
+        // Parameters: None
+        // Return: void
+
         heartCount++;
     }
+
+    // getter for X coordinate
     public double getX(){
         return x;
     }
-    public double getY(){
+
+    // getter for Y coordinate
+    public double getY() {
         return y;
     }
-    public State getState(){
+
+    // getter for state
+    public State getState() {
         return state;
-    }
-    public void updateScore(int points){
-        score +=points;
     }
 }

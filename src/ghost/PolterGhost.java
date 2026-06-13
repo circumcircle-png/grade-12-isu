@@ -8,11 +8,19 @@ public class PolterGhost extends Ghost {
     }
 
     public void initSpeeds() {
+        // Description: This method puts speeds into the speed map.
+        // Parameters: None
+        // Return: void
+
         super.initSpeeds();
         speeds.put(State.NORMAL, 50);
     }
 
     protected boolean chooseTarget(Maze maze, Player player) {
+        // Description: This method chooses the next target coordinate for the ghost.
+        // Parameters: Maze and player
+        // Return: Boolean representing a target coordinate is selected, or the ghost will remain still
+        
         if (state == State.SCARY)
             return super.chooseTarget(maze, player);
         int playerR = player.getCurrentPosition()[0];

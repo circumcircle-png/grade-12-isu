@@ -6,6 +6,10 @@ public class SlowGhost extends Ghost {
     }
 
     public void initSpeeds() {
+        // Description: This method puts speeds into the speed map.
+        // Parameters: None
+        // Return: void
+
         super.initSpeeds();
         speeds.put(State.NORMAL, 50);
     }

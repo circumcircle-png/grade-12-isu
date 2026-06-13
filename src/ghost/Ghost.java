@@ -25,6 +25,8 @@ public abstract class Ghost extends Movable {
         DEBUG = true;
         this.name = name;
         state = State.NORMAL;
+
+        // import ghost spritesheets
         try {
             BufferedImage sheet = ImageIO.read(new File("images/ghost/" + name + ".png"));
             for (int i = 0; i <= 3; i++) {
@@ -51,12 +53,15 @@ public abstract class Ghost extends Movable {
             }
         }
         catch (IOException e) {
-            // no mercy
-            System.exit(0);
+            e.printStackTrace();
         }
     }
 
     public boolean isScared() {
+        // Description: This method returns whether the ghost is scared or not.
+        // Parameters: None
+        // Return: Boolean representing if the ghost is scared
+
         return state == State.SCARY;
     }
 
@@ -74,6 +79,7 @@ public abstract class Ghost extends Movable {
         // Description: This method simulates one additional frame for the Ghost, and it always updates the state (even if the state remains the same).
         // Parameters: Maze and player
         // Return: void
+
         super.nextFrame();
         if (player.getState() == State.SCARY&&state!=State.DEAD)
             state = State.SCARY;
@@ -85,6 +91,7 @@ public abstract class Ghost extends Movable {
         // Description: This method returns the directional sprite map used to draw the ghost (purpose is to handle scary ghost graphics).
         // Parameters: None
         // Return: Map from Direction to an Image array (Image array represents gif)
+
         if(state == State.DEAD)
             return blankArray;
         if (state == State.SCARY)
@@ -105,17 +112,23 @@ public abstract class Ghost extends Movable {
         int rightG = (int)x+10;
         int topG = (int)y-2;
         int bottomG = (int)y+10;
+
         if(((left<=rightG&&left>=leftG)||(right>=leftG&&right<=rightG))&&((top<=bottomG&&top>=topG)||(bottom>=topG&&bottom<=bottomG))){
             return true;
         }
         return false;
-
     }
-    public void die(int timer){
-        respawnTimer = timer+RESPAWN_FRAMES;
+
+    public void die(int timer) {
+        // Description: This method kills the ghost and starts the timer for the ghost to respawn.
+        // Parameters: The current timer
+        // Return: void
+
+        respawnTimer = timer + RESPAWN_FRAMES;
         state = State.DEAD;
 
     }
+
     public void updatePosition(Maze maze, Player player) {
         // Description: This method updates the position of the ghost based on its state.
         // Parameters: Maze and player
@@ -235,6 +248,11 @@ public abstract class Ghost extends Movable {
     }
 
     public void respawn(Player player){
+        // Description: This method respawns the ghost back to the middle.
+        // Parameters: Player
+        // Return: Boolean representing if the ghost is dead
+
+        // copy player's state
         if (player.getState()==State.SCARY)
             state = State.SCARY;
         else
@@ -248,11 +266,18 @@ public abstract class Ghost extends Movable {
     }
 
     public boolean getDead(){
+        // Description: This method returns whether the ghost is dead or not.
+        // Parameters: None
+        // Return: Boolean representing if the ghost is dead
+
         return state == State.DEAD;
     }
+
+    // getter for respawn timer
     public int getRespawnTimer(){
         return respawnTimer;
     }
+
     protected boolean chooseTarget(Maze maze, Player player) throws UnsupportedOperationException {
         // Description: This method chooses the next target coordinate for the ghost.
         // Parameters: Maze and player
