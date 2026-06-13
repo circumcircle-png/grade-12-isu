@@ -39,13 +39,13 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         addMouseListener(this);
         setVisible(true);    
+        initialize();
         thread = new Thread(this);
         thread.start();
 
     }
 
     public void run() {
-        initialize();
         while (true) {
             update();
             this.repaint();
@@ -66,12 +66,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
         try {
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
-
             screenImages.put(Screen.TUTORIAL, ImageIO.read(new File("images/screen/tutorial.png")));
-
         } catch (Exception e) {
             e.printStackTrace();
-        };
+        }
         gameName.setFont(pacmanFont.deriveFont(50f));
         add(gameName);
     }
@@ -390,24 +388,25 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         }
     }
     public void displayLeaderboard(Graphics2D g2){
+        int fontSize = 24;
         if(searched){
             if(searchedBoard.size()<10){
                  for(int i = 0; i <searchedBoard.size();i++){
-                    createCenteredString(g2, 24, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
+                    createCenteredString(g2, fontSize, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
                 }
             }else{
                 for (int i = 0; i<10;i++){
-                    createCenteredString(g2, 24, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
+                    createCenteredString(g2, fontSize, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
                 }
             }
         } else {
             if(leaderboard.size()<10){
                  for(int i = 0; i <leaderboard.size();i++){
-                    createCenteredString(g2, 24, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
+                    createCenteredString(g2, fontSize, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
                 }
             }else{
                 for (int i = 0; i<10;i++){
-                    createCenteredString(g2, 24, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
+                    createCenteredString(g2, fontSize, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
                 }
             }
         }
