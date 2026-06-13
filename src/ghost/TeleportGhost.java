@@ -4,7 +4,7 @@ import src.*;
 import java.util.*;
 
 public class TeleportGhost extends Ghost {
-    public final static int FRAMES_PER_TELEPORT = 3 * Constants.FPS;
+    private final static int FRAMES_PER_TELEPORT = 3 * Constants.FPS;
 
     private int teleportFrameCounter = 0;
 
@@ -18,8 +18,8 @@ public class TeleportGhost extends Ghost {
         if (teleportFrameCounter == FRAMES_PER_TELEPORT-1 && state != State.SCARY&&state!=State.DEAD) {
             // teleport to a random available square
             ArrayList<int[]> available = new ArrayList<>();
-            for (int r = 0; r < maze.numRows; r++) {
-                for (int c = 0; c < maze.numColumns; c++) {
+            for (int r = 0; r < maze.getNumRows(); r++) {
+                for (int c = 0; c < maze.getNumColumns(); c++) {
                     if (maze.isAccessible(r, c))
                         available.add(new int[] {r, c});
                 }

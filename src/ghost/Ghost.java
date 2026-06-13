@@ -12,7 +12,7 @@ public abstract class Ghost extends Movable {
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
     protected State state;
-    public int respawnTimer;
+    private int respawnTimer;
     protected Map <Direction, Image[]> blankArray = new HashMap<>();
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
     protected final int RESPAWN_FRAMES = 5*Constants.FPS;
@@ -72,7 +72,7 @@ public abstract class Ghost extends Movable {
         // Parameters: Maze and player
         // Return: void
         super.nextFrame();
-        if (player.state == State.SCARY&&state!=State.DEAD)
+        if (player.getState() == State.SCARY&&state!=State.DEAD)
             state = State.SCARY;
         else if(state!=State.DEAD)
             state = State.NORMAL;
@@ -94,10 +94,10 @@ public abstract class Ghost extends Movable {
         // Parameters: Player
         // Return: Boolean representing whether the ghost collides with the player
 
-        int left = (int)player.x-2;
-        int right = (int)player.x+10;
-        int top = (int)player.y-2;
-        int bottom = (int)player.y+10;
+        int left = (int)player.getX()-2;
+        int right = (int)player.getX()+10;
+        int top = (int)player.getY()-2;
+        int bottom = (int)player.getY()+10;
         int leftG = (int) x-2;
         int rightG = (int)x+10;
         int topG = (int)y-2;
@@ -162,7 +162,7 @@ public abstract class Ghost extends Movable {
         int playerR = target[0];
         int playerC = target[1];
 
-        Direction direction = maze.shortestPath[previousR][previousC][playerR][playerC];
+        Direction direction = maze.getShortestPath()[previousR][previousC][playerR][playerC];
         if (direction == Direction.UP) targetR--;
         else if (direction == Direction.DOWN) targetR++;
         else if (direction == Direction.LEFT) targetC--;
@@ -197,7 +197,7 @@ public abstract class Ghost extends Movable {
     }
 
     public void respawn(Player player){
-        if (player.getScary())
+        if (player.getState()==State.SCARY)
             state = State.SCARY;
         else
             state = State.NORMAL;
@@ -212,7 +212,9 @@ public abstract class Ghost extends Movable {
     public boolean getDead(){
         return state == State.DEAD;
     }
-
+    public int getRespawnTimer(){
+        return respawnTimer;
+    }
     protected boolean chooseTarget(Maze maze, Player player) throws UnsupportedOperationException {
         // Description: This method chooses the next target coordinate for the ghost.
         // Parameters: Maze and player

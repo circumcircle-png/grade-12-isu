@@ -14,7 +14,7 @@ public class Player extends Movable {
     private final int TEMP_SPEED = 80;
 
     protected Direction nextFacing;
-    public int scaryFrameTimer = 0;
+    private int scaryFrameTimer = 0;
     private int invicibleTimer = 0;
     private int speedTimer = 0;
     private int speed;
@@ -192,10 +192,16 @@ public class Player extends Movable {
     public void gainHeart() {
         heartCount++;
     }
-
-    public boolean getScary() {
-        if (state == State.SCARY)
-            return true;
-        return false;
+    public double getX(){
+        return x;
+    }
+    public double getY(){
+        return y;
+    }
+    public State getState(){
+        return state;
+    }
+    public void updateScore(int points){
+        score +=points;
     }
 }

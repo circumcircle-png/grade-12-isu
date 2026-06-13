@@ -70,10 +70,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         timer = 0;
         maze = new Maze("maze.txt");
         ghosts.clear();
-        mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.numColumns) / 2;
-        mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.numRows) / 2;
-        mazeBottomRightX = mazeTopLeftX + 16 * maze.numColumns;
-        mazeBottomRightY = mazeTopLeftY + 16 * maze.numRows;
+        mazeTopLeftX = (WINDOW_WIDTH - 16 * maze.getNumColumns()) / 2;
+        mazeTopLeftY = (WINDOW_HEIGHT - 16 * maze.getNumRows()) / 2;
+        mazeBottomRightX = mazeTopLeftX + 16 * maze.getNumColumns();
+        mazeBottomRightY = mazeTopLeftY + 16 * maze.getNumRows();
 
         player = new Player(24, 14);
         ghosts.add(new FearlessGhost(20, 22));
@@ -99,18 +99,18 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             
             for (int i = ghosts.size()-1; i >= 0; i--) {
                 Ghost ghost = ghosts.get(i);
-                if (timer == ghost.respawnTimer)
+                if (timer == ghost.getRespawnTimer())
                     ghost.respawn(player);
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
                 if (ghost.checkCollision(player)) {
                     if (ghost.isScared() && !ghost.getDead()) {
+                        player.updateScore(200);
                         if (ghost.getName().equals("phoenix")) {
                             PhoenixGhost phoenix = (PhoenixGhost) ghost;
                             phoenix.die(timer);
                         }
                         else
-                            System.out.println(ghost.getName());
                            ghost.die(timer);
                     }
                     else if(!ghost.getDead()){
@@ -236,6 +236,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createCenteredButton(g2, 24, "home", 300);
         }
         else if (currentScreen == Screen.VICTORY) {
+            
             createCenteredString(g2, 30, "victory", 100);
             createCenteredButton(g2, 24, "home", 300);
         }
@@ -289,6 +290,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createCenteredString(g2, 12, "Created by Jonathan Zhou and Christopher Li", 100);
             createCenteredString(g2, 12, "June 13, 2026", 150);
             createCenteredButton(g2, 24, "home", 250);
+        }
+        else if(currentScreen == Screen.LEADERBOARD){
+
         }
     }
 

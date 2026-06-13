@@ -28,7 +28,7 @@ public class PolterGhost extends Ghost {
 
         int r = targetR + DELTA_R;
         int c = targetC + DELTA_C;
-        while (0 <= r && r < maze.numRows && 0 <= c && c < maze.numColumns) {
+        while (0 <= r && r < maze.getNumRows() && 0 <= c && c < maze.getNumColumns()) {
             if (maze.isAccessible(r, c)) {
                 targetR = r;
                 targetC = c;

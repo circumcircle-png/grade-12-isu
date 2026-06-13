@@ -12,10 +12,10 @@ import javax.imageio.ImageIO;
 public class Maze {
     private final BufferedImage tileset;
     private Map<String, BufferedImage> tilesetComponents = new HashMap<>();
-    public char[] pickups;
-    public char[][] maze;
-    public Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
-    public int numRows, numColumns;
+    private char[] pickups;
+    private char[][] maze;
+    private Direction[][][][] shortestPath; // shortestPath[a][b][c][d] stores the first direction path from (a,b) to (c,d)
+    private int numRows, numColumns;
     private final BufferedImage pickUpSet;
     // turning on DEBUG adds gridlines of 8x8 pixels
     private final boolean DEBUG = false;
@@ -353,5 +353,14 @@ public class Maze {
                 g.setComposite(AlphaComposite.SrcOver);
             }
         }
+    }
+    public int getNumColumns(){
+            return numColumns;
+    }
+    public int getNumRows(){
+        return numRows;
+    }
+    public Direction[][][][] getShortestPath(){
+        return shortestPath;
     }
 }

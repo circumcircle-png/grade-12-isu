@@ -7,7 +7,7 @@ public abstract class Movable {
     protected boolean DEBUG = false;
     private final static int FRAMES_PER_DRAWING = Constants.FPS / 12;
 
-    public String name = "NO NAME";
+    protected String name = "NO NAME";
 
     public enum State {
         NORMAL,
@@ -17,14 +17,14 @@ public abstract class Movable {
         BULL_TURN,
         DEAD,
     }
-    public State state;
+    protected State state;
 
     // map from state to speed (frames per second)
     protected Map<State, Integer> speeds = new HashMap<>();
 
     // these represent the top left coordinate of the CENTER 8x8 of the movable
     // therefore, get the top left coordinate of the 16x16 square the Movable seems to be centered in, do (x-4, y-4)
-    public double x, y; 
+    protected double x, y; 
 
     // these store the corodinates of the 8x8 cell the movable just left
     protected int previousR, previousC;

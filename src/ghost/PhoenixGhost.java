@@ -36,7 +36,7 @@ public class PhoenixGhost extends Ghost {
             if (eggFrameCounter == FRAMES_PER_PHASE * 3) {
                 // if player is normal, turn back to normal
                 // if player is scared, turn to scared
-                state = player.state;
+                state = player.getState();
                 eggFrameCounter = 0;
             }
         }
