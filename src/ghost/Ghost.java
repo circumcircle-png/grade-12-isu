@@ -210,10 +210,9 @@ public abstract class Ghost extends Movable {
     }
 
     public boolean getDead(){
-        if(state==State.DEAD)
-            return true;
-        return false;
+        return state == State.DEAD;
     }
+
     protected boolean chooseTarget(Maze maze, Player player) throws UnsupportedOperationException {
         // Description: This method chooses the next target coordinate for the ghost.
         // Parameters: Maze and player
