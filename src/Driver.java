@@ -311,6 +311,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         else if(currentScreen == Screen.LEADERBOARD){
             displayLeaderboard(g2);
             createCenteredString(g2, 30, "Leaderboard", 75);
+            createButton(g2, 16, "home", 500, 70);
             createButton(g2, 16, "Name", 150, 125);
             createButton(g2, 16, "Score", 300, 125);
             createButton(g2, 16, "Time", 450, 125);
@@ -381,6 +382,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                     for(i = starti;i<=endi;i++){
                         searchedBoard.add(leaderboard.get(i));
                     }
+                    Collections.sort(searchedBoard);
                 }
 
             }
@@ -389,8 +391,14 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
     public void displayLeaderboard(Graphics2D g2){
         if(searched){
-            for(int i = 0; i<searchedBoard.size();i++){
-                createCenteredString(g2, 24, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
+            if(searchedBoard.size()<10){
+                 for(int i = 0; i <searchedBoard.size();i++){
+                    createCenteredString(g2, 24, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
+                }
+            }else{
+                for (int i = 0; i<10;i++){
+                    createCenteredString(g2, 24, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
+                }
             }
         } else {
             if(leaderboard.size()<10){
@@ -416,6 +424,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             }
     }
     public void readLeaderboard(){
+        leaderboard.clear();
         try{
             Scanner leaderboardFile = new Scanner (new File("leaderboard.txt"));
             while(leaderboardFile.hasNextLine()){
