@@ -17,7 +17,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     private Maze maze;
     private ArrayList<Ghost> ghosts = new ArrayList<>();
     private int timer;
-
+    private ArrayList<Leaderboard> leaderboard = new ArrayList<>();
     private enum Screen {
         MAIN_MENU, GAME, VICTORY, GAME_OVER, TUTORIAL, CREDITS, LEADERBOARD, SETTINGS
     }
@@ -38,6 +38,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         setVisible(true);    
         thread = new Thread(this);
         thread.start();
+
     }
 
     public void run() {
@@ -61,6 +62,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
 
             screenImages.put(Screen.TUTORIAL, ImageIO.read(new File("images/screen/tutorial.png")));
+
         } catch (Exception e) {
             e.printStackTrace();
         };
@@ -220,6 +222,13 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         g.drawImage(screenImages.get(currentScreen), 0, 0, null);
 
         if (currentScreen == Screen.MAIN_MENU) {
+            // JTextField gameName = new JTextField();
+            // setLayout(null);
+            // gameName.setBounds(100,50,400,100);
+            // gameName.setVisible(true);
+            // gameName.setFont(pacmanFont.deriveFont(24));
+            // add(gameName);
+            
             createCenteredString(g2, 24, "pac-man", 100);
 
             int top = 300;
@@ -236,7 +245,6 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createCenteredButton(g2, 24, "home", 300);
         }
         else if (currentScreen == Screen.VICTORY) {
-            
             createCenteredString(g2, 30, "victory", 100);
             createCenteredButton(g2, 24, "home", 300);
         }
@@ -318,13 +326,38 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 currentScreen = Screen.CREDITS;
             else if (name.equals("tutorial"))
                 currentScreen = Screen.TUTORIAL;
-            else if (name.equals("leaderboard"))
+            else if (name.equals("leaderboard")){
                 currentScreen = Screen.LEADERBOARD;
-            else if (name.equals("settings"))
+            }else if (name.equals("settings"))
                 currentScreen = Screen.SETTINGS;
 
             break;
         }
+    }
+    public void readLeaderboard(String name){
+        try{
+                Leaderboard lb = new Leaderboard(name, player.getScore(), timer);
+                PrintWriter leaderBoardFile = new PrintWriter(new FileWriter ("leaderboard.txt"),true);
+                leaderBoardFile.println(lb.getName());
+                leaderBoardFile.println(lb.getScore() +" "+lb.getTime());
+                leaderBoardFile.close();
+            }catch(IOException e){
+                System.out.println("Writing error!");
+            }
+    }
+    public void writeLeaderboard(){
+        try{
+            Scanner leaderboardFile = new Scanner (new File("leaderboard.txt"));
+            while(leaderboardFile.hasNextLine()){
+                String name = leaderboardFile.nextLine();
+                StringTokenizer scoreTimer = new StringTokenizer(leaderboardFile.nextLine());
+                leaderboard.add(new Leaderboard(name, Integer.parseInt(scoreTimer.nextToken()), Integer.parseInt(scoreTimer.nextToken())));
+            }
+            leaderboardFile.close();
+        } catch(FileNotFoundException e){
+            System.out.println("File not found");
+        }
+
     }
     public void mouseClicked(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}

@@ -18,6 +18,9 @@ public class Leaderboard implements Comparable<Leaderboard>{
     public String getName(){
         return name;
     }
+    public int getScore(){
+        return score;
+    }
     public String toString(){
         return String.format("%10s%10d%10d", name, score, time);
     }
