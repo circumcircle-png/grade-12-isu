@@ -207,6 +207,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // clear buttons from previous screen
+        buttons = new HashMap<>();
+
         Graphics2D g2 = (Graphics2D) g;
 
         g2.setColor(Color.BLACK);
