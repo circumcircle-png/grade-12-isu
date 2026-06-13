@@ -17,6 +17,9 @@ public abstract class Ghost extends Movable {
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
     protected final int RESPAWN_FRAMES = 5*Constants.FPS;
 
+    private boolean targetingRandomSquare = false;
+    private int longRangeTargetR = -1, longRangeTargetC = -1;
+
     public Ghost(String name, int startR, int startC) {
         super(name, startR, startC);
         DEBUG = true;
@@ -158,11 +161,32 @@ public abstract class Ghost extends Movable {
         // Parameters: Maze and player
         // Return: Boolean representing a target coordinate is selected, or the ghost will remain still
 
-        int[] target = player.getCurrentPosition();
-        int playerR = target[0];
-        int playerC = target[1];
+        // if you reached the long range target,
+        if (previousR == longRangeTargetR && targetR == longRangeTargetR && previousC == longRangeTargetC && targetC == longRangeTargetC) {
+            targetingRandomSquare = false;
+        }
 
-        Direction direction = maze.getShortestPath()[previousR][previousC][playerR][playerC];
+        if (targetingRandomSquare) {
+            // do nothing, keep on targeting that square
+        }
+        else if (Math.random() < 0.02) {
+            // start targeting random square
+            java.util.List<int[]> accessible = maze.getAllAccessibleCells();
+            int randomIndex = (int) (Math.random() * accessible.size());
+            int[] randomCell = accessible.get(randomIndex);
+            longRangeTargetR = randomCell[0];
+            longRangeTargetC = randomCell[1];
+            targetingRandomSquare = true;
+        }
+        else {
+            // target player
+            int[] target = player.getCurrentPosition();
+            longRangeTargetR = target[0];
+            longRangeTargetC = target[1];
+        }
+
+
+        Direction direction = maze.getShortestPath()[previousR][previousC][longRangeTargetR][longRangeTargetC];
         if (direction == Direction.UP) targetR--;
         else if (direction == Direction.DOWN) targetR++;
         else if (direction == Direction.LEFT) targetC--;

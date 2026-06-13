@@ -7,6 +7,11 @@ public class PolterGhost extends Ghost {
         super("polter", startR, startC);
     }
 
+    public void initSpeeds() {
+        super.initSpeeds();
+        speeds.put(State.NORMAL, 50);
+    }
+
     protected boolean chooseTarget(Maze maze, Player player) {
         if (state == State.SCARY)
             return super.chooseTarget(maze, player);

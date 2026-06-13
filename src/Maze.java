@@ -354,13 +354,27 @@ public class Maze {
             }
         }
     }
-    public int getNumColumns(){
-            return numColumns;
+
+    public int getNumColumns() {
+        return numColumns;
     }
-    public int getNumRows(){
+
+    public int getNumRows() {
         return numRows;
     }
-    public Direction[][][][] getShortestPath(){
+
+    public Direction[][][][] getShortestPath() {
         return shortestPath;
+    }
+
+    public java.util.List<int[]> getAllAccessibleCells() {
+        java.util.List<int[]> list = new ArrayList<>();
+        for (int r = 0; r < numRows; r++) {
+            for (int c = 0; c < numColumns; c++) {
+                if (isAccessible(r, c))
+                    list.add(new int[] {r, c});
+            }
+        }
+        return list;
     }
 }
