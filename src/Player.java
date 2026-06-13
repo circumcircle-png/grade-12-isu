@@ -1,8 +1,6 @@
 package src;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +12,7 @@ public class Player extends Movable {
     private final static int FRAMES_INVICIBLE = 5 * Constants.FPS;
     private final static int FRAMES_SPEEDY = 5 * Constants.FPS;
     private final int TEMP_SPEED = 80;
+
     protected Direction nextFacing;
     public int scaryFrameTimer = 0;
     private int invicibleTimer = 0;
@@ -54,41 +53,43 @@ public class Player extends Movable {
         speeds.put(State.SCARY, 80);
     }
 
-    public void nextFrame(Maze maze,int timer) {
+    public void nextFrame(Maze maze, int timer) {
         super.nextFrame();
         String tile = maze.getTileType(previousR, previousC);
         if (tile.equals("dot")) {
             maze.remove(previousR, previousC);
-            score+=10;
+            score += 10;
         }
         if (tile.equals("bigDot")) {
             maze.remove(previousR, previousC);
             state = State.SCARY;
-            scaryFrameTimer = FRAMES_SCARY+timer;
-            score+=50;
+            scaryFrameTimer = FRAMES_SCARY + timer;
+            score += 50;
         }
-        if(tile.equals("heart")){
-            maze.remove(previousR,previousC);
+        if (tile.equals("heart")) {
+            maze.remove(previousR, previousC);
             gainHeart();
-            score+=50;
+            score += 50;
         }
-        if(tile.equals("speed")){
-            maze.remove(previousR,previousC);
-            speedTimer = timer+FRAMES_SPEEDY;
-            score+=50;
+        if (tile.equals("speed")) {
+            maze.remove(previousR, previousC);
+            speedTimer = timer + FRAMES_SPEEDY;
+            score += 50;
         }
         if (scaryFrameTimer == timer) {
             state = State.NORMAL;
         }
-        if(speedTimer>=timer){
-            speed =speeds.get(state)+TEMP_SPEED;
-        }else{
+        if (speedTimer >= timer) {
+            speed = speeds.get(state) + TEMP_SPEED;
+        } else {
             speed = speeds.get(state);
         }
     }
-    public int getScore(){
+
+    public int getScore() {
         return score;
     }
+
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
         if (state == State.SCARY)
             return scaryDirectionalSprites;
@@ -105,7 +106,6 @@ public class Player extends Movable {
                     previousR = targetR;
                     targetC = tempC;
                     targetR = tempR;
-
                 }
                 facing = nextFacing;
             } else if (nextFacing == Direction.LEFT && maze.isAccessible(targetR, targetC - 1)) {
@@ -140,7 +140,7 @@ public class Player extends Movable {
                 facing = nextFacing;
             }
         }
-        
+
         double remainingDistanceToTravel = (double) speed / 60;
         while (MathUtils.greater(remainingDistanceToTravel, 0)) {
             double oldX = x;
@@ -181,11 +181,11 @@ public class Player extends Movable {
     public int getHearts() {
         return heartCount;
     }
-    
+
     public void loseHeart(int timer) {
         if (invicibleTimer <= timer) {
             heartCount--;
-            invicibleTimer = FRAMES_INVICIBLE+timer;
+            invicibleTimer = FRAMES_INVICIBLE + timer;
         }
     }
 
