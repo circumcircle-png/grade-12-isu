@@ -17,13 +17,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     private Maze maze;
     private ArrayList<Ghost> ghosts = new ArrayList<>();
     private int timer;
+
     private enum Screen {
-        MAIN_MENU,
-        GAME,
-        VICTORY,
-        GAME_OVER,
+        MAIN_MENU, GAME, VICTORY, GAME_OVER, TUTORIAL, CREDITS, LEADERBOARD, SETTINGS
     }
-    private Screen currentScreen = Screen.MAIN_MENU;
+    private Screen currentScreen = Screen.TUTORIAL;
     private Map<Rectangle, String> buttons = new HashMap<Rectangle, String>();
 
     private Font pacmanFont;
@@ -215,19 +213,24 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         g2.setColor(Color.WHITE);
 
         if (currentScreen == Screen.MAIN_MENU) {
-            createCenteredString(g2, 24f, "pac-man", 100);
-            createCenteredButton(g2, 24f, "play", 300);
-            createCenteredButton(g2, 24f, "leaderboard", 400);
-            createCenteredButton(g2, 24f, "settings", 500);
-            createCenteredButton(g2, 24f, "credits", 600);
+            createCenteredString(g2, 24, "pac-man", 100);
+
+            int top = 300;
+            int increment = 60;
+
+            createCenteredButton(g2, 24, "play", top);
+            createCenteredButton(g2, 24, "tutorial", top + increment);
+            createCenteredButton(g2, 24, "leaderboard", top + increment * 2);
+            createCenteredButton(g2, 24, "settings", top + increment * 3);
+            createCenteredButton(g2, 24, "credits", top + increment * 4);
         }
         else if (currentScreen == Screen.GAME_OVER) {
-            createCenteredString(g2, 30f, "defeat", 100);
-            createCenteredButton(g2, 24f, "home", 300);
+            createCenteredString(g2, 30, "defeat", 100);
+            createCenteredButton(g2, 24, "home", 300);
         }
         else if (currentScreen == Screen.VICTORY) {
-            createCenteredString(g2, 30f, "victory", 100);
-            createCenteredButton(g2, 24f, "home", 300);
+            createCenteredString(g2, 30, "victory", 100);
+            createCenteredButton(g2, 24, "home", 300);
         }
         else if (currentScreen == Screen.GAME) {
             // draw hud at the top
@@ -238,7 +241,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
                 createString(g2, 24, "Score: "+player.getScore(), mazeTopLeftX + 30, mazeTopLeftY - 40);
                 createString(g2, 24, "Time: "+timer/Constants.FPS, mazeTopLeftX + 30, mazeTopLeftY - 5);
-                createButton(g2, 24f, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
+                createButton(g2, 24, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -246,6 +249,49 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             }
 
             drawGame(g2);
+        }
+        else if (currentScreen == Screen.TUTORIAL) {
+            createCenteredString(g2, 30, "Tutorial", 50);
+
+            String[] text = {
+                "You are Pac-Man.",
+                "Use WASD or arrow keys to move.",
+                "",
+                "Collect all dots to win.",
+                "",
+                "Run away from ghosts.",
+                "",
+                "Collect big dots to scare and eat ghosts.",
+                "",
+                "Other power ups: hearts and speed.",
+                "",
+                "Slow ghost is slow.",
+                "",
+                "Fearless ghost is never scared.",
+                "",
+                "Bull ghost runs straight fast",
+                "but turns slow.",
+                "",
+                "Phoenix ghost becomes an egg",
+                "after dying.",
+                "",
+                "Teleport ghost periodically teleports.",
+                "",
+                "Polter ghost goes through walls.",
+            };
+            int currentY = 100;
+            int incrementY = 22;
+
+            for (String s: text) {
+                createString(g2, 12, s, 80, currentY);
+                currentY += incrementY;
+            }
+        }
+        else if (currentScreen == Screen.CREDITS) {
+            createCenteredString(g2, 30, "Credits", 50);
+            createCenteredString(g2, 12, "Created by Jonathan Zhou and Christopher Li", 100);
+            createCenteredString(g2, 12, "June 13, 2026", 150);
+            createCenteredButton(g2, 24, "home", 250);
         }
     }
 
@@ -255,24 +301,26 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             if (!area.contains(e.getPoint()))
                 continue;
 
-            if (currentScreen == Screen.MAIN_MENU) {
-                if (name.equals("play")) {
-                    try {
-                        startNewGame();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    };
-                    currentScreen = Screen.GAME;
-                }
+            if (name.equals("play")) {
+                try {
+                    startNewGame();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                };
+                currentScreen = Screen.GAME;
             }
-            else if (currentScreen == Screen.GAME) {
-                if (name.equals("quit")) {
-                    currentScreen = Screen.MAIN_MENU;
-                }
-            }
-            if (name.equals("home")) {
+            else if (name.equals("quit"))
                 currentScreen = Screen.MAIN_MENU;
-            }
+            else if (name.equals("home"))
+                currentScreen = Screen.MAIN_MENU;
+            else if (name.equals("credits"))
+                currentScreen = Screen.CREDITS;
+            else if (name.equals("tutorial"))
+                currentScreen = Screen.TUTORIAL;
+            else if (name.equals("leaderboard"))
+                currentScreen = Screen.LEADERBOARD;
+            else if (name.equals("settings"))
+                currentScreen = Screen.SETTINGS;
 
             break;
         }
