@@ -297,6 +297,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 player.nextFacing = Direction.RIGHT;
             else if (input == KeyEvent.VK_S || input == KeyEvent.VK_DOWN)
                 player.nextFacing = Direction.DOWN;
+            else if(input == KeyEvent.VK_BACK_SLASH)
+                player.gainHeart();
         }
     }
 
