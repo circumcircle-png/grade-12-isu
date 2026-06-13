@@ -1,0 +1,16 @@
+cheese
+0 10
+cheese
+10 0
+ball
+0 5
+cheese
+100 100
+ball
+0 5
+cheese
+110 1
+ball
+290 3
+cheese
+1070 8

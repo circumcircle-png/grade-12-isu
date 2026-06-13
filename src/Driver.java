@@ -18,13 +18,16 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     private ArrayList<Ghost> ghosts = new ArrayList<>();
     private int timer;
     private ArrayList<Leaderboard> leaderboard = new ArrayList<>();
+    private ArrayList<Leaderboard> searchedBoard = new ArrayList<>();
     private enum Screen {
         MAIN_MENU, GAME, VICTORY, GAME_OVER, TUTORIAL, CREDITS, LEADERBOARD, SETTINGS
     }
     private Screen currentScreen = Screen.MAIN_MENU;
     private Map<Rectangle, String> buttons = new HashMap<>();
     private Map<Screen, Image> screenImages = new HashMap<>();
-
+    private JTextField gameName;
+    private int starti, endi;
+    private boolean searched;
     private Font pacmanFont;
 
     private final int WINDOW_WIDTH = 600;
@@ -58,6 +61,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     public void initialize() {
         addKeyListener(this);
         setFocusable(true);
+        setLayout(null);
+        gameName = new JTextField();
+
         try {
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
 
@@ -66,6 +72,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         } catch (Exception e) {
             e.printStackTrace();
         };
+        gameName.setFont(pacmanFont.deriveFont(50f));
+        add(gameName);
     }
 
     public void startNewGame() throws IOException {
@@ -222,12 +230,6 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         g.drawImage(screenImages.get(currentScreen), 0, 0, null);
 
         if (currentScreen == Screen.MAIN_MENU) {
-            // JTextField gameName = new JTextField();
-            // setLayout(null);
-            // gameName.setBounds(100,50,400,100);
-            // gameName.setVisible(true);
-            // gameName.setFont(pacmanFont.deriveFont(24));
-            // add(gameName);
             
             createCenteredString(g2, 24, "pac-man", 100);
 
@@ -239,6 +241,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createCenteredButton(g2, 24, "leaderboard", top + increment * 2);
             createCenteredButton(g2, 24, "settings", top + increment * 3);
             createCenteredButton(g2, 24, "credits", top + increment * 4);
+            gameName.setVisible(false);
+            gameName.setEnabled(false);
         }
         else if (currentScreen == Screen.GAME_OVER) {
             createCenteredString(g2, 30, "defeat", 100);
@@ -246,7 +250,12 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         }
         else if (currentScreen == Screen.VICTORY) {
             createCenteredString(g2, 30, "victory", 100);
-            createCenteredButton(g2, 24, "home", 300);
+            createCenteredString(g2, 30, "Enter a Name", 200);
+            createCenteredButton(g2, 24, "home", 600);
+            createCenteredButton(g2,24,"Save Name", 400);
+            gameName.setBounds((WINDOW_WIDTH-500) / 2,250,500,75);
+            gameName.setVisible(true);
+            gameName.setEnabled(true);
         }
         else if (currentScreen == Screen.GAME) {
             // draw hud at the top
@@ -300,7 +309,16 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createCenteredButton(g2, 24, "home", 250);
         }
         else if(currentScreen == Screen.LEADERBOARD){
-
+            displayLeaderboard(g2);
+            createCenteredString(g2, 30, "Leaderboard", 75);
+            createButton(g2, 16, "Name", 150, 125);
+            createButton(g2, 16, "Score", 300, 125);
+            createButton(g2, 16, "Time", 450, 125);
+            createButton(g2, 16, "Search Name",375, 635);
+            gameName.setBounds(25,600,300,50);
+            gameName.setFont(pacmanFont.deriveFont(32f));
+            gameName.setVisible(true);
+            gameName.setEnabled(true);
         }
     }
 
@@ -327,17 +345,69 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             else if (name.equals("tutorial"))
                 currentScreen = Screen.TUTORIAL;
             else if (name.equals("leaderboard")){
+                readLeaderboard();
+                Collections.sort(leaderboard);
                 currentScreen = Screen.LEADERBOARD;
             }else if (name.equals("settings"))
                 currentScreen = Screen.SETTINGS;
+            else if(name.equals("Save Name")){
+                String userName = gameName.getText().trim();
+                writeLeaderboard(userName);
+                currentScreen = Screen.MAIN_MENU;
+            } else if(name.equals("Name")){
+                searched = false;
+                Collections.sort(leaderboard,new SortByName());
+            }else if(name.equals("Score")){
+                Collections.sort(leaderboard);
+                searched = false;
+            }else if(name.equals("Time")){
+                searched = false;
+                Collections.sort(leaderboard, new SortByTime());
+            } else if(name.equals("Search Name")){
+                String userName = gameName.getText().trim();
+                Collections.sort(leaderboard, new SortByName());
+                int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());
+                if(i>=0){
+                    starti = i;
+                    endi = i;
+                    searched = true;
+                    while(starti-1>=0&&leaderboard.get(starti-1).getName().equals(userName)){
+                        starti -=1;
+                    }
+                    while(endi+1<leaderboard.size()&&leaderboard.get(endi+1).getName().equals(userName)){
+                        endi +=1;
+                    }
+                    searchedBoard.clear();
+                    for(i = starti;i<=endi;i++){
+                        searchedBoard.add(leaderboard.get(i));
+                    }
+                }
 
+            }
             break;
         }
     }
-    public void readLeaderboard(String name){
+    public void displayLeaderboard(Graphics2D g2){
+        if(searched){
+            for(int i = 0; i<searchedBoard.size();i++){
+                createCenteredString(g2, 24, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
+            }
+        } else {
+            if(leaderboard.size()<10){
+                 for(int i = 0; i <leaderboard.size();i++){
+                    createCenteredString(g2, 24, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
+                }
+            }else{
+                for (int i = 0; i<10;i++){
+                    createCenteredString(g2, 24, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
+                }
+            }
+        }
+    }
+    public void writeLeaderboard(String name){
         try{
-                Leaderboard lb = new Leaderboard(name, player.getScore(), timer);
-                PrintWriter leaderBoardFile = new PrintWriter(new FileWriter ("leaderboard.txt"),true);
+                Leaderboard lb = new Leaderboard(name, player.getScore(), timer/Constants.FPS);
+                PrintWriter leaderBoardFile = new PrintWriter(new FileWriter ("leaderboard.txt",true));
                 leaderBoardFile.println(lb.getName());
                 leaderBoardFile.println(lb.getScore() +" "+lb.getTime());
                 leaderBoardFile.close();
@@ -345,7 +415,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 System.out.println("Writing error!");
             }
     }
-    public void writeLeaderboard(){
+    public void readLeaderboard(){
         try{
             Scanner leaderboardFile = new Scanner (new File("leaderboard.txt"));
             while(leaderboardFile.hasNextLine()){
@@ -379,8 +449,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 player.nextFacing = Direction.RIGHT;
             else if (input == KeyEvent.VK_S || input == KeyEvent.VK_DOWN)
                 player.nextFacing = Direction.DOWN;
-            else if(input == KeyEvent.VK_BACK_SLASH)
+            else if(input == KeyEvent.VK_BACK_SLASH){
                 player.gainHeart();
+                currentScreen=Screen.VICTORY;
+            }
         }
     }
 
