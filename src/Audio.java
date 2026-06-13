@@ -48,6 +48,8 @@ public class Audio {
     public static void changeVolume(float newVolume) {
         volume = newVolume;
         float db = newVolume * 50 / 100 - 50;
+        if (newVolume == 0)
+            db = -80;
         musicVolumeControl.setValue(db);
         pingVolumeControl.setValue(db);
         powerUpVolumeControl.setValue(db);

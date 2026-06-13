@@ -25,10 +25,12 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     private Screen currentScreen = Screen.MAIN_MENU;
     private Map<Rectangle, String> buttons = new HashMap<>();
     private Map<Screen, Image> screenImages = new HashMap<>();
-    private JTextField gameName;
     private int starti, endi;
     private boolean searched;
     private Font pacmanFont;
+
+    private JTextField gameName;
+    private JSlider volumeSlider;
 
     private final int WINDOW_WIDTH = 600;
     private final int WINDOW_HEIGHT = 700;
@@ -62,6 +64,15 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         setFocusable(true);
         setLayout(null);
         gameName = new JTextField();
+
+        volumeSlider = new JSlider(0, 100, 20);
+        volumeSlider.setBounds(150, 260, 300, 50);
+        volumeSlider.addChangeListener(e -> {
+            Audio.changeVolume(volumeSlider.getValue());
+        });
+        volumeSlider.setVisible(false);
+        volumeSlider.setOpaque(true);
+        add(volumeSlider);
 
         Audio.initialize();
         Audio.playMainMenuMusic();
@@ -229,8 +240,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
         g.drawImage(screenImages.get(currentScreen), 0, 0, null);
 
+        volumeSlider.setVisible(currentScreen == Screen.SETTINGS);
+
         if (currentScreen == Screen.MAIN_MENU) {
-            
             createCenteredString(g2, 24, "pac-man", 100);
 
             int top = 300;
@@ -319,6 +331,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             gameName.setFont(pacmanFont.deriveFont(32f));
             gameName.setVisible(true);
             gameName.setEnabled(true);
+        }
+        else if (currentScreen == Screen.SETTINGS) {
+            createCenteredString(g2, 30, "Settings", 75);
+            createButton(g2, 16, "home", 500, 70);
+            createCenteredString(g2, 24, "Volume: " + Audio.getVolume(), 190);
         }
     }
 
