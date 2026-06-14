@@ -424,10 +424,12 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         Collections.sort(leaderboard, new SortByName());
         int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());
         if(i<0){
-            i = (i*-1)-1;
+            starti = (i*-1)-1;
+            endi = (i*-1)-1;
+        } else{
+            starti = i;
+            endi = i;
         }
-        starti = i;
-        endi = i;
         while(starti-1>=0&&userName.length()<=leaderboard.get(starti-1).getName().length()&&leaderboard.get(starti-1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
             starti -=1;
         }
@@ -435,11 +437,13 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             endi +=1;
         }
         searchedBoard.clear();
-        for(i = starti;i<=endi;i++){
+        if(i>=0||starti!=endi){
+            for(i = starti;i<=endi;i++){
             searchedBoard.add(leaderboard.get(i));
-        }
-        if(searchedBoard.size()>0){
+            }
+            if(searchedBoard.size()>0){
             searched = true;
+            }
         }
     }
     public void displayLeaderboard(Graphics2D g2){
