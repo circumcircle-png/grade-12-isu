@@ -323,7 +323,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             gameName.setEnabled(true);
         }
         else if (currentScreen == Screen.GAME) {
-            // draw hud at the top
+            // draw hud
             try {
                 for (int i = 0; i < player.getHearts(); i++) {
                     g2.drawImage(ImageIO.read(new File("images/heart.png")), 46 * i + 30 + mazeTopLeftX, mazeBottomRightY + 10, null);
@@ -332,6 +332,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 createString(g2, 24, "Score: "+player.getScore(), mazeTopLeftX + 30, mazeTopLeftY - 40);
                 createString(g2, 24, "Time: "+timer/Constants.FPS, mazeTopLeftX + 30, mazeTopLeftY - 5);
                 createButton(g2, 24, "quit", mazeBottomRightX - 120, mazeTopLeftY - 30);
+
+                if (timer < player.getInvincibilityTimer()) {
+                    int secondsLeftOfInvincibility = (player.getInvincibilityTimer() - timer) / Constants.FPS + 1;
+                    createString(g2, 24, "" + secondsLeftOfInvincibility, mazeBottomRightX - 30, mazeBottomRightY + 30);
+                }
             }
             catch (Exception e) {
                 e.printStackTrace();

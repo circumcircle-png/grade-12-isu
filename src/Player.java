@@ -15,7 +15,7 @@ public class Player extends Movable {
 
     protected Direction nextFacing;
     private int scaryFrameTimer = 0;
-    private int invicibleTimer = 0;
+    private int invincibleTimer = 0;
     private int speedTimer = 0;
     private int speed;
     private int score;
@@ -217,10 +217,10 @@ public class Player extends Movable {
         //Description: when the player gets hit by a ghost, lose a heart
         //parameters time
         // return void
-        if (invicibleTimer <= timer) {
+        if (invincibleTimer <= timer) {
             Audio.playDamage();
             heartCount--;
-            invicibleTimer = FRAMES_INVICIBLE + timer;// invincible frames
+            invincibleTimer = FRAMES_INVICIBLE + timer;// invincible frames
         }
     }
 
@@ -250,5 +250,10 @@ public class Player extends Movable {
     // getter for state
     public State getState() {
         return state;
+    }
+
+    // getter for invincibility time 
+    public int getInvincibilityTimer() {
+        return invincibleTimer;
     }
 }
