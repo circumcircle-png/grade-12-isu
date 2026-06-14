@@ -10,6 +10,10 @@ public class Audio {
     private static FloatControl musicVolumeControl, pingVolumeControl, powerUpVolumeControl, damageVolumeControl, ghostKillVolumeControl;
 
     public static void initialize() {
+        // Description: This method reads audio files into clips.
+        // Parameters: None
+        // Return: void
+
         musicClip = readAudioFile("sounds/pac-man-theme-remix.wav");
         pingClip = readAudioFile("sounds/sfx_coin_single2.wav");
         powerUpClip = readAudioFile("sounds/sfx_sounds_powerup6.wav");
@@ -26,6 +30,10 @@ public class Audio {
     }
 
     private static Clip readAudioFile(String filename) {
+        // Description: This helper method reads an audio given a filename.
+        // Parameters: Filename
+        // Return: Clip object
+
         try {
             AudioInputStream audio = AudioSystem.getAudioInputStream(
                 new File(filename)
@@ -46,10 +54,17 @@ public class Audio {
     }
 
     public static void changeVolume(float newVolume) {
+        // Description: This method changes the volume of all clips.
+        // Parameters: New volume (float between 0 and 100)
+        // Return: void
+
         volume = newVolume;
         float db = newVolume * 50 / 100 - 50;
+
+        // if volume is exactly 0, make it super super quiet
         if (newVolume == 0)
             db = -80;
+
         musicVolumeControl.setValue(db);
         pingVolumeControl.setValue(db);
         powerUpVolumeControl.setValue(db);
@@ -69,7 +84,7 @@ public class Audio {
     }
 
     public static void stopMainMenuMusic() {
-        // Description: This method plays the main menu music and loops it continuously.
+        // Description: This method stops the main menu music.
         // Parameters: None
         // Return: void
 
@@ -104,7 +119,7 @@ public class Audio {
     }
 
     public static void playGhostKill() {
-        // Description: This method plays the lose hearts sound effect.
+        // Description: This method plays the ghost kill sound effect.
         // Parameters: None
         // Return: void
 
