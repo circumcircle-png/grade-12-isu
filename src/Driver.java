@@ -343,6 +343,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             gameName.setFont(pacmanFont.deriveFont(32f));
             gameName.setVisible(true);
             gameName.setEnabled(true);
+           if(!gameName.getText().equals("")){
+                searchName();
+            }        
         }
         else if (currentScreen == Screen.SETTINGS) {
             createCenteredString(g2, 30, "Settings", 75);
@@ -421,6 +424,45 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
             }
             break;
+        }
+    }
+    public void searchName(){
+        String userName = gameName.getText().trim();
+        Collections.sort(leaderboard, new SortByName());
+        int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());
+        if(i>=0){
+            starti = i;
+            endi = i;
+            searched = true;
+            while(starti-1>=0&&leaderboard.get(starti-1).getName().equalsIgnoreCase(userName)){
+                starti -=1;
+            }
+            while(endi+1<leaderboard.size()&&leaderboard.get(endi+1).getName().equalsIgnoreCase(userName)){
+                endi +=1;
+            }
+            searchedBoard.clear();
+            for(i = starti;i<=endi;i++){
+                searchedBoard.add(leaderboard.get(i));
+            }
+            Collections.sort(searchedBoard);
+        }else {
+            i = (i*-1)-1;
+            starti = i;
+            endi = i;
+            while(starti-1>=0&&userName.length()<=leaderboard.get(starti-1).getName().length()&&leaderboard.get(starti-1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
+                starti -=1;
+            }
+            while(endi+1<leaderboard.size()&&userName.length()<=leaderboard.get(endi+1).getName().length()&&leaderboard.get(endi+1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
+                endi +=1;
+            }
+            searchedBoard.clear();
+            for(i = starti;i<=endi;i++){
+                searchedBoard.add(leaderboard.get(i));
+            }
+            if(searchedBoard.size()>0){
+                searched = true;
+            }
+            Collections.sort(searchedBoard);
         }
     }
     public void displayLeaderboard(Graphics2D g2){
