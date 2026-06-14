@@ -42,10 +42,7 @@ public class BullGhost extends Ghost {
         else if (targetC < previousC) first = Direction.LEFT;
         else if (targetC > previousC) first = Direction.RIGHT;
 
-        int playerR = player.getCurrentPosition()[0];
-        int playerC = player.getCurrentPosition()[1];
-
-        Direction second = maze.getShortestPath()[targetR][targetC][playerR][playerC];
+        Direction second = maze.getShortestPath()[targetR][targetC][longRangeTargetR][longRangeTargetC];
 
         if (first == Direction.STILL || second == Direction.STILL)
             state = State.BULL_STRAIGHT;

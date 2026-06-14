@@ -18,7 +18,7 @@ public abstract class Ghost extends Movable {
     protected final int RESPAWN_FRAMES = 5*Constants.FPS;
 
     private boolean targetingRandomSquare = false;
-    private int longRangeTargetR = -1, longRangeTargetC = -1;
+    protected int longRangeTargetR, longRangeTargetC;
 
     public Ghost(String name, int startR, int startC) {
         super(name, startR, startC);
