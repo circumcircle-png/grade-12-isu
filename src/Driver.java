@@ -421,23 +421,26 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         }
     }
     public void searchName(){
+        // Description: searches for the name in the leaderboard array and adds the result to the searchedBoard arraylist
+        // Paramter: none, all global
+        // return void, in the array
         String userName = gameName.getText().trim();
         Collections.sort(leaderboard, new SortByName());
-        int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());
+        int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());//binary search the names
         if(i<0){
             starti = (i*-1)-1;
             endi = (i*-1)-1;
         } else{
             starti = i;
             endi = i;
-        }
+        }//checks the next position before if it is out of bounds, valid length, and if the string fits the criteria
         while(starti-1>=0&&userName.length()<=leaderboard.get(starti-1).getName().length()&&leaderboard.get(starti-1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
             starti -=1;
         }
         while(endi+1<leaderboard.size()&&userName.length()<=leaderboard.get(endi+1).getName().length()&&leaderboard.get(endi+1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
             endi +=1;
         }
-        searchedBoard.clear();
+        searchedBoard.clear();// checks again and adds the necessary values/theres some wierd stuff when the userName is not found in leaderboard
         if(i>=0||starti!=endi||(endi<leaderboard.size()&&userName.length()<=leaderboard.get(endi).getName().length()&&leaderboard.get(endi).getName().substring(0,userName.length()).equalsIgnoreCase(userName))){
             for(i = starti;i<=endi;i++){
             searchedBoard.add(leaderboard.get(i));
@@ -445,23 +448,26 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         }
     }
     public void displayLeaderboard(Graphics2D g2){
+        // Description: display the leaderboard as graphics
+        // Parameters: graphics2d
+        // Return: void, just graphics
         int fontSize = 24;
-        if(searched){
-            if(searchedBoard.size()<10){
+        if(searched){// check if searched for a specific name
+            if(searchedBoard.size()<10){// if there are less than 10 results display all
                  for(int i = 0; i <searchedBoard.size();i++){
                     createCenteredString(g2, fontSize, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
                 }
-            }else{
+            }else{// display the top 10
                 for (int i = 0; i<10;i++){
                     createCenteredString(g2, fontSize, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
                 }
             }
-        } else {
-            if(leaderboard.size()<10){
+        } else {// display general stats
+            if(leaderboard.size()<10){// display all if less than 10
                  for(int i = 0; i <leaderboard.size();i++){
                     createCenteredString(g2, fontSize, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
                 }
-            }else{
+            }else{// display all
                 for (int i = 0; i<10;i++){
                     createCenteredString(g2, fontSize, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
                 }
@@ -470,10 +476,13 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
      
     public void writeLeaderboard(String name){
+        //Description: writes the new winning game onto the leaderboard.txt
+        //Parameter: name of the player
+        //Return: void, it updates the file
         try {
-            Leaderboard lb = new Leaderboard(name, player.getScore(), timer/Constants.FPS);
+            Leaderboard lb = new Leaderboard(name, player.getScore(), timer/Constants.FPS);// turn the victory into a leaderboard object
             PrintWriter leaderBoardFile = new PrintWriter(new FileWriter ("leaderboard.txt",true));
-            leaderBoardFile.println(lb.getName());
+            leaderBoardFile.println(lb.getName());// add it onto the text file
             leaderBoardFile.println(lb.getScore() +" "+lb.getTime());
             leaderBoardFile.close();
         } catch (IOException e) {
@@ -482,13 +491,16 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
      
     public void readLeaderboard(){
-        leaderboard.clear();
+        // Description: reads the text file leaderboard.txt and turns it into the arraylist of leaderboards
+        // Parameter: nothing, uses global variables
+        // return: void, saved to the arraylist
+        leaderboard.clear();// just so it doesnt keep adding on the arraylist
         try{
             Scanner leaderboardFile = new Scanner (new File("leaderboard.txt"));
-            while(leaderboardFile.hasNextLine()){
-                String name = leaderboardFile.nextLine();
-                StringTokenizer scoreTimer = new StringTokenizer(leaderboardFile.nextLine());
-                leaderboard.add(new Leaderboard(name, Integer.parseInt(scoreTimer.nextToken()), Integer.parseInt(scoreTimer.nextToken())));
+            while(leaderboardFile.hasNextLine()){// search the file
+                String name = leaderboardFile.nextLine();// name of the player
+                StringTokenizer scoreTimer = new StringTokenizer(leaderboardFile.nextLine());// score and timer are on the same line
+                leaderboard.add(new Leaderboard(name, Integer.parseInt(scoreTimer.nextToken()), Integer.parseInt(scoreTimer.nextToken())));// add all of it to the leaderboard araylist as leaderboard objects
             }
             leaderboardFile.close();
         } catch(FileNotFoundException e){
@@ -510,15 +522,18 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void keyTyped(KeyEvent e) {
-        // throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
+        // Description: keylisteners mandatory method
+        // parameter keyevent
+        //return void
     }
 
     public void keyPressed(KeyEvent e) {
         // Description: turns the keypressed into user inputs
         // Parameter keyevent
-        // return
-        if (currentScreen == Screen.GAME) {
+        // return  void
+        if (currentScreen == Screen.GAME) {// if its the game screen
             int input = e.getKeyCode();
+            // change the direction of the player to the input
             if (input == KeyEvent.VK_W || input == KeyEvent.VK_UP)
                 player.nextFacing = Direction.UP;
             else if (input == KeyEvent.VK_A || input == KeyEvent.VK_LEFT)
@@ -527,15 +542,16 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 player.nextFacing = Direction.RIGHT;
             else if (input == KeyEvent.VK_S || input == KeyEvent.VK_DOWN)
                 player.nextFacing = Direction.DOWN;
-            else if(input == KeyEvent.VK_BACK_SLASH){
+            else if(input == KeyEvent.VK_BACK_SLASH){//cheats
                 player.gainHeart();
             }
         }
     }
 
     public void keyReleased(KeyEvent e) {
-        // throw new UnsupportedOperationException("Unimplemented method
-        // 'keyReleased'");
+        // Description: mandatory method for keylistener
+        // Parameter: keyevent
+        // return void
     }
 
     public static void main(String[] args) throws IOException {

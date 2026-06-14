@@ -22,6 +22,6 @@ public class Leaderboard implements Comparable<Leaderboard>{
         return score;
     }
     public String toString(){
-        return String.format("%-10s%-5d%4d", name, score, time);
+        return String.format("%-10.9s%-5d%4d", name, score, time);
     }
 }
