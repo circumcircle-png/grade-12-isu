@@ -19,7 +19,7 @@ public class TeleportGhost extends Ghost {
 
         super.nextFrame(maze, player);
         teleportFrameCounter = (teleportFrameCounter + 1) % FRAMES_PER_TELEPORT;
-        if (teleportFrameCounter == FRAMES_PER_TELEPORT-1 && state != State.SCARY&&state!=State.DEAD) {
+        if (teleportFrameCounter == FRAMES_PER_TELEPORT-1 && state == State.NORMAL) {
             // teleport to a random available square
             ArrayList<int[]> available = new ArrayList<>();
             for (int r = 0; r < maze.getNumRows(); r++) {

@@ -10,7 +10,6 @@ import src.*;
 public class PhoenixGhost extends Ghost {
     public final static int FRAMES_PER_PHASE = 1 * Constants.FPS;
 
-    private int eggFrameCounter = 0;
     private final Image[] eggSprites = new Image[3];
 
     public PhoenixGhost(int startR, int startC) {
@@ -39,28 +38,21 @@ public class PhoenixGhost extends Ghost {
         // Parameters: Maze and player
         // Return: void
 
-        if (state == State.DEAD) {
-            eggFrameCounter++; 
-            if (eggFrameCounter == FRAMES_PER_PHASE * 3) {
-                // if player is normal, turn back to normal
-                // if player is scared, turn to scared
-                state = player.getState();
-                eggFrameCounter = 0;
-            }
-        }
-        else {
-
+        if (Driver.gameTime() < respawnTimer)
+            state = State.DEAD;
+        else
             super.nextFrame(maze, player);
-        }
     }
 
     protected Image getCurrentSprite() {
         // Description: This method gets the sprite to be displayed based on the whether the ghost is an egg, the direction, and the frame counter.
         // Parameters: None
-        // Return: The sprite to de displayed
+        // Return: The sprite to be displayed
 
-        if (state == State.DEAD)
-            return eggSprites[eggFrameCounter / FRAMES_PER_PHASE];
+        if (state == State.DEAD) {
+            int index = 2 - (respawnTimer - Driver.gameTime()) / FRAMES_PER_PHASE;
+            return eggSprites[index];
+        }
         return super.getCurrentSprite();
     }
 
@@ -74,12 +66,19 @@ public class PhoenixGhost extends Ghost {
         return super.chooseTarget(maze, player);
     }
 
-    public void die(int timer) {
+    public void die() {
         // Description: This method kills the phoenix ghost and starts the timer for the egg to respawn.
         // Parameters: The current timer
         // Return: void
 
-        state = State.DEAD;
-        eggFrameCounter = 0;
+        respawnTimer = Driver.gameTime() + 3 * FRAMES_PER_PHASE - 1;
+    }
+
+    public void respawn() {
+        // Description: This method overloads the respawn method so that nothing happens. The PhoenixGhost will just come back to life from where it died.
+        // Parameters: Player
+        // Return: Boolean representing if the ghost is dead
+
+        return;
     }
 }

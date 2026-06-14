@@ -11,11 +11,12 @@ import src.*;
 public abstract class Ghost extends Movable {
     // BASIC ASSUMPTION: A GHOST MUST REACH (TARGET_R, TARGET_C) BEFORE IT SWITCHES TO A NEW TARGET
 
+    protected final int RESPAWN_FRAMES = 5 * Constants.FPS;
+
     protected State state;
-    private int respawnTimer;
+    protected int respawnTimer;
     protected Map <Direction, Image[]> blankArray = new HashMap<>();
     protected final Map<Direction, Image[]> scaredDirectionalSprites = new HashMap<>();
-    protected final int RESPAWN_FRAMES = 5*Constants.FPS;
 
     private boolean targetingRandomSquare = false;
     protected int longRangeTargetR, longRangeTargetC;
@@ -24,7 +25,6 @@ public abstract class Ghost extends Movable {
         super(name, startR, startC);
         DEBUG = false;
         this.name = name;
-        state = State.NORMAL;
 
         // import ghost spritesheets
         try {
@@ -79,15 +79,16 @@ public abstract class Ghost extends Movable {
     }
 
     public void nextFrame(Maze maze, Player player) {
-        // Description: This method simulates one additional frame for the Ghost, and it always updates the state (even if the state remains the same).
+        // Description: This method sets the state of the ghost to either DEAD, NORMAL, or SCARY. This method can then be overloaded for more specific states.
         // Parameters: Maze and player
         // Return: void
 
-        super.nextFrame();
-        if (player.getState() == State.SCARY&&state!=State.DEAD)
-            state = State.SCARY;
-        else if(state!=State.DEAD)
-            state = State.NORMAL;
+        // through code, state should only be updated in nextFrame
+
+        if (Driver.gameTime() < respawnTimer)
+            state = State.DEAD;
+        else
+            state = player.getState();
     }
 
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {
@@ -122,12 +123,12 @@ public abstract class Ghost extends Movable {
         return false;
     }
 
-    public void die(int timer) {
+    public void die() {
         // Description: This method kills the ghost and starts the timer for the ghost to respawn.
         // Parameters: The current timer
         // Return: void
 
-        respawnTimer = timer + RESPAWN_FRAMES;
+        respawnTimer = Driver.gameTime() + RESPAWN_FRAMES;
         state = State.DEAD;
         Audio.playGhostKill();
     }
@@ -250,22 +251,26 @@ public abstract class Ghost extends Movable {
         return true;
     }
 
-    public void respawn(Player player){
-        // Description: This method respawns the ghost back to the middle.
-        // Parameters: Player
-        // Return: Boolean representing if the ghost is dead
+    public void sendToMiddle() {
+        // Description: This method sends the ghost back to the middle.
+        // Parameters: None
+        // Return: void
 
-        // copy player's state
-        if (player.getState()==State.SCARY)
-            state = State.SCARY;
-        else
-            state = State.NORMAL;
         previousR = 15;
         previousC = 14;
         x = 8*previousC;
         y = 8*previousR;
         targetR = 12;
         targetC = 14;
+    }
+
+    public void respawn() {
+        // Description: This method respawns the ghost back to the middle.
+        // Parameters: None
+        // Return: void
+
+        // trust ms. wong, this might seem like a useless method, but this can be overrided by ghost subclasses for custom respawn logic (for phoenix ghost, it respawns where it died)
+        sendToMiddle();
     }
 
     public boolean getDead(){
@@ -277,7 +282,7 @@ public abstract class Ghost extends Movable {
     }
 
     // getter for respawn timer
-    public int getRespawnTimer(){
+    public int getRespawnTimer() {
         return respawnTimer;
     }
 

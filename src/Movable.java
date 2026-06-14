@@ -12,6 +12,8 @@ public abstract class Movable {
     public enum State {
         NORMAL,
         SCARY,
+        NORMAL_SPEEDY,
+        SCARY_SPEEDY,
         EGG,
         BULL_STRAIGHT,
         BULL_TURN,
@@ -37,7 +39,6 @@ public abstract class Movable {
 
     protected final Map<Direction, Image[]> directionalSprites = new HashMap<>();
     protected Direction facing = Direction.DOWN;
-    private int drawingFrameCounter = 0;
 
     public Movable(String name, int startR, int startC) {
         this.name = name;
@@ -55,14 +56,6 @@ public abstract class Movable {
 
     // this method adds to the speeds map
     public abstract void initSpeeds();
-
-    public void nextFrame() {
-        // Description: This method updates the drawing frame counter to display the GIF.
-        // Parameters: None
-        // Return: void
-
-        drawingFrameCounter = (drawingFrameCounter + 1) % (2 * FRAMES_PER_DRAWING);
-    }
 
     public void draw(Graphics2D g) {
         // Description: This method draws the Movable to the screen.
@@ -88,7 +81,8 @@ public abstract class Movable {
         // Parameters: None
         // Return: The sprite to de displayed
 
-        return getDirectionalSpriteMap().get(facing)[drawingFrameCounter / FRAMES_PER_DRAWING];
+        int index = (Driver.gameTime() % (2 * FRAMES_PER_DRAWING)) / FRAMES_PER_DRAWING; // index is 0 or 1
+        return getDirectionalSpriteMap().get(facing)[index];
     }
 
     protected Map<Direction, Image[]> getDirectionalSpriteMap() {

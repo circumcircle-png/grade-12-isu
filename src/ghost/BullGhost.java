@@ -33,8 +33,10 @@ public class BullGhost extends Ghost {
         // Return: void
 
         super.nextFrame(maze, player);
+        if (state == State.SCARY || state == State.DEAD)
+            return;
 
-        if (state == State.SCARY||state==State.DEAD) return;
+        // from here, we can assume the state is NORMAL, but we need to make the state more specific since bull ghost has different speeds at NORMAL state
 
         // get the next two directions the bull ghost will go in
         Direction first = Direction.STILL;

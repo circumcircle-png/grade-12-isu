@@ -11,12 +11,14 @@ public class Player extends Movable {
     private final static int FRAMES_SCARY = 5 * Constants.FPS;
     private final static int FRAMES_INVICIBLE = 5 * Constants.FPS;
     private final static int FRAMES_SPEEDY = 5 * Constants.FPS;
+
     private final int TEMP_SPEED = 80;
 
-    protected Direction nextFacing;
     private int scaryFrameTimer = 0;
     private int invincibleTimer = 0;
     private int speedTimer = 0;
+
+    protected Direction nextFacing;
     private int speed;
     private int score;
     protected final Map<Direction, Image[]> scaryDirectionalSprites = new HashMap<>();
@@ -25,7 +27,6 @@ public class Player extends Movable {
     public Player(int startR, int startC) {
         super("player", startR, startC);
         DEBUG = false;
-        state = State.NORMAL;
         score = 0;
         heartCount = 5;
 
@@ -58,12 +59,11 @@ public class Player extends Movable {
         speeds.put(State.SCARY, 80);
     }
 
-    public void nextFrame(Maze maze, int timer) {
-        // Description: This method simulates one extra frame for the player.
-        // Parameters: Maze and timer
+    public void nextFrame(Maze maze) {
+        // Description: This method simulates one extra frame for the player, handling collisions, updating state, and speed.
+        // Parameters: Maze
         // Return: void
 
-        super.nextFrame();
         String tile = maze.getTileType(previousR, previousC);
 
         // handle collision with pickups
@@ -75,7 +75,7 @@ public class Player extends Movable {
         if (tile.equals("bigDot")) {
             maze.remove(previousR, previousC);
             state = State.SCARY;
-            scaryFrameTimer = FRAMES_SCARY + timer;
+            scaryFrameTimer = Driver.gameTime() + FRAMES_SCARY;
             score += 50;
             Audio.playPowerUp();
         }
@@ -87,19 +87,17 @@ public class Player extends Movable {
         }
         if (tile.equals("speed")) {
             maze.remove(previousR, previousC);
-            speedTimer = timer + FRAMES_SPEEDY;
+            speedTimer = Driver.gameTime() + FRAMES_SPEEDY;
             score += 50;
             Audio.playPowerUp();
         }
 
-        if (scaryFrameTimer == timer) {// if the scary timer has expired then turn the state to normal
+        if (scaryFrameTimer <= Driver.gameTime()) // if the scary timer has expired then turn the state to normal
             state = State.NORMAL;
-        }
-        if (speedTimer >= timer) {// speed powerups, temporary speed is added
+        if (speedTimer >= Driver.gameTime()) // speed powerups, temporary speed is added
             speed = speeds.get(state) + TEMP_SPEED;
-        } else {
+        else
             speed = speeds.get(state);// use normal speed
-        }
     }
 
     // getter for score
@@ -213,14 +211,14 @@ public class Player extends Movable {
     }
 
     
-    public void loseHeart(int timer) {
+    public void loseHeart() {
         //Description: when the player gets hit by a ghost, lose a heart
         //parameters time
         // return void
-        if (invincibleTimer <= timer) {
+        if (invincibleTimer <= Driver.gameTime()) {
             Audio.playDamage();
             heartCount--;
-            invincibleTimer = FRAMES_INVICIBLE + timer;// invincible frames
+            invincibleTimer = Driver.gameTime() + FRAMES_INVICIBLE; // invincible frames
         }
     }
 

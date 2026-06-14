@@ -15,10 +15,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
     private Point mousePos = new Point();
 
+    private static int timer;
+
     private Player player;
     private Maze maze;
     private ArrayList<Ghost> ghosts = new ArrayList<>();
-    private int timer;
     private ArrayList<Leaderboard> leaderboard = new ArrayList<>();
     private ArrayList<Leaderboard> searchedBoard = new ArrayList<>();
     private enum Screen {
@@ -100,6 +101,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         add(gameName);
     }
 
+    // getter for the global timer
+    public static int gameTime() {
+        return Driver.timer;
+    }
+
     public void startNewGame() throws IOException {
         // Description: This method restarts the game.
         // Parameters: None
@@ -122,7 +128,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         ghosts.add(new PhoenixGhost(25, 22));
 
         for (Ghost ghost: ghosts)
-            ghost.respawn(player);
+            ghost.sendToMiddle();
 
         maze.createTileSetComponent();
         maze.generateShortestPathMatrix();
@@ -134,15 +140,16 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         // Return: void
 
         if (currentScreen == Screen.GAME) {
-            timer += 1;
-            player.nextFrame(maze, timer);
+            timer++;
+
+            player.nextFrame(maze);
             player.updatePosition(maze);
             maze.generatePickUp();
             
             for (int i = ghosts.size()-1; i >= 0; i--) {
                 Ghost ghost = ghosts.get(i);
                 if (timer == ghost.getRespawnTimer())
-                    ghost.respawn(player);
+                    ghost.respawn();
                 ghost.nextFrame(maze, player);
                 ghost.updatePosition(maze, player);
                 if (ghost.checkCollision(player)) {
@@ -150,13 +157,13 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                         player.updateScore(200);
                         if (ghost.getName().equals("phoenix")) {
                             PhoenixGhost phoenix = (PhoenixGhost) ghost;
-                            phoenix.die(timer);
+                            phoenix.die();
                         }
                         else
-                           ghost.die(timer);
+                           ghost.die();
                     }
                     else if(!ghost.getDead()){
-                        player.loseHeart(timer);
+                        player.loseHeart();
                         if (player.getHearts() == 0) {
                             currentScreen = Screen.GAME_OVER;
                         }
