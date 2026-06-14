@@ -423,17 +423,19 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             if (!area.contains(e.getPoint()))
                 continue;
 
+            // handle music
             if (name.equals("play"))
                 Audio.stopMainMenuMusic();
             else
                 Audio.playMainMenuMusic();
 
+            // handle everything other than music
             if (name.equals("play")) {
                 try {
                     startNewGame();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                };
+                }
                 currentScreen = Screen.GAME;
             }
             else if (name.equals("quit"))
