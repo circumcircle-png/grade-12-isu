@@ -29,6 +29,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     private Map<Screen, Image> screenImages = new HashMap<>();
     private int starti, endi;
     private boolean searched;
+    private String prev;
     private Font pacmanFont;
 
     private JTextField gameName;
@@ -338,14 +339,19 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createButton(g2, 16, "Name", 150, 125);
             createButton(g2, 16, "Score", 300, 125);
             createButton(g2, 16, "Time", 450, 125);
-            createButton(g2, 16, "Search Name",375, 635);
-            gameName.setBounds(25,600,300,50);
+            createCenteredString(g2, 16, "Search Name", 675);
+            gameName.setBounds(25,600,550,50);
             gameName.setFont(pacmanFont.deriveFont(32f));
             gameName.setVisible(true);
             gameName.setEnabled(true);
-           if(!gameName.getText().equals("")){
-                searchName();
-            }        
+            if(!gameName.getText().equals("")){
+                if(!gameName.getText().equalsIgnoreCase(prev)){
+                    searchName();
+                prev = gameName.getText();
+                }
+            }else{
+                searched=false;
+            }
         }
         else if (currentScreen == Screen.SETTINGS) {
             createCenteredString(g2, 30, "Settings", 75);
@@ -382,7 +388,6 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             else if (name.equals("tutorial"))
                 currentScreen = Screen.TUTORIAL;
             else if (name.equals("leaderboard")){
-                searched = false;
                 readLeaderboard();
                 Collections.sort(leaderboard);
                 currentScreen = Screen.LEADERBOARD;
@@ -393,35 +398,23 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 writeLeaderboard(userName);
                 currentScreen = Screen.MAIN_MENU;
             } else if(name.equals("Name")){
-                searched = false;
-                Collections.sort(leaderboard,new SortByName());
-            }else if(name.equals("Score")){
-                Collections.sort(leaderboard);
-                searched = false;
-            }else if(name.equals("Time")){
-                searched = false;
-                Collections.sort(leaderboard, new SortByTime());
-            } else if(name.equals("Search Name")){
-                String userName = gameName.getText().trim();
-                Collections.sort(leaderboard, new SortByName());
-                int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());
-                if(i>=0){
-                    starti = i;
-                    endi = i;
-                    searched = true;
-                    while(starti-1>=0&&leaderboard.get(starti-1).getName().equals(userName)){
-                        starti -=1;
-                    }
-                    while(endi+1<leaderboard.size()&&leaderboard.get(endi+1).getName().equals(userName)){
-                        endi +=1;
-                    }
-                    searchedBoard.clear();
-                    for(i = starti;i<=endi;i++){
-                        searchedBoard.add(leaderboard.get(i));
-                    }
-                    Collections.sort(searchedBoard);
+                if(searched){
+                    Collections.sort(searchedBoard,new SortByName());
+                }else{
+                    Collections.sort(leaderboard,new SortByName());
                 }
-
+            }else if(name.equals("Score")){
+                if(searched){
+                    Collections.sort(searchedBoard);
+                }else{
+                    Collections.sort(leaderboard);
+                }
+            }else if(name.equals("Time")){
+                if(searched){
+                    Collections.sort(searchedBoard, new SortByTime());
+                }else{
+                    Collections.sort(leaderboard, new SortByTime());
+                }
             }
             break;
         }
@@ -430,39 +423,23 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         String userName = gameName.getText().trim();
         Collections.sort(leaderboard, new SortByName());
         int i = Collections.binarySearch(leaderboard, new Leaderboard(userName, 0, 0), new SortByName());
-        if(i>=0){
-            starti = i;
-            endi = i;
-            searched = true;
-            while(starti-1>=0&&leaderboard.get(starti-1).getName().equalsIgnoreCase(userName)){
-                starti -=1;
-            }
-            while(endi+1<leaderboard.size()&&leaderboard.get(endi+1).getName().equalsIgnoreCase(userName)){
-                endi +=1;
-            }
-            searchedBoard.clear();
-            for(i = starti;i<=endi;i++){
-                searchedBoard.add(leaderboard.get(i));
-            }
-            Collections.sort(searchedBoard);
-        }else {
+        if(i<0){
             i = (i*-1)-1;
-            starti = i;
-            endi = i;
-            while(starti-1>=0&&userName.length()<=leaderboard.get(starti-1).getName().length()&&leaderboard.get(starti-1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
-                starti -=1;
-            }
-            while(endi+1<leaderboard.size()&&userName.length()<=leaderboard.get(endi+1).getName().length()&&leaderboard.get(endi+1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
-                endi +=1;
-            }
-            searchedBoard.clear();
-            for(i = starti;i<=endi;i++){
-                searchedBoard.add(leaderboard.get(i));
-            }
-            if(searchedBoard.size()>0){
-                searched = true;
-            }
-            Collections.sort(searchedBoard);
+        }
+        starti = i;
+        endi = i;
+        while(starti-1>=0&&userName.length()<=leaderboard.get(starti-1).getName().length()&&leaderboard.get(starti-1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
+            starti -=1;
+        }
+        while(endi+1<leaderboard.size()&&userName.length()<=leaderboard.get(endi+1).getName().length()&&leaderboard.get(endi+1).getName().substring(0,userName.length()).equalsIgnoreCase(userName)){
+            endi +=1;
+        }
+        searchedBoard.clear();
+        for(i = starti;i<=endi;i++){
+            searchedBoard.add(leaderboard.get(i));
+        }
+        if(searchedBoard.size()>0){
+            searched = true;
         }
     }
     public void displayLeaderboard(Graphics2D g2){
