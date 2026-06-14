@@ -80,6 +80,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         try {
             pacmanFont = Font.createFont(Font.TRUETYPE_FONT, new File("images/font.ttf"));
             screenImages.put(Screen.TUTORIAL, ImageIO.read(new File("images/screen/tutorial.png")));
+            screenImages.put(Screen.MAIN_MENU, ImageIO.read(new File("images/screen/main-menu.png")));
         } catch (Exception e) {
             e.printStackTrace();
         }

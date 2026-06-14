@@ -22,7 +22,7 @@ public abstract class Ghost extends Movable {
 
     public Ghost(String name, int startR, int startC) {
         super(name, startR, startC);
-        DEBUG = true;
+        DEBUG = false;
         this.name = name;
         state = State.NORMAL;
 
