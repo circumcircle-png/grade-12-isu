@@ -10,8 +10,10 @@ import javax.imageio.ImageIO;
 
 import src.ghost.*;
 
-public class Driver extends JPanel implements Runnable, MouseListener, KeyListener {
+public class Driver extends JPanel implements Runnable, MouseListener, KeyListener, MouseMotionListener {
     private Thread thread;
+
+    private Point mousePos = new Point();
 
     private Player player;
     private Maze maze;
@@ -40,6 +42,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     public Driver() {
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         addMouseListener(this);
+        addMouseMotionListener(this);
         setVisible(true);    
         initialize();
         thread = new Thread(this);
@@ -216,6 +219,11 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         int boxW = textWidth + padding * 2;
         int boxH = textHeight + padding;
 
+        Rectangle box = new Rectangle(boxX, boxY, boxW, boxH);
+
+        if (box.contains(mousePos))
+            g2.setColor(Color.YELLOW);
+
         // Draw rounded box
         g2.drawRoundRect(boxX, boxY, boxW, boxH, 12, 12);
 
@@ -223,6 +231,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         createString(g2, fontSize, text, x, y);
 
         buttons.put(new Rectangle(boxX, boxY, boxW, boxH), text);
+
+        g2.setColor(Color.WHITE);
     }
 
 
@@ -435,17 +445,19 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             }
         }
     }
+     
     public void writeLeaderboard(String name){
-        try{
-                Leaderboard lb = new Leaderboard(name, player.getScore(), timer/Constants.FPS);
-                PrintWriter leaderBoardFile = new PrintWriter(new FileWriter ("leaderboard.txt",true));
-                leaderBoardFile.println(lb.getName());
-                leaderBoardFile.println(lb.getScore() +" "+lb.getTime());
-                leaderBoardFile.close();
-            }catch(IOException e){
-                System.out.println("Writing error!");
-            }
+        try {
+            Leaderboard lb = new Leaderboard(name, player.getScore(), timer/Constants.FPS);
+            PrintWriter leaderBoardFile = new PrintWriter(new FileWriter ("leaderboard.txt",true));
+            leaderBoardFile.println(lb.getName());
+            leaderBoardFile.println(lb.getScore() +" "+lb.getTime());
+            leaderBoardFile.close();
+        } catch (IOException e) {
+            System.out.println("Writing error!");
+        }
     }
+     
     public void readLeaderboard(){
         leaderboard.clear();
         try{
@@ -465,6 +477,14 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     public void mouseReleased(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
+
+    public void mouseMoved(MouseEvent e) {
+        mousePos = e.getPoint();
+    }
+
+    public void mouseDragged(MouseEvent e) {
+        mousePos = e.getPoint();
+    }
 
     public void keyTyped(KeyEvent e) {
         // throw new UnsupportedOperationException("Unimplemented method 'keyTyped'");
