@@ -437,7 +437,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             endi +=1;
         }
         searchedBoard.clear();
-        if(i>=0||starti!=endi){
+        if(i>=0||starti!=endi||(endi<leaderboard.size()&&userName.length()<=leaderboard.get(endi).getName().length()&&leaderboard.get(endi).getName().substring(0,userName.length()).equalsIgnoreCase(userName))){
             for(i = starti;i<=endi;i++){
             searchedBoard.add(leaderboard.get(i));
             }
