@@ -38,6 +38,7 @@ Press backslash ('\') to gain a heart.
 # Known Bugs/Errors
 
 - Occasionally doesn’t allow button inputs, though this bug has not occurred in a while (we might have fixed it or just got lucky)
+- Some sound effects get cut off (e.g. when you eat two ghosts in quick succession)
 
 
 
