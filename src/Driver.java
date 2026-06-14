@@ -264,6 +264,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             createCenteredButton(g2, 24, "leaderboard", top + increment * 2);
             createCenteredButton(g2, 24, "settings", top + increment * 3);
             createCenteredButton(g2, 24, "credits", top + increment * 4);
+            gameName.setText("");
             gameName.setVisible(false);
             gameName.setEnabled(false);
         }
@@ -378,6 +379,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             else if (name.equals("tutorial"))
                 currentScreen = Screen.TUTORIAL;
             else if (name.equals("leaderboard")){
+                searched = false;
                 readLeaderboard();
                 Collections.sort(leaderboard);
                 currentScreen = Screen.LEADERBOARD;
@@ -503,7 +505,6 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
                 player.nextFacing = Direction.DOWN;
             else if(input == KeyEvent.VK_BACK_SLASH){
                 player.gainHeart();
-                currentScreen=Screen.VICTORY;
             }
         }
     }

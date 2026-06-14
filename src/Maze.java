@@ -40,9 +40,6 @@ public class Maze {
         pickups = new char[3];
         pickups[0] = 'h';
         pickups[1] = 's';
-        // pickups[2] = 'f';
-        // pickups[3] = 'F';
-        // pickups[4] = 'm';
         pickups[2] = '*';
     }
 
@@ -70,18 +67,22 @@ public class Maze {
     }
 
     public void generatePickUp() {
+        //Description: this code creates pickups every couple seconds(depends on frames_pickup)
+        // parameter none
+        // return none
         pickUpTimer++;
+        // if its not the right frame return out
         if (pickUpTimer % FRAMES_PICKUP != 0)
             return;
 
         boolean validSpot = true;
-        if (tilesLeft('a') >= 1) {
+        if (tilesLeft('a') >= 1) {// check if there are valid spots in the maze to spawn pickups
             do {
-                int randRow = (int)(Math.random()*numRows);
+                int randRow = (int)(Math.random()*numRows);// pick a random tile
                 int randCol = (int)(Math.random()*numColumns);
-                if (maze[randRow][randCol] == 'a') {//can spawn on player idk
+                if (maze[randRow][randCol] == 'a') {//check if it is valid
                     validSpot = false;
-                    int power = (int)(Math.random()*pickups.length);
+                    int power = (int)(Math.random()*pickups.length);// spawn a random pickup
                     maze[randRow][randCol] = pickups[power];
                 }
             } while(validSpot);
@@ -144,7 +145,9 @@ public class Maze {
     }
     
     private void createPickups(String name, int i){
-
+         // Description: This method inserts a sub image of the pickup into the tiles et.
+        // Parameters: Name of the pickup, and which pickup index it is
+        // Return: void
         tilesetComponents.put(name, pickUpSet.getSubimage(0, 8*i, 8, 8));
 
     }
@@ -209,9 +212,6 @@ public class Maze {
 
         createPickups("heart", 0);
         createPickups("speed", 1);
-        // createPickups("frost", 2);
-        // createPickups("fire",3);
-        // createPickups("missile", 4);
     }
 
     public boolean isAccessible(int r, int c) {

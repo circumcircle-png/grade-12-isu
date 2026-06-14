@@ -29,7 +29,7 @@ public class Player extends Movable {
         score = 0;
         heartCount = 5;
 
-        // read spitesheets
+        // read spritesheets
         try {
             BufferedImage sheet = ImageIO.read(new File("images/pacman/pacman.png"));
             for (int i = 0; i <= 3; i++) {
@@ -92,13 +92,13 @@ public class Player extends Movable {
             Audio.playPowerUp();
         }
 
-        if (scaryFrameTimer == timer) {
+        if (scaryFrameTimer == timer) {// if the scary timer has expired then turn the state to normal
             state = State.NORMAL;
         }
-        if (speedTimer >= timer) {
+        if (speedTimer >= timer) {// speed powerups, temporary speed is added
             speed = speeds.get(state) + TEMP_SPEED;
         } else {
-            speed = speeds.get(state);
+            speed = speeds.get(state);// use normal speed
         }
     }
 
@@ -125,8 +125,12 @@ public class Player extends Movable {
         return super.getDirectionalSpriteMap();
     }
 
+
     public void updatePosition(Maze maze) {
-        if (nextFacing != facing) {
+        // Description: This method updates the position of the ghost based on its state.
+        // Parameters: Maze
+        // Return: void
+        if (nextFacing != facing) {// fix if you spam opposite directions so it automatically updates your next position
             if (nextFacing == Direction.UP && maze.isAccessible(targetR - 1, targetC)) {
                 if (facing == Direction.DOWN) {
                     int tempC = previousC;
@@ -171,7 +175,7 @@ public class Player extends Movable {
         }
 
         double remainingDistanceToTravel = (double) speed / 60;
-        while (MathUtils.greater(remainingDistanceToTravel, 0)) {
+        while (MathUtils.greater(remainingDistanceToTravel, 0)) {// move the ghost x,y to next position
             double oldX = x;
             double oldY = y;
             if (previousC < targetC)
@@ -208,11 +212,15 @@ public class Player extends Movable {
         return new int[] { targetR, targetC };
     }
 
+    
     public void loseHeart(int timer) {
+        //Description: when the player gets hit by a ghost, lose a heart
+        //parameters time
+        // return void
         if (invicibleTimer <= timer) {
             Audio.playDamage();
             heartCount--;
-            invicibleTimer = FRAMES_INVICIBLE + timer;
+            invicibleTimer = FRAMES_INVICIBLE + timer;// invincible frames
         }
     }
 
