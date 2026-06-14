@@ -1,7 +1,7 @@
 # Pac-Man
 
 To run the game, run the file src/Driver.java.
-Press backslash (“\”) to gain a heart.
+Press backslash ('\') to gain a heart.
 
 # Responsibilities
 
@@ -56,6 +56,8 @@ This is for reference.
 - 3 represents special wall
 - 4 represents sharp corner (used around ghost spawning area)
 - 5 represents the exit to the ghost respawn area.
+- L represents the tile to the left of the ghost respawn exit
+- R represents the tile to the right of the ghost respawn exit
 
 Rules:
 - All dimensions of blocks of 1's must be at least 2

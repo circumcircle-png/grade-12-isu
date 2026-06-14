@@ -1,27 +1,25 @@
 cheese
-0 10
+0 90
 cheese
-10 0
+10 80
 ball
-0 5
+0 70
 cheese
 100 100
 ball
-0 5
+0 80
 cheese
-110 1
+110 90
 ball
-290 3
+290 80
 cheese
-1070 8
+1070 90
 test
 5420 46
 hello
 4370 48
 jon
 4820 51
-eddie
-1240 20
 jeremy
 3870 49
 jeremy
@@ -30,3 +28,5 @@ jere
 3370 37
 test2
 5770 64
+test
+6770 65

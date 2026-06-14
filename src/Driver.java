@@ -507,27 +507,16 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         // Description: display the leaderboard as graphics
         // Parameters: graphics2d
         // Return: void, just graphics
-        int fontSize = 24;
-        if(searched){// check if searched for a specific name
-            if(searchedBoard.size()<10){// if there are less than 10 results display all
-                 for(int i = 0; i <searchedBoard.size();i++){
-                    createCenteredString(g2, fontSize, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
-                }
-            }else{// display the top 10
-                for (int i = 0; i<10;i++){
-                    createCenteredString(g2, fontSize, (i+1)+") "+searchedBoard.get(i).toString(), 200+40*i);
-                }
-            }
-        } else {// display general stats
-            if(leaderboard.size()<10){// display all if less than 10
-                 for(int i = 0; i <leaderboard.size();i++){
-                    createCenteredString(g2, fontSize, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
-                }
-            }else{// display all
-                for (int i = 0; i<10;i++){
-                    createCenteredString(g2, fontSize, (i+1)+") "+leaderboard.get(i).toString(), 200+40*i);
-                }
-            }
+
+        ArrayList<Leaderboard> board;
+        if (searched)
+            board = searchedBoard;
+        else
+            board = leaderboard;
+
+        for (int i = 0; i < Math.min(10, board.size()); i++) {
+            String index = String.format("%-4s", (i+1) + ")");
+            createCenteredString(g2, 24, index + board.get(i).toString(), 200+40*i);
         }
     }
      
@@ -562,8 +551,8 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         } catch(FileNotFoundException e){
             System.out.println("File not found");
         }
-
     }
+
     public void mouseClicked(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
@@ -588,13 +577,14 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     public void keyTyped(KeyEvent e) {
         // Description: keylisteners mandatory method
         // parameter keyevent
-        //return void
+        // return void
     }
 
     public void keyPressed(KeyEvent e) {
         // Description: turns the keypressed into user inputs
         // Parameter keyevent
         // return  void
+
         if (currentScreen == Screen.GAME) {// if its the game screen
             int input = e.getKeyCode();
             // change the direction of the player to the input
