@@ -37,6 +37,7 @@ public abstract class Ghost extends Movable {
                 );
             }
 
+            // scared spritesheet
             BufferedImage scaredSheet = ImageIO.read(new File("images/ghost/scared " + name + ".png"));
             for (int i = 0; i <= 3; i++) {
                 scaredDirectionalSprites.put(
@@ -44,6 +45,8 @@ public abstract class Ghost extends Movable {
                     new Image[] {scaredSheet.getSubimage(0, 16*i, 16, 16), scaredSheet.getSubimage(16, 16*i, 16, 16)}
                 );
             }
+
+            // blank spritesheet for when the ghost is dead
             for(int i = 0; i<=3;i++){
                 BufferedImage blank = new BufferedImage(16,16,BufferedImage.TYPE_INT_ARGB);
                 blankArray.put(
