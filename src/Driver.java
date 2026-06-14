@@ -345,6 +345,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             gameName.setVisible(true);
             gameName.setEnabled(true);
             if(!gameName.getText().equals("")){
+                searched=true;
                 if(!gameName.getText().equalsIgnoreCase(prev)){
                     searchName();
                 prev = gameName.getText();
@@ -441,9 +442,6 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
             for(i = starti;i<=endi;i++){
             searchedBoard.add(leaderboard.get(i));
             }
-            if(searchedBoard.size()>0){
-            searched = true;
-            }
         }
     }
     public void displayLeaderboard(Graphics2D g2){
@@ -516,6 +514,9 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void keyPressed(KeyEvent e) {
+        // Description: turns the keypressed into user inputs
+        // Parameter keyevent
+        // return
         if (currentScreen == Screen.GAME) {
             int input = e.getKeyCode();
             if (input == KeyEvent.VK_W || input == KeyEvent.VK_UP)
