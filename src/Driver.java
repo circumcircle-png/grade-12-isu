@@ -51,6 +51,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void run() {
+        // Description: This method runs the main while loop for the game.
+        // Parameters: None
+        // Return: void
+
         while (true) {
             update();
             this.repaint();
@@ -64,6 +68,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void initialize() {
+        // Description: This method handles everything before the game is drawn.
+        // Parameters: None
+        // Return: void
+
         addKeyListener(this);
         setFocusable(true);
         setLayout(null);
@@ -93,6 +101,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void startNewGame() throws IOException {
+        // Description: This method restarts the game.
+        // Parameters: None
+        // Return: void
+
         timer = 0;
         maze = new Maze("maze.txt");
         ghosts.clear();
@@ -117,6 +129,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void update() {
+        // Description: This method runs every frame, updating the game state whenever currentScreen is GAME.
+        // Parameters: None
+        // Return: void
+
         if (currentScreen == Screen.GAME) {
             timer += 1;
             player.nextFrame(maze, timer);
@@ -154,6 +170,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void drawGame(Graphics2D g2) {
+        // Description: This method draws the game maze and entities on the maze.
+        // Parameters: The Graphics2D object
+        // Return: void
+
         AffineTransform t = g2.getTransform();
 
         // shift to the middle of the screen
@@ -178,6 +198,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void createCenteredString(Graphics2D g2, float fontSize, String text, int y) {
+        // Description: This method draws a String centered in the screen.
+        // Parameters: The Graphics2D object, the font size, the text, and the y coordinate
+        // Return: void
+
         Font font = pacmanFont.deriveFont(fontSize);
         g2.setFont(font);
 
@@ -189,12 +213,20 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void createString(Graphics2D g2, float fontSize, String text, int x, int y) {
+        // Description: This method draws a String onto the screen.
+        // Parameters: The Graphics2D object, the font size, the text, the x and y coordinate
+        // Return: void
+
         Font font = pacmanFont.deriveFont(fontSize);
         g2.setFont(font);
         g2.drawString(text, x, y);
     }
 
     public void createCenteredButton(Graphics2D g2, float fontSize, String text, int y) {
+        // Description: This method draws a clickable button centered in the screen.
+        // Parameters: The Graphics2D object, the font size, the text, and the y coordinate
+        // Return: void
+
         Font font = pacmanFont.deriveFont(fontSize);
         g2.setFont(font);
 
@@ -206,6 +238,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void createButton(Graphics2D g2, float fontSize, String text, int x, int y) {
+        // Description: This method draws a clickable button onto the screen.
+        // Parameters: The Graphics2D object, the font size, the text, the x and y coordinate
+        // Return: void
+
         Font font = pacmanFont.deriveFont(fontSize);
         g2.setFont(font);
 
@@ -238,6 +274,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
 
 
     public void paintComponent(Graphics g) {
+        // Description: This method draws the entire screen.
+        // Parameters: The Graphics object
+        // Return: void
+
         super.paintComponent(g);
 
         // clear buttons from previous screen
@@ -362,6 +402,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public void mousePressed(MouseEvent e) {
+        // Description: This method handles mouse clicks.
+        // Parameters: The MouseEvent object
+        // Return: void
+
         for (Rectangle area: buttons.keySet()) {
             String name = buttons.get(area);
             if (!area.contains(e.getPoint()))
@@ -514,10 +558,18 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     public void mouseEntered(MouseEvent e) {}
 
     public void mouseMoved(MouseEvent e) {
+        // Description: This method handles mouse movement and updates the mouse position variable.
+        // Parameters: The MouseEvent object
+        // Return: void
+
         mousePos = e.getPoint();
     }
 
     public void mouseDragged(MouseEvent e) {
+        // Description: This method handles mouse movement and updates the mouse position variable.
+        // Parameters: The MouseEvent object
+        // Return: void
+
         mousePos = e.getPoint();
     }
 
@@ -555,6 +607,10 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
     }
 
     public static void main(String[] args) throws IOException {
+        // Description: This method starts JFrame and application.
+        // Parameters: String aruguments
+        // Return: void
+
         JFrame frame = new JFrame("Pac-Man");
         JPanel panel = new Driver();
         frame.add(panel);
