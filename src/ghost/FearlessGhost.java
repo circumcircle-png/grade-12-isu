@@ -13,6 +13,8 @@ public class FearlessGhost extends Ghost {
         // Return: void
 
         super.nextFrame(maze, player);
+
+        // make the fearless ghost always normal
         if (state != State.DEAD)
             state = State.NORMAL;
     }

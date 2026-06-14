@@ -36,6 +36,7 @@ public class BullGhost extends Ghost {
 
         if (state == State.SCARY||state==State.DEAD) return;
 
+        // get the next two directions the bull ghost will go in
         Direction first = Direction.STILL;
         if (targetR < previousR) first = Direction.UP;
         else if (targetR > previousR) first = Direction.DOWN;
@@ -44,6 +45,7 @@ public class BullGhost extends Ghost {
 
         Direction second = maze.getShortestPath()[targetR][targetC][longRangeTargetR][longRangeTargetC];
 
+        // depending on whether the bull will turn, change the state
         if (first == Direction.STILL || second == Direction.STILL)
             state = State.BULL_STRAIGHT;
         else if (first == second)
