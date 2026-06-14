@@ -397,7 +397,7 @@ public class Driver extends JPanel implements Runnable, MouseListener, KeyListen
         else if (currentScreen == Screen.SETTINGS) {
             createCenteredString(g2, 30, "Settings", 75);
             createButton(g2, 16, "home", 500, 70);
-            createCenteredString(g2, 24, "Volume: " + Audio.getVolume(), 190);
+            createCenteredString(g2, 24, "Volume: " + (int) Audio.getVolume(), 190);
         }
     }
 
